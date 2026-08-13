@@ -1,0 +1,313 @@
+
+\subsection{Section 3 Proofs and Experiments}
+    \subsubsection{Proofs}
+
+
+    \paragraph{Setting of Theorem 1}
+        We consider explaining a linear function $f:\mathbb{R}^d \rightarrow \mathbb{R}$ such that $f(\mathbf{x}) = \beta^T \mathbf{x}$ at the point $\mathbf{\xi}\in \mathbb{R}^d$ (which itself was sampled from $\mathcal{N}(0, \mathds{1}_d)$) using a LIME explainer with the following properties. Suppose that LIME samples random vectors $\{\mathbf{x}^{(n)}\}_{n=1}^N$ with $\mathbf{x}^{(n)} \sim \mathcal{N}(\mathbf{\xi},\sigma \mathds{1}_d)$ for each $n$ and, given a bandwidth parameter $\nu > 0$, weights their distances to $\mathbf{\xi}$ using an exponential kernel $\pi(\xi,\mathbf{x}) = exp(-\norm{\mathbf{\xi} - \mathbf{x}}_2^2/2\nu^2)$. 
+        
+        We assume that LIME follows one of its default settings to solve a ridge regression problem with the following loss function.
+        \begin{equation*}
+            (\mathbf{y} - \mathbf{X}\mathbf{u})^T \mathbf{W}(\mathbf{y} - \mathbf{X}\mathbf{u}) + (\mathbf{u} - \mathbf{u}_0)^T \Delta(\mathbf{u} - \mathbf{u}_0)
+        \end{equation*}
+        In this loss function, $\mathbf{X}$ is a data matrix $\mathbf{X} \in \mathbb{R}^{N\times D}$ whose $n^{th}$ row is $\mathbf{x}^{(n)}$ and $\mathbf{W} \in \mathbb{R}^{N\times N}$ is a diagonal weight matrix for each of the $n=1,\ldots,N$ samples with $w_{nn} = \pi(\xi,\mathbf{x}^{(n)}) = \exp(-\norm{\xi - \mathbf{x}^{(n)}}_2^2/2\nu^2)$. The response vector $\mathbf{y}\in \mathbb{R}^N$ is defined pointwise by $y_n = \beta^T \mathbf{x}^{(n)}$. We set the penalty parameter $\Delta\in \mathbb{R}^{D\times D}$ to $\Delta = \lambda \mathds{I}_{D\times D}$ so that $\Delta$ represents the $L_2$ ridge penalty with hyperparameter $\lambda$. There is another hyperparameter $\mathbf{u}_0 \in \mathbb{R}^D$ which is the target that $\mathbf{u}$ is to be shrunken toward.  We will set $\mathbf{u}_0 = 0$.
+        % Suppose further that LIME aims to solve
+        % \begin{equation}
+        %     \text{min}_{\mathbf{x}\sim\mathcal{N}(\mathbf{\xi},\sigma  \mathds{1}_d)}\ \mathds{E}[\pi(\mathbf{\xi},\mathbf{x})(\mathbf{u}^T \mathbf{x} - \mathbf{\beta}^T \mathbf{x})^2]
+        % \end{equation}
+        % Thus, this version of LIME does not place an $L_1$ penalty on $\mathbf{u}$ as does the original LIME. We may frame this minimization problem as a weighted least squares (WLS) regression problem.
+
+        In the proof $n$, and occasionally $n'$, will be used to index the $N$ data samples. $i,j,k$ and occasionally $l$ will be used to index the $D$ features. Individual data samples in the data matrix $\mathbf{X}$ will be represented with superscript notation, e.g. $\mathbf{x}^{(n)}$. Individual features of a sample will be indexed with subscript notation, e.g. $x^{(n)}_j$. We need not refer to whole rows or columns of $\mathbf{W}$, so it will be indexed entry-wise with $w_{nn}$ for $n=1,\ldots, N$.
+    
+
+\paragraph{proof of Theorem 1}
+        The closed form solution to a generalized ridge regression with $\mathbf{u}_0 = 0$ is
+        \begin{equation*}
+            \mathbf{u}(\Delta) = (\mathbf{X}^T \mathbf{W} \mathbf{X} + \Delta)^{-1}(\mathbf{X}^T\mathbf{W}\mathbf{y})% + \Delta \mathbf{u}_0)
+        \end{equation*}
+            Defining $\hat{\mathbf{\Sigma}}_N = \frac{1}{N}(\mathbf{X}^T \mathbf{W} \mathbf{X} + \Delta) \in \mathbb{R}^{D\times D}$ and $\hat{\mathbf{\Gamma}}_N = \frac{1}{N}\mathbf{X}^T \mathbf{W}\mathbf{y}\in \mathbb{R}^{D \times 1}$, we have by the weak law of large numbers that 
+            \begin{equation*}
+                \hat{\mathbf{\Sigma}}_N \inprob \mathbf{\Sigma} := \mathds{E}[\hat{\mathbf{\Sigma}}_N],\ \hat{\mathbf{\Gamma}}_N \inprob \mathbf{\Gamma} := \mathds{E}[\hat{\mathbf{\Gamma}}_N] 
+            \end{equation*}
+            as $N\rightarrow \infty$ and the expectations are taken over the random matrices $\mathbf{X}$. 
+            The ridge solution is then denoted $\mathbf{u} := \mathbf{\Sigma}^{-1}\mathbf{\Gamma}$. We will proceed by finding closed form expressions for $\mathbf{\Sigma}_{ij}^{-1}$ and $\mathbf{\Gamma}_j$ seperately, then finally obtaining closed form expressions for each element of $\mathbf{u}$. We define the following notation to simplify the challenge in computing $\mathbf{u}$ coming from the presence of the weight terms $w_{nn}$. Since $w_{nn}=\prod_{l=1}^d \exp(-(\mathbf{\xi}_l - x^{(n)}_l)^2/2\nu^2)$, we will use $l=1,\ldots,D$ to index the factors of $w_{nn}$ as follows.
+            \begin{gather*}
+                \psi_{nl} := \exp(-(\mathbf{\xi}_l - x^{(n)}_l)^2/2\nu^2) \in (0,1]
+            \end{gather*}
+            where $x^{(n)}_l$ is the $l^{th}$ feature value of the $n^{th}$ sample. 
+            Thus, $\pi(\mathbf{\xi},\mathbf{x}^{(n)}) = \prod_{l=1}^d \psi_{nl}$. We also define $s:= \frac{1}{\sigma\sqrt{\sigma^{-2} + \nu^{-2}}}$ and $t := \frac{\sigma^2 \nu^2}{\sigma^2 + \nu^2}$. These will be used to simplify the expressions for the expectations we need to compute. 
+            
+            % should actually switch k with i here since i indexes over 1,...,n
+            We begin with the computation of $\mathbf{\Sigma}$. We seek an expression for the entries $\mathbf{\Sigma}_{ij}$ for $i,j=1,\ldots,D$. Since $\mathbf{W}$ is diagonal, $(\mathbf{W}\mathbf{x})_{nj} = w_{nn}x^{(n)}_j$. Therefore,
+            \begin{equation*}
+                (\hat{\mathbf{\Sigma}}_N)_{i,j}  = \frac{1}{N} \sum_{n=1}^N (\mathbf{X}^T_{in}(\mathbf{W}\mathbf{X})_{nj} + \lambda \delta_{i=j}) = \frac{1}{N}\sum_{n=1}^N (x^{(n)}_i w_{nn} x^{(n)}_j + \lambda \delta_{i=j})
+            \end{equation*}
+            Taking expectation with respect to $\mathbf{X}$, we have
+            \begin{equation*}
+                \mathds{E}[(\hat{\mathbf{\Sigma}}_N)_{i,j}] = \frac{1}{N}\sum_{n=1}^N \mathds{E}[x^{(n)}_i\prod_{l=1}^d \psi_{nl} x^{(n)}_j] + \frac{\lambda}{N} \delta_{i=j}
+            \end{equation*}
+            Recall that each pair of components from two i.i.d. random vectors are independent random variables. This allows each expectation to be split, taking care to gather terms with a common factor of $\mathbf{X}$. 
+            If $i\neq j$, the summands reduce to $\mathds{E}[\psi_{ni}x^{(n)}_i] (\prod_{l\neq i,j}^D \mathds{E}[\psi_{nl}]) \mathds{E}[\psi_{nj}x^{(n)}_j]$. If $i=j$ then they become $\mathds{E}[\mathbf{x}^{{(j)}^2}_j \psi_{jj}] \prod_{l\neq j}^D \mathds{E}[\psi_{nl}]$. We compute these expectations using the following computations that will be re-used repeatedly throughout the proof. Denote by $\Phi(\mathbf{X})$ the pdf of the entries of $\mathbf{X}$. Since all entries are independent, it may be factored as $\Phi(\mathbf{x}) = \Phi(x^{(1)}_1,\ldots,x^{(N)}_D) = \prod_{n=1}^N \prod_{j=1}^D \phi(x^{(n)}_j)$ where $\phi(x^{(n)}_j)$ is the Gaussian pdf $\frac{1}{\sigma \sqrt{2\pi}}\exp\left(-\frac{1}{2}\left(\frac{\xi_i-x^{(n)}_j}{\sigma}\right)^2\right)$. Then the the product measure on $\mathbb{R}^{N\times D}$ used for computing expectations with respect to $\mathbf{X}$ is $\mu_1 \times \ldots \times \mu_{ND}$ such that $d\mu_{nj}(x^{(n)}_j) = \phi(x^{(n)}_j)dx^{(n)}_j$
+
+        \begin{itemize}
+            \item For any $n=1,\ldots,N$ and $j=1,\ldots, D$, $\textcolor{green}{\mathds{E}[x^{(n)}_j]} = \xi_j$ by Fubini's theorem and because $\mathbf{x}^{(n)} \sim \mathcal{N}(\xi,\sigma)$ for all $n$. This can be seen from
+            \begin{gather*}
+                \mathds{E}[x^{(n)}_j] = \int_{\mathbb{R}^{N\times D}} x^{(n)}_j d\mu_1(x^{(1)}_1) \times \ldots d\mu_{ND}(x^{(N)}_D)  \\
+                = \int_{\mathbb{R}} x^{(n)}_j d\mu_1(x^{(n)}_j) 
+                = \int_{\mathbb{R}} x^{(n)}_j \phi(x^{(n)}_j)dx^{(n)}_j 
+                = \mathds{E}_{x^{(n)}_j \sim \mathcal{N}(\xi,\sigma)}[x^{(n)}_j] 
+                = \xi_j
+            \end{gather*}
+            \item 
+            \begin{gather*}
+            \textcolor{green}{\mathds{E}[\psi_{nj}]} = \int_{\mathbb{R}^{N\times D}} \exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) d\mu_1(x^{(1)}_1) \times \ldots d\mu_{ND}(x^{(N)}_D) \\
+            = \int_\mathbb{R} \cdots \int_\mathbb{R} \exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) d\mu_1(x^{(1)}_1) \times \ldots d\mu_{ND}(x^{(N)}_D) \\ 
+            = \int_\mathbb{R}\exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) d\mu_{nj}(x^{(n)}_j) \\
+            = \int_\mathbb{R}\exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) \frac{1}{\sigma \sqrt{2\pi}}\exp\left(-(\xi_j-x^{(n)}_j)^2/2\sigma^2\right) dx^{(n)}_j \\
+            = \frac{1}{\sigma \sqrt{2\pi}} \int_\mathbb{R} \exp\left((\xi_j - x^{(n)}_j)^2(\sigma^2 + \nu^2)/2\sigma^2 \nu^2\right) dx^{(n)}_j\\
+            =\frac{1}{\sigma \sqrt{\sigma^{-2} + \nu^{-2}}}=s
+            \end{gather*}
+            \item \[\textcolor{green}{\mathds{E}[\psi_{nj}x^{(n)}_j]} = \int_{\mathbb{R}^{N\times D}} \exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) x^{(n)}_j \phi(\mathbf{X}) d\mathbf{X} = \frac{\xi_j}{\sigma \sqrt{\sigma^{-2} +\nu^{-2}}}=s \xi_j\]
+            \item \[\textcolor{green}{\mathds{E}[\psi_{nj} x^{{(n)}^2}_j]}= \int_{\mathbb{R}^{N\times D}} \exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) x^{{(n)}^2}_j \phi(\mathbf{X}) d\mathbf{X} = \frac{\nu^2 \xi_j^2 + \sigma^2(\nu^2+\xi_j^2)}{\sigma\sqrt{\sigma^{-2} + \nu^{-2}}(\sigma^2+\nu^2)}=s(\xi_j^2+t)\]
+        \end{itemize}
+
+        Hence, when $i\neq j$, the summands become
+        \begin{align*}
+            \mathds{E}[\psi_{ni}x^{(n)}_i] (\prod_{l\neq i,j}^D \mathds{E}[\psi_{nl}]) \mathds{E}[\psi_{nj}x^{(n)}_j] = s\xi_i \prod_{l\neq i,j}^D s s\xi_j = s^D \xi_i \xi_j
+        \end{align*}
+        and when $i=j$ they are
+        \begin{align*}
+            \mathds{E}[\mathbf{x}^{{(j)}^2}_j \psi_{jj}] \prod_{l\neq j}^D \mathds{E}[\psi_{nl}] = s(\xi_j^2 + t)s^{D-1} = s^D (\xi_j^2 + t)
+        \end{align*}
+        The dependence on $n$ is gone from the summands, and so the $\frac{1}{N}$ term is canceled in $\mathds{E}[(\hat{\mathbf{\Sigma}}_N)_{i,j}]$. Summing up, we have
+            $$
+            \mathbf{\Sigma}_{ij} =
+            \begin{cases}
+           \textcolor{green}{s^D\xi_i \xi_j},\ i \neq j\\
+           \textcolor{green}{s^D(\xi_j^2 + t + \lambda/(s^D N))},\ i = j\\
+            \end{cases}
+            $$
+            so we may re-write $\mathbf{\Sigma}$ as $s^D(\xi \xi^T + \diag(t + \frac{\lambda}{s^D N}))$, where $\diag(t + \frac{\lambda}{s^D N})$ is a $D\times D$ diagonal matrix with $t + \lambda/(s^D N)$ on the diagonal and $0$ elsewhere. 
+           Since $\xi$ is a fixed vector the outer product $\xi \xi^T$ has rank 1. Then, since diagonal matrices are invertible, we may use the Sherman-Morrison formula~\citep{sherman50adjustment} to compute $\mathbf{\Sigma}^{-1}$. The Sherman-Morrison formula is used to compute inversion after a rank 1 update; that is, the new inverse of a previously invertible matrix after adding a rank 1 matrix to it. By the Sherman-Morrison formula,
+           \begin{gather*}
+           \mathbf{\Sigma}^{-1}=s^{-D}\left(\diag(\frac{1}{t + \frac{\lambda}{s^D N}})-\frac{1}{g}\diag(\frac{1}{t + \frac{\lambda}{s^D N}})(\xi \xi^T)\diag(\frac{1}{t + \frac{\lambda}{s^D N}})\right) \\
+           = s^{-D}\left(\diag(\frac{1}{t + \frac{\lambda}{s^D N}})-\frac{1}{(t + \frac{\lambda}{s^D N })^2g}\mathds{1}(\xi \xi^T)\mathds{1}\right) \\
+           = s^{-D}\left(\diag(\frac{1}{t + \frac{\lambda}{s^D N}})-\frac{1}{(t+\frac{\lambda}{s^D N})^2g}(\xi \xi^T)\right) \\
+           = -s^{-D}\left(\frac{1}{(t+\frac{\lambda}{s^D N})^2g}(\xi \xi^T)-\diag(\frac{1}{t + \frac{\lambda}{s^D N}})\right)
+           \end{gather*}
+           where $g = 1 + \frac{1}{t + \frac{\lambda}{s^D N}} \sum_{i=1}^D \xi_i^2$.
+           So, 
+           $$
+            \textcolor{green}{\mathbf{\Sigma}_{ij}^{-1}} =
+            \begin{cases}
+           \frac{-s^{-D}}{(t + \frac{\lambda}{s^D N})^2g}\xi_i \xi_j ,\ i \neq j\\
+           \frac{-s^{-D}}{(t + \frac{\lambda}{s^D N})^2g}\xi_i \xi_j - \frac{1}{t + \frac{\lambda}{s^D N}},\ i = j\\
+            \end{cases}
+            $$           
+            Moving now to the computation of $\mathbf{\Gamma}$, we note that $\Gamma = \frac{1}{N}\mathds{E}[\mathbf{X}^T \mathbf{W} \mathbf{y}]=\frac{1}{N}\mathds{E}[\mathbf{X}^T \mathbf{W} \mathbf{X} \beta]=\frac{1}{N}\mathds{E}[\mathbf{X}^T \mathbf{W} \mathbf{X}] \beta$, so we can re-use the earlier computations involving $\mathbf{X}^T \mathbf{W} \mathbf{X}$. Thus,
+            \begin{gather*}
+                \mathbf{\Gamma} = s^D (\xi \xi^T + \diag(t)) \beta \text{ and } 
+                \mathbf{\Gamma}_i = s^D (\sum_{j=1}( \xi_i \xi_j + \delta_{i=j}t) \beta_j)
+            \end{gather*}
+    %         \begin{equation*}
+    %             \mathbf{\Gamma}_j = \frac{1}{N} \mathds{E}[ \sum_{n=1}^n (\mathbf{X}^T \mathbf{W})_{jn}y_n] \\
+    %         \end{equation*}
+    %         The summands can be expanded into
+    %         \begin{gather*}
+    %             (\mathbf{X}^T \mathbf{W})_{jn}y_n = (\sum_{n'=1}^N \mathbf{X}^T_{jn'} w_{n'n})y_n \\
+    %             = \sum_{n'=1}^N \mathbf{x}^{(n')}_j w_{n'n} y_n \\
+    %             % leave y_n to avoid n'' notation?
+    %             = \sum_{n'=1}^N \mathbf{x}^{(n')}_j w_{n'n} \sum_{k=1}^D \beta_k x^{(n)}_k
+    %         \end{gather*}
+    %         To compute $\mathbf{\Gamma}_j$ we proceed similarly to the computation of $\mathbf{\Sigma}_{ij}$ by splitting the expectations based on common elements of $\mathbf{X}$. By linearity of expectation, 
+    %         \begin{gather*}
+    %         \mathbf{\Gamma}_j = \frac{1}{N} \mathds{E}\left[\sum_{n=1}^N \sum_{n'=1}^N \mathbf{x}^{(n')}_j w_{n'n} \sum_{k=1}^D \beta_k x^{(n)}_k\right] \\
+    %             = \frac{1}{N}\sum_{n=1}^N \sum_{n'=1}^N \sum_{k=1}^D \beta_k\mathds{E}[\mathbf{x}^{(n')}_jw_{n'n}x^{(n)}_k] \\
+    %         \end{gather*}
+    %         We may eliminate the sum over $n'$ since $w_{n'n}=0$ unless $n'=n$, whence
+    %         \begin{gather*}
+    %             \mathbf{\Gamma}_j = \frac{1}{N}\sum_{n=1}^N\left(\left(\sum_{k\neq j}^D\beta_k\mathds{E}[x^{(n)}_j w_{nn} x^{(n)}_k]\right) + \beta_j\mathds{E}[x^{{(n)}^2}_j w_{nn}]\right) \\
+    %             = \frac{1}{N}\sum_{n=1}^N\left(\left(\sum_{k\neq j}^D\beta_k\mathds{E}[x^{(n)}_j \prod_{l=1}^D \psi_{nl} x^{(n)}_k]\right) + \beta_j\mathds{E}[x^{{(n)}^2}_j \prod_{l=1}^D \psi_{nl}]\right) \\
+    %         \end{gather*}
+    %         % stopped here
+    %         We address the summands left to right. Since $j\neq k$, 
+    %         \begin{equation*}
+    %             \mathds{E}[x^{(n)}_j\psi_{nj}]\prod_{l\neq j,k} \mathds{E}[\psi_{nl}] \mathds{E}[x^{(n)}_k\psi_{nk}] = s\xi_j s^{D-2} s\xi_k = s^D \xi_j \xi_k
+    %         \end{equation*}
+    %         and
+    %         \[
+    %         \mathds{E}[x^{{(n)}^2}_j \psi_{nj}]\prod_{l\neq  j} \mathds{E}[\psi_{nl}] = s^D (\xi_j^2 + t)
+    %         \]
+    % Expanding, we have
+    % %i->j, j->k, k->l, l->m
+    % \begin{gather*}
+    % \mathbf{\Gamma}_j = \frac{1}{N}\sum_{n=1}^N\left(\left(\sum_{k\neq j}^D\beta_ks^D \xi_j \xi_k \right) + \beta_j s^D (\xi_j^2 + t)\right) \\
+    % = \left(\sum_{k\neq j}^D\beta_ks^D \xi_j \xi_k \right) + \beta_j s^D (\xi_j^2 + t)
+    % \end{gather*} 
+    Finally, the average LIME solution is 
+    \begin{equation*}
+        \mathbf{u} = -(\frac{1}{(t + \frac{\lambda}{s^D N})^2g} \xi \xi^T - \diag(t + \frac{\lambda}{s^D N}))(\xi \xi^T + diag(t)) \beta
+    \end{equation*}
+    % and the coefficient for $i=1,\ldots,D$ is
+    % \begin{gather*}
+    %     u_i = \sum_{j=1}^D \mathbf{\Sigma}_{ij}^{-1} \mathbf{\Gamma}_j 
+    %     = \sum_{j\neq i}^D \mathbf{\Sigma}_{ij}^{-1} \mathbf{\Gamma}_j +  \mathbf{\Sigma}_{ii}^{-1} \mathbf{\Gamma}_i \\
+    %     = \sum_{j\neq i}^D \left[\left(\frac{-s^{-D}}{(t + \frac{\lambda}{s^D})^2g}\xi_i \xi_j\right)\left(\left(\sum_{k\neq j}^D\beta_ks^D \xi_j \xi_k \right) + \beta_j s^D (\xi_j^2 + t)\right)\right] \\ + \left[\left(\frac{-s^{-D}}{(t + \frac{\lambda}{s^D})^2g}\xi_i^2 - \frac{1}{t + \frac{\lambda}{s^D}}\right)\left(\left(\sum_{k\neq i}^D\beta_k s^D \xi_j \xi_k \right) + \beta_i s^D (\xi_i^2 + t\right)\right] \\
+    %     = \sum_{j\neq i}^D \left[\left(\frac{-s^{-D}}{(t + \frac{\lambda}{s^D})^2g}\xi_i \xi_j\right)\left(\left(\sum_{k\neq j,i}^D\beta_ks^D \xi_j \xi_k \right) + \beta_i s^D \xi_i \xi_j + \beta_j s^D (\xi_j^2 + t)\right)\right] \\ + \left[\left(\frac{-s^{-D}}{(t + \frac{\lambda}{s^D})^2g}\xi_i^2 - \frac{1}{t + \frac{\lambda}{s^D}}\right)\left(\left(\sum_{k\neq i}^D\beta_k s^D \xi_j \xi_k \right) + \beta_i s^D (\xi_i^2 + t)\right)\right] \\
+    %     = \sum_{j\neq i}^D \left[\left(\frac{-s^{-D}}{(t + \frac{\lambda}{s^D})^2g}\xi_i \xi_j\right)\left(\left(\sum_{k\neq j,i}^D\beta_ks^D \xi_j \xi_k \right) + \beta_j s^D (\xi_j^2 + t)\right)\right] \\ 
+    %     + \beta_i \sum_{j\neq i}^D \left(\frac{-(\xi_i \xi_j)^2}{(t + \frac{\lambda}{s^D})^2g}\right) \\
+    %     + \left[\left(\frac{-s^{-D}}{(t + \frac{\lambda}{s^D})^2g}\xi_i^2 - \frac{1}{t + \frac{\lambda}{s^D}}\right)\left(\left(\sum_{k\neq i}^D\beta_k s^D \xi_j \xi_k \right) + \beta_i s^D (\xi_i^2 + t)\right)\right] \\ 
+    %     = \beta_i \left[\sum_{j\neq i}^D \left(\frac{-(\xi_i \xi_j)^2}{(t + \frac{\lambda}{s^D})^2g}\right) +  \left(\frac{-s^{-D}}{(t + \frac{\lambda}{s^D})^2g}\xi_i^2 - \frac{1}{t + \frac{\lambda}{s^D}}\right)s^D (\xi_i^2 + t)\right] \\
+    %     + \sum_{j\neq i}^D \left[\left(\frac{-s^{-D}}{(t + \frac{\lambda}{s^D})^2g}\xi_i \xi_j\right)\left(\left(\sum_{k\neq j,i}^D\beta_ks^D \xi_j \xi_k \right) + \beta_j s^D (\xi_j^2 + t)\right)\right] \\ 
+    %     + \left[\left(\frac{-s^{-D}}{(t + \frac{\lambda}{s^D})^2g}\xi_i^2 - \frac{1}{t + \frac{\lambda}{s^D}}\right)\left(\left(\sum_{k\neq i}^D\beta_k s^D \xi_j \xi_k \right)\right)\right] \\
+    % \end{gather*}
+
+        %https://stats.stackexchange.com/questions/468347/does-the-covariance-of-i-i-d-random-vectors-multivariate-random-variables-have
+    \paragraph{proof of Corollary 1.}
+            If $\lambda = 0$ then generalized ridge regression reduces to weighted least squares, which has the solution
+            \begin{equation*}
+                \mathbf{u}=(\mathbf{X}^T \mathbf{W} \mathbf{X})^{-1} \mathbf{X}^T \mathbf{W}\mathbf{y} = (\mathbf{X}^T \mathbf{W} \mathbf{X})^{-1} \mathbf{X}^T \mathbf{W} \mathbf{X}\beta = \beta
+            \end{equation*}
+            and hence this simpler variant of LIME would recover $\beta$ exactly.
+
+   \paragraph{proof of Corollary 2.}
+        Since we assumed $\xi \sim \mathcal{N}(0, \mathds{I})$,  $\xi \xi^T \simeq \mathbf{0}$. Thus, for the average choice of $\xi = 0$, the average LIME solution satisfies
+        \begin{gather*}
+            -(\frac{1}{(t + \frac{\lambda}{s^D N})^2g} \xi \xi^T - \diag(t + \frac{\lambda}{s^D N}))(\xi \xi^T + \diag(t)) = \diag(t(t + \frac{\lambda}{s^D N})) \\
+            = \diag\left(\frac{\lambda \nu^2(\nu^2 + 1)(\nu^{-2} + 1)^{D/2} + N\nu^4}{N(\nu^2 + 1)^2}\right)
+        \end{gather*}   
+        For sufficiently large $N$ and $\nu$, the last line above is approximately $\mathbf{I}$. For fixed $N$ and sufficiently large $\nu$, $N$ actually plays no role since
+        \begin{equation*}
+            \lim_{\nu \rightarrow \infty} \frac{\lambda \nu^2(\nu^2 + 1)(\nu^{-2} + 1)^{D/2} + N\nu^4}{N(\nu^2 + 1)^2} = 1
+        \end{equation*}
+        while for fixed $\nu$,
+        \begin{equation*}
+            \lim_{N \rightarrow \infty} \frac{\lambda \nu^2(\nu^2 + 1)(\nu^{-2} + 1)^{D/2} + N\nu^4}{N(\nu^2 + 1)^2} = \frac{\nu^4}{(\nu^2 + 1)^2}
+        \end{equation*}
+ 
+
+
+    \begin{lemma}
+        \[\norm{(\mathbf{X}^T \mathbf{W} \mathbf{X} + \Delta)^{-1} \mathbf{X}^T \mathbf{W} \mathbf{X}}_2 \leq \frac{\sigma_{\max}(\mathbf{X})^2 \sigma_{\max}(\mathbf{W})}{\sigma_{\min}(\mathbf{\mathbf{X}^T \mathbf{W} \mathbf{X} + \Delta})}\]
+    \end{lemma}
+    % https://www.few.vu.nl/~wvanwie/Courses/HighdimensionalDataAnalysis/WNvanWieringen_HDDA_Lecture234_RidgeRegression_20182019.pdf
+    \paragraph{proof of Lemma 1.}
+        %\textcolor{red}{ASSUME THAT WE STANDARDIZE THE DATA}
+       %The original setup was that for all $n$, $\mathbf{x}^{(n)} \sim \mathcal{N}(\xi,\sigma \mathbb{1}_D)$. Suppose that we re-center and re-scale the data to obtain samples $\mathbf{X}^{(n)}$ which we collect into a new data matrix $\mathbf{X}$. We abuse notation so that $w_{nn} = \exp(-\norm{\mathbf{0}-\mathbf{X}^{(n)}}/2\nu^2)$. Also 
+       We suppose that we use the underlying vector norm as the 2 norm so that the operator norm coincides with the matrix 2 norm.
+        % Supposing that \textcolor{red}{$\mathbf{X}\neq 0$ is invertible}, $\mathbf{X}^T \mathbf{W} \mathbf{X}$ can be shown to be positive definite using the following argument. Recall that a matrix $\mathbf{B}$ is positive definite iff for all $\mathbf{v} > 0$, $\mathbf{v}^T \mathbf{B} \mathbf{v} > 0$. Let $\mathbf{v} \neq 0$ and $\mathbf{X} = \mathbf{X}\mathbf{v}$. Note that $\mathbf{X} \neq 0$ since $\mathbf{X},\mathbf{v}$ are both non-zero and $\mathbf{X}$ has a trivial null space by virtue of being invertible. Then,
+        % \begin{gather*}
+        %     \mathbf{v}^T(\mathbf{X}^T \mathbf{W} \mathbf{X})\mathbf{v} = (\mathbf{X}\mathbf{v})^T \mathbf{W} (\mathbf{X}\mathbf{v}) \\
+        %     = \mathbf{X}^T \mathbf{W} \mathbf{X}
+        % \end{gather*}
+        % As $\mathbf{W}$ is positive definite, $\mathbf{X}^T \mathbf{W} \mathbf{X} > 0$. 
+        %https://math.stackexchange.com/questions/2018849/norm-of-inverse-of-sums-of-positive-definite-matrices
+        Define $\mathbf{A} := \mathbf{X}^T \mathbf{W} \mathbf{X}$ and $\mathbf{B} := (\mathbf{A} + \Delta)^{-1}$. The following holds for $\mathbf{B}$ (and for any square invertible matrix).
+        \begin{gather*}
+            \norm{\mathbf{B}}_2 = \frac{1}{\sigma_{\min}(\mathbf{\mathbf{A} + \Delta})} \leq \frac{\norm{\mathbf{\mathbf{A} + \Delta}}^{D-1}}{\mid \det(\mathbf{\mathbf{A} + \Delta})\mid}%\leq \frac{\sigma_{\max}(\mathbf{B})^{D-1}}{\prod_{k=1}^D \sigma_k(\mathbf{B})} \leq \frac{1}{\sigma_{\max}(\mathbf{B})} = \frac{1}{\norm{\mathbf{B}}_2}
+        \end{gather*}
+        To complete the proof, we need bounds on $\norm{\mathbf{B}}_2$ as well as $\norm{\mathbf{A}}_2$.
+        Since all $\sigma_k(\mathbf{B})\leq \sigma_{\max}(\mathbf{B})$, we consider
+        \begin{gather*}
+             \norm{\mathbf{\mathbf{A} + \Delta}}_2 \leq \norm{\mathbf{A}}_2 + \norm{\Delta}_2 
+            = \norm{\mathbf{A}}_2 + \lambda
+        \end{gather*}
+        We now consider lower bounds of $\norm{\mathbf{A}}_2$. For a lower bound%, we have because $\mathbf{W}$ is diagonal with all entries upper bounded by $1$,
+        \begin{gather*}
+            \norm{\mathbf{A}}_2 \leq \norm{\mathbf{X}^T}_2 \norm{\mathbf{W}}_2 \norm{\mathbf{X}}_2 \leq \sigma_{\max}(\mathbf{X})^2 \sigma_{\max}(\mathbf{W})
+        \end{gather*}
+        % Due to the assumption that we standardized the samples $\mathbf{X}^{(n)}$,  By Wainright example 6.1, since $\mathbf{X}$ is a random matrix with i.i.d. $\mathcal{N}(0,1)$ entries and $N > D$, given $\delta > 0$,
+        % \begin{equation*}
+        %     \sqrt{N}(1-\delta -\sqrt{D/N}) \leq \norm{\mathbf{X}}_2 = \sigma_{\text{max}}(\mathbf{X}) \leq \sqrt{N}(1 + \delta + \sqrt{D/N})
+        % \end{equation*}
+        % holds with probability greater than $1-\exp(-N\delta^2/2)$. 
+        % Noting first that
+        % Now for an upper bound,
+        % \begin{gather*}
+        %     \norm{\mathbf{A}}_2 \geq \sigma_{\min}(\mathbf{X})^2 \sigma_{\min}(\mathbf{W}) \\
+        % \end{gather*}
+        Putting everything together, we have the following bounds.
+        \begin{gather*}
+            \norm{\mathbf{B}^{-1} \mathbf{A}}_2  \leq \norm{\mathbf{B}^{-1}}_2 \norm{\mathbf{A}}_2  \\
+             \frac{\sigma_{\max}(\mathbf{X})^2 \sigma_{\max}(\mathbf{W})}{\sigma_{\min}(\mathbf{\mathbf{A} + \Delta})}
+            \leq \frac{(\sigma_{\max}(\mathbf{X})^2 \sigma_{\max}(\mathbf{W}) + \lambda)^{D-1}}{\mid \det(\mathbf{\mathbf{A} + \Delta})\mid} \sigma_{\max}(\mathbf{X})^2 \sigma_{\max}(\mathbf{W})
+        \end{gather*}
+        % If we shift the kernel by $1$, we have the following upper bound since the entries of $\mathbf{W}$ would be bounded in $[1,2)$. 
+        % \begin{gather*}
+        %     2\frac{\sigma_{\max}(\mathbf{X})^2}{\sigma_{\min}(\mathbf{X})^2}
+        % \end{gather*}
+        % %2nd moment of ratio distribution
+        % %https://arxiv.org/abs/0810.0800
+        % %https://math.stackexchange.com/questions/4052469/negative-moments-of-marchenko-pastur-law
+        % % mellin think dont work because they're independent
+        % This can be seen as twice the square of the condition number of $\mathbf{X}$ or the 2nd moment of the ratio distribution for the largest and smallest singular values of $\mathbf{X}$.% Singular values of gaussian matrices of size $N\times D$ are distributed according to the Marchenko–Pastur distribution with ratio $\gamma = N/D$. 
+
+        % \begin{equation*}
+        %     \text{min}_{\mathbf{x}\sim\mathcal{N}(\mathbf{\xi},\sigma  \mathds{1}_d)}\ \mathds{E}[\pi(\mathbf{\xi},\mathbf{x})(\mathbf{u}^T \mathbf{x} - \mathbf{\beta}^T \mathbf{x})^2] + \norm{\mathbf{u}}_2^2
+        % \end{equation*}
+        % where the expectation is taken over $\mathbf{x}\sim\mathcal{N}(\mathbf{\xi},\sigma  \mathds{1}_d)$. We seek $\mathbf{u}$ such that 
+        % \begin{equation*}
+        %     0 = \nabla_\mathbf{u}\left[\mathds{E}[\pi(\mathbf{\xi},\mathbf{x})(\mathbf{u}^T \mathbf{x} - \mathbf{\beta}^T \mathbf{x})^2] + \norm{\mathbf{u}}_2^2\right]
+        % \end{equation*}
+        % Denote the objective function $O$. Then \textcolor{red}{Because $O$ is integrable for all $\mathbf{u}$, continuously differentiable with respect to $\mathbf{u}$, $\pi(\xi, \mathbf{x}) \in (0,1]\ \forall\ \mathbf{x}$ so that $\norm{\pi(\xi, \mathbf{x})\pdv{O}{w}}\leq\norm{\pdv{O}{w}}$, and $\mathds{E}[\pdv{O}{w}]<\infty$, by the Dominated Convergence Theorem}
+        % \begin{equation*}
+        %     \nabla_\mathbf{u}\mathds{E}[O] = \mathds{E}[\nabla_\mathbf{u}O]
+        % \end{equation*}
+        % Thus, we are justified in passing the partial derivative through the expectation. This is
+        % \begin{gather*}
+        %      0 = \mathds{E}[\nabla_\mathbf{u}O] = \mathds{E}[\pi(\xi,\mathbf{x})(2(\mathbf{x}\mathbf{x}^T)\mathbf{u} + 2b\mathbf{x} - 2f(\mathbf{x})\mathbf{x} +  2\mathbf{u})] \\
+        % \end{gather*}
+        % By linearity of expectation, this is 
+        % \begin{gather*}
+        %     2\mathbf{u}\mathds{E}[\pi(\xi,\mathbf{x})\mathbf{x}\mathbf{x}^T] + 2b\mathds{E}[\pi(\xi,\mathbf{x})\mathbf{x}] - 2\mathds{E}[\pi(\xi,\mathbf{x})f(\mathbf{x})\mathbf{x}] + 2\mathbf{u}\mathds{E}[\pi(\xi,\mathbf{x})]
+        % \end{gather*}
+
+    \begin{proposition}
+        For fixed $D,\lambda$ and large $\nu$, as $N\rightarrow \infty$ $\norm{(\mathbf{X}^T W \mathbf{X} + \Delta)^{-1}\mathbf{X}^T W \mathbf{X}}_2 \simeq 1$.  
+    \end{proposition}
+    \paragraph{proof of Proposition 1.}
+        When $\nu$ is large, $\mathbf{W} \simeq \mathbb{I}$. Thus, the ridge solution resembles the WLS solution, which we know from Corollary 1 has $\mathbf{u} = \beta$.
+
+        \textcolor{red}{$\mathbf{A}$ as a covariance matrix is positive semi-definite}
+        \begin{gather*}
+            \frac{\norm{A + \Delta}^{D-1}}{\sigma_{\min}(\mathbf{A} + \Delta)} \leq \frac{\norm{A + \Delta}^{D-1}}{\mid det(A) \mid + \mid det(\Delta) \mid} = \frac{\norm{A + \Delta}^{D-1}}{\prod_k \sigma_k(A)+ \prod_k \sigma_k(\Delta)} \\
+            \leq \frac{\norm{A + \Delta}^{D-1}}{\sigma_{\min}(\mathbf{A})^D+\sigma_{\min}(\mathbf{\Delta})^D} \leq \frac{(\norm{A} + 
+            \norm{\Delta})^{D-1}}{\sigma_{\min}(\mathbf{A})^D+\sigma_{\min}(\mathbf{\Delta})^D} \\
+            \leq \frac{\norm{A + \Delta}^{D-1}}{\sigma_{\min}(\mathbf{A})^D+\sigma_{\min}(\mathbf{\Delta})^D} = \frac{(\sigma_{\max}(\mathbf{A}) + 
+            \sigma_{\max}(\mathbf{\Delta}))^{D-1}}{\sigma_{\min}(\mathbf{A})^D+\sigma_{\min}(\mathbf{\Delta})^D} \\
+        \end{gather*}
+        From Wainright Theorem 6.1, since $\mathbf{X}^T W \mathbf{X} \simeq \mathbf{X}^T \mathbf{X}$ and $\mathbf{X}^T \mathbf{X}$ is drawn from a gaussian ensemble with covariance matrix $\diag(\sigma^2)$, 
+        \begin{equation*}
+            \sigma_{\min}(\mathbf{X}^T \mathbf{X}), \sigma_{\max}(\mathbf{X}^T \mathbf{X}) \in O(\sqrt{ND})
+        \end{equation*}
+        Hence,
+        \begin{equation*}
+            \norm{(\mathbf{X}^T W \mathbf{X} + \Delta)^{-1}\mathbf{X}^T W \mathbf{X}}_2 \in O\left(\frac{(\sqrt{ND} + \lambda)^{D-1}}{\sqrt{ND}^D+\lambda^D}\sqrt{ND}\right)
+        \end{equation*}
+        For fixed $D, \lambda$,
+        \begin{equation*}
+            lim_{N\rightarrow \infty} \frac{(\sqrt{ND} + \lambda)^{D-1}}{\sqrt{ND}^D+\lambda^D}\sqrt{ND} =1 
+        \end{equation*}
+        
+    % change u hat notation
+    \paragraph{proof of Corollary 3}
+            To refine Lemma 1, we investigate the proportionality relations $\mid\hat{u}_i\mid / \mid \beta_i \mid$ for a given run of LIME (not on average). To do this, we find bounds involving the rows of %$\Sigma^{-1} \frac{1}{N}\mathds{E}[\mathbf{X}^T\mathbf{W}\mathbf{X}^T]$ 
+            $\mathbf{Z} := (\mathbf{X}^T\mathbf{W}\mathbf{X} + \Delta)^{-1}\mathbf{X}^T\mathbf{W}\mathbf{X}$
+            since this pre-multiplies $\beta$ to obtain $\hat{\mathbf{u}}$. We have $\hat{u}_i = \sum_{j=1}^D\mathbf{Z}_{ij}\beta_j = \sum_{j\neq i}^D\mathbf{Z}_{ij}\beta_j + \mathbf{Z}_{ii}\beta_i$. 
+
+            Using the properties of the operator norm, we have
+            \begin{gather*}
+                \mid \hat{u}_i \mid = \mid \sum_{j\neq i}^D z_{ij} \beta_j + z_{ii} \beta_i \mid \\
+                \leq \sum_{j\neq i}^D \mid z_{ij}\mid \cdot  \mid \beta_j \mid + \mid z_{ii} \mid \cdot \mid \beta_i \mid \\
+                \leq \sum_{j\neq i}^D \mid z_{ij}\mid + \mid z_{ii} \mid \cdot \mid \beta_i \mid \\
+                \leq \norm{\mathbf{Z}}_2 + \mid z_{ii} \mid \cdot \mid \beta_i \mid \\
+                \leq \mid \beta_i\mid \cdot \norm{\mathbf{Z}}_2 + \norm{\mathbf{Z}}_2 \cdot \mid \beta_i \mid
+            \end{gather*}
+            and so the final bounds are as follows.
+            \begin{equation*}
+                \frac{\mid \hat{u}_i\mid}{\mid \beta_i \mid} \leq 2\norm{\mathbf{Z}}_2
+            \end{equation*}
+            From proposition 1, we can conclude that for large $\nu, N$ that $\frac{\mid \hat{u}_i\mid}{\mid \beta _i \mid} \leq 2$
+            
+
+ 

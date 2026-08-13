@@ -1,0 +1,478 @@
+swithc 3.1 and 3.2
+	we show how we make simulated data for the sake of demo pipeline
+
+combine 3.1 3.3; it's redundant 
+
+move mention of spearman later than 505, say why we care about relative imp rankings.
+
+
+PUT A FIRGURE FOR LINE 544 "FOR EXAMPLE, WE FOUND THAT SOMETIMES AN EXPLAINER..."
+
+SET  LIME_SA_SPEARMAN_SIGNED_MAG SPACING .46 < .5
+
+INPUT to the explainer is always M!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+- except in causal inference section and in optimal situation
+
+mention early that I use MLP (DONE)
+
+%don't say similar to kommiya (DONE)
+
+do not spend time debugging other peoples woork
+
+for intro:
+ml communigh always focus on M
+we explain M and evaluate via G (DONE)
+
+figure 6 say perturbation extent needs to go up to 1
+and give example in real life about changing 1SD of income (DONE)
+
+be more clear about social suport
+"depending on the experiment..." (DONE)
+
+remove comment column
+add 2 columns to indicate what feature it's used in
+duplicate when dataset changes 
+5-6 cols cols
+name, G, in feature (DONE)
+
+-------------
+change blue orange to green red (DONE)
+
+check all experiments use M as input
+
+I think we should significantly shorten "identifying issues" part of the paper and increases other parts of the paper.
+Can you think of other mitigation methods? I think at some point we mentioned "bagging” right？ (DONT DO THIS)
+
+change collinearity to correlated (DONE  )
+
+add the observed confounder experiment (DONE)
+
+add to mitigation section experiment where dataset satisfies causal inference and accuracy 99% (DONE)
+
+add to mitigation section to encourage researchers to collect more data (DONE?)
+
+remove model parameter varied part (DONE)
+
+fig 15 add shap difference (DONE)
+
+fig 6
+
+redo fig 15
+in pipeline two ppl train different models(mlp, xgb) and both get different (wrong) explanations
+
+3 cols
+G, MLP, XGB
+
+section 4 within same pipeline
+section 5 across different pipelines 
+(DONE - we will show that the issues of unfaithfulness and incorrectness...)
+
+new experiment inconsistency between different models (xgb/mlp) (DONE)
+
+section 3 highlight vertical and horizontal of the 3 column table (talk about this)
+
+-----------------------------------------------------------------------------------------
+9/21/23
+1. uniformity of subplot sizes relative to eachother and the text (DONE*)
+2. ensure captions and figure text are readible (DONE*)
+3. font sizes in figures should be same as in the text (DONE*)
+4. consolidate the table 3 type tables. columns like [feature, experiment#] and rows like [in G, in M] (DONE?)
+5. add some citations of paper using similar pipeline (DONE)
+6. To produce fig 1 zoom in in powerpoint to improve resolution (DONE)
+7. Remove recommendation to leverage domain knowledge and exchange with recommendation to do robustness checks by e.g. comparing variability of explainers and comparing alternative explanations (DONE*)
+8. Remove any mention of recommendation for how to choose what explanation to do in this paper (DONE)
+9. In sentence with "ideal conditions where XXX", enumerate the conditions for causal inference (DONE)
+10. Be more specific about successes/failures and overall outlook of mitigations in the introduction (DONE*)
+11. Shift focus from identifying issues to identifying causes of issues + mitigations (STARTED)
+12. Don't claim to be the first to do something in 1st submission. Instead enumerate novel contributions in 3 bullet points (DONE)
+13. Use Hastie paper to justify why we need to compare against G (DONE*)
+14. Reframe our contribution to highlight that we show vulnerabilities in pipeline and systematize how to deal with it (for the first time?) (DONE?)
+15. In related work, delete stuff about human explainer interaction but keeps some refs in section about recommendations to notify users of effect of biases etc (DONE)
+16. In related work need to emphasize ue of M as point of comparison (STARTED)
+17. In related work, remove the subsections and de-emphasize focus on incorrectness and inconsistency. Note difference of the meaning sof those terms between stage 2 and 3 (STARTED)
+18. rename 2.2.2. to reflect accuracy wrt M not G (DONE/Sections Deleted)
+19. Fix sentence "set following the literature". What lit? (DONE*)
+20. In fig 2, have 2 subfigures. That is, add 1 showing the feature listing (DONE)
+21. Make cartoon rep for the applicant and name them
+22. Say that B_LIME are the coeffs in fig 2 (DONE)
+23.1 Remove researcher having access to G, need only 2 researchers (DONE)
+23.2 add row for E = LIME to denote explainer used (UGLY!)
+23.3 leftmost panel should be actual G importance not lime on G importance (DONE)
+23.4 fonts too big for bolded part (DONE)
+23.5 redo bar plots in tableau (DONE)
+23.6 express that John is the subject (DONE)
+23.7 add small discussion including planned followup to the implications of figure 3. guide the readers' expectations for reality and the rest of the paper (DONE*)
+24. For def of unfaithfulness, focus on the conflict btw M and G and remove reference to form (DONE*)
+25. For def of unfaithfulness, add that "such conflicts can be measured in different ways, such as e.g. feature importance ranking" (DONE)
+26. Make sure all references to evaluation of explanations are wrt G (DONE*)
+27. Combine 4.1.1, 4.1.2, 4.1.3. 1 big discussion for all 3. This is partially to mitigate redundancy in the discussions (DONE*)
+28. Shrink the big figures
+
+
+----------------------------------------
+10/5/23
+1. extend section 3 using SSRN papers
+2. take notes after informs practice
+3. disclaimer about if only concerned with M don't need to care about stage 1
+4. add to analysis: check % of time lime/shap get correct signs (DONE for LIME - 93%)
+5. off < 50% accuracy for M in plots (DONE)
+6. debug/investigate problem occuring with local fidelity at 100%
+7/8. shorten causal stuff and focus on mitigations in sec 4. our topics not totally new (hastie/shap article) (STARTED)
+9. space efficiency for fig 8 - do 2 bar plot instead with side by side bars
+10. SHAP should be beta * feature val?
+11. Write case study using econometrics paper (STARTED)
+12. email fenglu about local fidelity experiment where kernel width was 0 (DONE/Not Needed)
+13. investigate ensembles of models vs ensembles of explainers. e.g. look at exp quality for family of models with 70% acc, 80% acc, 90% acc, etc
+14. For fig 16,17 order x axis by importance and find different way to represent. maybe report stdev
+15. for fig 18 talk about weak learners
+16. Throw away stage 3
+
+
+
+17. reorganize section 5.1.1
+
+
+========== Oct 23 meeting =======
+Plots for Section 5
+Plot for 5.1.1
+1. diversity of decision boundaries causing inconsistency
+1.a) Build one MLP and one XGBoost, tune them such that their accuracy is the same (at least to the first digit); then pick 100 applicants, use LIME to explain MLP and XGBoost for these 100, respectively. Compute the spearman correaltion between these 100 pairs to get a boxplot for LIME. Do the same thing for SHAP.
+1.b) Train two XGBoost models by tuning the hyperparameters (try to make the accuracy the same or close to each other), called XGBoost1 and XGBoost2. Then pick 100 applicants, use LIME to explain XGBoost1 and XGBoost2 for these 100, respectively. Compute the spearman correaltion between these 100 pairs to get a boxplot for LIME. Do the same thing for SHAP.
+
+2. inconsistency due to explainers and its hyperparameters
+2.a) Build an XGBoost, pick 100 applicants, use LIME and SHAP to explain them respectively. Compute the spearman corrlation between the 100 <LIME, SHAP> explanations. Do a boxplot
+2.b) Use the same XGBoost above and same 100 applicants. For each applicant, build two LIMES using different hyperparameters. Compute the spearman correlation between each pair. Do a boxplot. Do the same thing for SHAP.
+
+1. after replacing overly complicated figure and fixing text, send Dr. Wang message asking to read sec 5 (well before thursday meeting)
+2. change shap ground truth to Beta*x
+3. read econ review paper
+4. add back experiments on sign correctness
+5. put the gt logistic regression in the case study
+6. for mitigations in case study, do each seperate then a combined
+7. for case study, show before/after for insights
+
+-------------------------------------
+questions on v-day 2024
+1. What is the purpose of the 1st paragraphs to related work?
+2. how to divide discussion of business use of post hoc in intro and related work?
+3. small figures or bigger ones?
+4. Should I let the y axes bounds go larger than their natural limits to accomodate error bars?
+
+todo v-day 2024
+1. appendix new file
+2. more detail for lime and shap
+3. types of post-hoc explainers -> change title?
+4. mention anchors in context of surrogate models & fidelity
+5.subsubsections for criticism by cs community
+6. related work b-research part diff from intro is more examples, more detail
+7. fig 6 size is good, but remove hfill (maybe little bigger?)
+8. bigger dot size in recall, no more diagonal pattern and no dashed lines
+9. y axis bounds past natural limits is OK
+
+-----------
+1. ask about changing formula for correlated
+
+todo
+1.use C-LIME to justify no discretization in our paper in the related work (done)
+2.In Pipeline demo note that right discretiztaion is used and why (because worse results) (done)
+3. remove reference to causality in rest of paper
+4. remove "prediction probabilities on left side" (done)
+5. make sure i index always there
+6. Use e(xj) instead of beta hat becaue shap doesnt use beta (done)
+7. Make distinction that sign accuracy are per feature (aggregated) while the others are per instance (done)
+8. Mention cosigner is confounded (one sentence) when first showing lime cannot get its sign acc at first (done)
+9.find papers that say shap cannot be used for ***intervention***, incorrectly try to identify beta. More time to find papers, especially finance . need to be very confident. table of papers with claims and why wrong (or just bad language usage) 
+
+-------
+-----
+- check consistency/robustness of answers
+- paper subsection on the chatgpt (started)
+- write code for api usage (done)
+- do not give specific example, instead use 'var x, outocme y' (done)
+- manual validation of 40 papers (started)
+- prompt: if it doesn't mention causality at all but says to increase/decrease something indicates it is wrong (done)
+- note down typical sentence structures used by the offending papers
+- try prompt test gpt4, tong will (try to) reimburse (started)
+- use term beta consistency (started)
+- do not say explainers "estimate beta" (started)
+- take out mention of instability (done)
+- better way to annotate fig 9 captions (done)
+- part about preproc is out of place (done)
+- move lime local prediction to appendix (done)
+
+- fits sentence about 9.1 about failure of beta consistency, followed by justification
+
+-------
+- make sure new names of 3 metrics is consistent (done)
+- find quotations for concordance, direction, relevance (done)
+- fill in holes for intro 
+- 100 papers (done)
+- enrich intro with types of language used 
+
+
+
+-----
+rhetorical - why bother with mitigations for SHAP
+- lime mitigations vs shap mitigations (divide by x for shap) (done)
+- mention absolute shap val avg in papers in mitigaion 
+- Mitigation organization (done)
+- add statistical tests for distribution mean difference and lessened variance (done)
+- improvement for sign acc - exists 1 feature improved by delta, none reduced. 13a is, 13d is not. use number correct for each feature 
+- difference in means for each k for recall?
+- mitigation organization: 
+
+-------
+mitigations: unique section, general section. For shap in general section, divide by x
+1) at least 1 feature with significant feature
+2) no feature where significant worse (two one sided tests)
+3) do not needc
+4) show citation by year, types of mistakes in appendix (tableau)
+
+-----
+weird results for correlation experiment and dbd experiments after adding noise
+
+------
+1. Redo examples in the pipeline demo (done)
+3. make sure not using wrong unnoised datagen/gt in plotter (done)
+5. ****move discussion of mitigations from the conclusion to the actual mitigation section**** (done)
+6. double check why obsconf has social support? (started)
+7. change legend of the incon plots so y axis larger
+9. double check all significance tests for mitigations (started)
+10. add something about role of label noise  (stuff doesn't work when lable noise too much). perhaps do e.g. label noise vs m auc vs metrics (appendix)
+11. consider reducing complexity of mlp to (2,) throughout the paper (not doing)
+12. consider doing mlp complexity vs AUC vs metrics (done))
+13. ***tell dr. wang confused if need to include results controlling for noise and complexity of M***
+14. redo appendix (started)
+14.1 change proof notations (done)
+14.2 redo experiments to include noise term (done)
+14.3 include paper visualizations (citation by year for posthoc) with tableau (done) 
+15. - make sure statements consistent with figures (done)
+16. figure out how to increase font in incon figures 
+17. solidify choices for econometric (done?)
+18. combine 6.3.1 and 6.3.2 (done)
+19. big table in appendix  for roles of noise and complexity
+20. 6.3.3 too long (done)
+21. move legend of fig 18 (done)
+22. in econometic study, highlight that there WAS improvement for shap econ sign accuracy for most features but our test for direction is strict (done)
+24. clarify what M architecture is in each section (write in apx)
+25. Shorten 6.2.3 (done)
+26. check where the dot is for recall_1 for figure 14 (average over E for LIME)
+27. fix 11b caption SHAP->LIME2 (done)
+28. write subsection in conclusion posthoc not an alternative to econometric, cite papers that do absolute average of shap. as many as possible. "can shap be an alternative to OLS" OLS => beta. need to say that people need to be clear on what they are getting  (done)
+29. check bad papers actually bad
+30. redo appendix figures
+30.1 - do lime + shap/x (done)
+30.2 - do secondary experiments for causal parts (NO, why?)
+31. replot apx_preproc (done)
+32.1  remove ols alternative row, recourse row from appendix table
+33. remove mention of recourse (done)
+34. smaller table in main paper, for sec 3 (absolute max 2 pages) (done)
+35. subfig captions say SHAP vs LIME (done)
+36. change ylabel (done)
+37. incon mitigation check correl between 1 vs 1 exp and 100 vs 100 exp (added)
+38. recompute sign accs for experiments that have a 0/small importance feature (done)
+39. refactor with unit tests (done)
+40. redo 4.1 with no shap sampling (done)
+41. no unobserved variables - use existing results with unobs in appendix(?)
+42. no mention of causality except in conclusion (started)
+43. call the variables explanatory variables
+44. half a page mentioning that ML captures correlation
+45. other row in table (done)
+46. For fig 6, just change credit score in the demo data to be independent. Also switch the order of the labels (corr then indep.) (done)
+47. Take away hspace and make plots bigger 
+48. check why fig 10 relevance not much higher (done)
+49. address comments so dr. wang can read by next week
+50. by wed/thurs only looking for typo and proofreading
+51. prioritize things other than experiments
+52. Fig3 should hav eboth lime and shap (done)
+53. CHECK RECALL ESP. FIG 10c (done)
+54. make fonts on figures reasonable size (e.g. fig 15a,d too small) (done)
+55. do investigation of the affected correlated variables in correlation experiment (kinda done)
+56. restructure cs community criticism section (done)
+57. remove input to g and m in table 2 (done)
+58. take away lime in figure 3 (done)
+59. add auc=.85 in middle of fig 5, remove y labels (done)
+60. change title of intrinsic error
+61. i have 2 days
+62. double check plotting code (e.g. recalls not mixed up between lime/shap)
+
+
+63. remove redundancy in related work cs criticism (started)
+64. necessity, completeness, sufficiency, say what they are (started)
+65. clarify the 100 papers thing (1st 2 pars) (done)
+66. beta instead of C for SHAP thm 1
+67. redo bar spacing on acc plots
+68. Verify theoretical statements  and references to theory
+69. finish adding info about signs in inconsistency sections
+70. make sure incon experiments using shap/x
+
+71. use new terminology/remove over-generalization (done)
+72. find impact factor of ALL papers 
+73. make sure paper proportions are correct (out of 116 for now)
+74. in table 1 signify where we replaced wording for masking. make small space between the 3 examples so that they are distinct
+75. remove thm 1 (done)
+76. shift info about shap situational importance to introduction sentence are "critically we offer a theoretical justification..."
+77. make sure to write the p values
+78. cite papers that use the absolute average 
+79. in mlp avg section, the statement all models have auc at least .9 conflicts earlier statement that all models have auc .99
+80. add sign consistency to figure 14
+
+81. mention usc lan luo paper, papers that use shap as feature screening in the conclusion (started)
+82. one more synthetic data (targeted marketing) result for appendix (say available upon request on link(on github)?) try using gpt
+83. mention stronger guidelines at the end (started)
+84. be more efficient with blank space e.g. fig30, page 19
+85. mention inconsistency in 1 or 2 paragraphs, and move the results to appendix (done)
+86. shrink figures
+87. fig 8 and 9 in one line, 10 and 11 in one line (not needed?)
+88. put details about hypothesis testing in appendix (done)
+89. ground truth model on page 40 - just make it an equation not a figure (done)
+90. emphasize ease of use for our mitigation strategies (done*)
+91. write a paragraph discussing difficulty to solve the problem to convince reviewers that it is not reasonable to solve it (e.g. using the han22which paper?)
+92. add additional experiments in appendix (e.g. ranking order) (started)
+93. replot apx_preproc figure
+94. make sure there's an experiment averaging lime and normalized shap
+95. make sure m auc experiments using indep data
+
+5/7/2024
+96. check consistency of new experiments with marketing
+97. edit the paper to say data alignment, remove mention of beta. use term marginal effect. can keep the symbol beta. do not say beta is the true underlying effect. don't say beta alignment.  (start)
+98. include new experiments in appendix. say we re-do all experiments and say that the results were consistent. **tong will send to more people after that**
+
+
+-----cist----------------------------------------------------
+- marketing science senior editor: related to econometric misspecification 
+- need more experiments
+- marketing science frontier 
+
+
+3.2.1 remove beta
+
+3.3 remove column b/f
+
+talk about each mitigation but only have one plot from econometric example demonstrating their combined effect
+
+play with vspace and use savetrees package
+
+compress plots more. try eg. two columns instead of 2x3 and combine to have 4 columns from 2 figures
+still separate figures but they share the same space
+
+change short (sub)sections for paragraph
+----------------------------------------------------
+
+check about retrieving marginal effects from logistic regression
+
+------------------
+1. should i put related work back or ad dmore to other sections? have .5 page left
+2. no red text in fig 1, change to e.g. relationship between explanatory and target variables
+3. add one more reference for paper that claimed OLS alternative 
+4. ask CIST if we can have an appendix or just see if we have space to add the lime theorem (probably do)
+5. ensure captions all 1 line
+6. check trend for #rows and mention result
+7. fix vertical alignment in fig 4
+
+---------------------
+
+add statistical test results to appendix results
+
+%----------------------
+proofread captions
+question mark above 7.2
+table 1 centered text (done)
+placement of figures closer to where mentioned
+say table 1 is smaller table 3
+change x axis label of figure 9 to be n not d (done)
+pervasiveness right after the metrics (done)
+comment out inconsistency (done)
+check that feature distributions are correct in table tab:simulated
+
+statistical tests for additional mitigations?
+
+-----------------------------------------------------
+
+Figure 6(a), can you move the legend to the top of the figure?
+
+Can you merge figure 2 and 3? I think figure 3 can replace 2(b), that will save some place.
+
+
+----improve clarity of 6.1, saying that we test each metric seperately and dismabiguiate info about how strict we are
+
+make sure python lime package is cited
+
+make sure 8c is ok *if have time*
+
+move mention of other ensemble strategies to 6.4 (discussion of mitigation strategies. explain why they dont work briefly
+)
+
+add rashomon citations in 6.3.1
+
+we found that with the exception.... explicate improvement. add summary conclusion at end of paragraph starting with "we found that with the exception of relevance..."
+
+be more explicit about use of multiple black box above 6.5 and clarify that we want to average over the same explainer type
+
+use different word than general for strategy for page 33, mention that its a combination of the aforementioned specific and general strategies
+
+-------------
+add ssrn to appendix table 13 (filter by year - add SSRN and INFORMS) unless 2023 count is at least 700 we show the figure in main body
+
+forgot limit notation in computation of Sigma, check notation for gamma and sigma
+remove beta after gamma at end of theorem 1
+
+say why compute HX. give more detail on implications of figures in numerical experiments. use equation numbering so that I can refer 
+
+In insights to theoretical results, say "based on XYZ, blah follows"
+remove r9ole of discretization 
+
+move 7.3.1 (correltaed features) to main paper and shorten  (DONE*)
+
+move important info from 7.3.2 (pervasiveness) (say what automl is) to main body. move 'we generate...' paragraph (DONE)
+
+remove fig 19, say we dont find trend with n
+
+TAKE OUT APPENDIX C, merge with main body (DONE*)
+
+unify all hyp tests
+why no h2 for concordance?
+
+put lime shap avg before borda ct (DONE)
+say why they dont work (ensemble learning needs weak learners)
+say that they're both ensemble, characterize type (DONE)
+
+left align appendix table 3 for econometric features  (DONE)
+remove mention of why we needed 'real dataset' in ^ (DONE)
+remove this section?
+
+try mitigations on large scale (LATER)
+remove mitigations on 2nd dataset  (DONE)
+
+------------
+
+MAKE HYP TESTS INTO SYSTEM!!!!!!!!!!!!!!!!
+
+update Fig 10 to use N instead of n
+update fig 4 to use D instead of d
+    use binning for fig4
+
+fix all errors in tex
+
+make default and theorem settings distinct early in the paper
+
+Say use default setting except ....
+add footnote jutsifying choice early in the paper
+
+make big deal of increasing nu. use boldface
+
+move def of dirac to when it is used
+
+write thanks to those who gave feedback
+
+use bin size 20 for synthetic experiments
+
+
+---------
+
+web of science (me) - 152
+web of science (fenglu) - 50
+informs, shap - 291
+informs, lime - 112
+ssrn, shap - 79
+ssrn, lime - 21

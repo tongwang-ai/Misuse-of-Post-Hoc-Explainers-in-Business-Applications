@@ -1,0 +1,504 @@
+% Theorem 1 for error rate \theta, as \theta decreases the volume of Rashomon set - the total number of models that achieve error \theta - decreases monotonically (maybe with somp probablity if we cannot prove it for certainty)
+
+% Theorem 2 for error rate \theta, P and Q are two models randomly drawn from the rashomon set, as \theta dcreases, KL(P||Q) decrease (probablistically, or taking the expectation of KL) 
+
+
+% --------------------------------------------------------------
+% This is all preamble stuff that you don't have to worry about.
+% Head down to where it says "Start here"
+% --------------------------------------------------------------
+ 
+\documentclass[12pt]{article}
+ 
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,dsfont,physics,scrextend}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\pagestyle{fancy}
+
+ 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\renewcommand{\qed}{\hfill$\blacksquare$}
+\let\newproof\proof
+\renewenvironment{proof}{\begin{addmargin}[1em]{0em}\begin{newproof}}{\end{newproof}\end{addmargin}\qed}
+% \newcommand{\expl}[1]{\text{\hfill[#1]}$}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newtheorem{definition}{Definition}
+
+\begin{document}
+ 
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+
+\lhead{Misuse Theorems}
+\chead{Ronilo Ragodos}
+\rhead{\today}
+ 
+% \maketitle
+% SHOULD LOOK AT RASHOMON LOSS DISTRIBUTION
+
+\section{Notation and Definitions}
+ 
+  
+
+Suppose we are given:
+\begin{itemize}
+    \item a multi-class classification dataset $\mathcal{D}=(X,Y)\subseteq \mathcal{X}\times \mathcal{Y}$ with and $n$ instances and $c$ categories
+    \item hypothesis space $\mathcal{H}$ of probabilistic classifiers of $\mathcal{D}$, each parameterized by some $\phi \in \Phi \subset \mathbb{R}^d$ and approximating the true conditional distribution $P_{Y\mid X=\mathbf{x}_i}$. We write $\mathcal{H}=\{h_\phi :\mathcal{X} \rightarrow \Delta_c\}$ where $\Delta_c = \{(r_1,\ldots,r_c)\in [0,1]^c\mid \sum_{i=1}^c r_i = 1\}$ is the $c$-dimensional probability simplex.
+    % \item cross entropy loss $l:\Delta_c \times \Delta_c \rightarrow \mathbb{R}^+$ used to evaluate the hypotheses
+    % \item population risk $L(h_\theta) = \mathds{E}_{P_{Y\mid X}}[l(h_\phi(X),Y)]$
+    % \item empirical risk $\hat{L}(h_\phi) = \frac{1}{n} \sum_{i=1}^n l(h_\phi(X),Y))$
+\end{itemize}
+
+% \begin{definition}[Rashomon Ratio]
+%     Define $\mathcal{H}_\epsilon =\{h_\phi \in \mathcal{H} \mid L(h_\phi) \leq \epsilon\}$ and let $\lambda$ be a probability measure on $\mathbb{R}^d$. Then the \emph{Rashomon ratio} (with respect to $\lambda$) is given by $\frac{\lambda(\mathcal{H}_\epsilon)}{\lambda(\mathcal{H})}$. 
+% \end{definition}
+
+\pagebreak
+
+\section{Theorems Relating to Decision Process}
+
+
+
+Let $P,Q \in \mathcal{H}_{\theta_n}$ be two probabilistic classifiers. Let $(X,Y)$ be a random variable representing samples of size $n$ from $\mathcal{X}\times \mathcal{Y}$. Let $\hat{Y}$ be a random vector of outputs of $P$, so that $\hat{Y}_n \sim \text{Bernoulli}(P(\mathbf{x}_n), 1-P(\mathbf{x}_n))$.
+
+
+Suppose that $\mathds{P}[Y = \hat{Y}] = .95$
+
+\begin{proposition}{A}
+    Suppose that $\mathcal{H}$ consists of logistic regressions and $\mathcal{G}$ itself is a logistic regression. Suppose further that $\mathcal{X}$ has $D$ real valued independent normally distributed features. 
+
+    Claim: the following terms are non increasing as $\theta$ is decreased.
+    \begin{equation}
+        \mathds{E}_{P\sim \mathcal{H}_{\theta}}[\norm{\hat{\beta} - \beta^*}]
+    \end{equation}
+\end{proposition}
+
+The coefficient errors of logistic regression are given by the diagonal terms of the covariance matrix. This is a wishart matrix. Therefore the coefficient errors are chi-square random variables. Hence $\hat{\beta} - \beta^*$ is a chi-square random vector. Chi-square random variables are sub-exponential so we may use the bound:
+% https://arxiv.org/pdf/1804.00205
+\begin{equation*}
+    \mathds{E}\left[\norm{\hat{\beta}-\beta^*}_2\right] \leq c \max_d \mid \beta_d - \beta^*_d \mid
+\end{equation*}
+
+
+flow of ideas for next step
+\begin{itemize}
+    %\item $\mathds{P}[Y=\hat{Y}]$ being high means usually $\mid P(x)-G(x)\mid$ is small (NOT TRUE)
+    \item Suppose total variation distance is small; $\delta(P,G)=\sup_{E}\mid P(E) - G(E)\mid = \epsilon_1$
+    \item Sigmoid has bounded derivative so it is lipschitz
+    \item \textcolor{red}{SUPPOSE UNIFORM LIP implies coordinate lipschitz}
+    \item if sigmoid is coordinate wise lipschitz in the coefficients (for fixed x), then $|\hat{\beta}_d - \beta^*_d| \leq L_d |P(x)-G(x)| \leq L_d \epsilon_1$
+    \item So if $L_d$ is small, get result???
+    \item Also, then $
+    \mathds{E}\left[\norm{\hat{\beta}-\beta^*}_2\right] \leq c \max_d L_d |P(x)-G(x)| \leq c \max_d L_d \epsilon_1$
+\end{itemize}
+
+can also do some tail bounds?:
+\begin{gather*}
+    \mathds{P}\left[\norm{\hat{\beta}-\beta^*}_2 >  \mathds{E}\left[\norm{\hat{\beta}-\beta^*}_2\right]\right] \\
+    \sim \mathds{P}\left[\norm{\hat{\beta}-\beta^*}_2 >  c \max_d \mid \beta_d - \beta^*_d\right] \\
+    \mathds{P}\left[\norm{\hat{\beta}-\beta^*}_2 >  \epsilon\right] \\
+\end{gather*}
+\pagebreak
+
+\section{Theorems Relating to Output Only}
+
+
+  \begin{lemma}{1}
+    For any measure $\lambda$ on $\mathbb{R}^d$, if we define
+    \begin{equation*}
+        \mathcal{H}_\theta = \{h_\phi \in \mathcal{H} \mid \theta - \delta \leq L(h_\phi)\leq \theta\}
+    \end{equation*}
+    where $\delta \leq \theta$ is fixed, then $\lambda(\mathcal{H}_\theta)$ is non-increasing as $\theta\rightarrow \delta$.
+ \end{lemma}
+
+\begin{proof}
+    Measures are monotone, so it suffices to show that for a pair $\theta' < \theta$, 
+    \begin{equation*}
+        \mathcal{H}_{\theta'} \subseteq \mathcal{H}_\theta
+    \end{equation*}
+
+    By way of contradiction, suppose that there exists a pair $\theta' < \theta$ such that  $\mathcal{H}_{\theta'} \setminus \mathcal{H}_\theta \neq \emptyset$. Let $h^*$ be a member of $\mathcal{H}_{\theta'} \setminus \mathcal{H}_\theta$. $h^*$ must be such that
+    \begin{gather*}
+        L(h^*) \in [\theta'-\delta,\theta'] \text{ and } L(h^*) \notin [\theta-\delta,\theta]
+    \end{gather*}
+    But since $\theta > \theta'$, $[\theta-\delta,\theta]\supset [\theta'-\delta,\theta']$ and so we reach a contradiction.
+
+    Therefore, it must be the case that for any $\theta' < \theta$, $\mathcal{H}_{\theta'} \subseteq \mathcal{H}_\theta$. It follows by the monotonicity of measure that $\lambda(\mathcal{H}_{\theta'})\leq \lambda(\mathcal{H}_\theta)$. 
+\end{proof}
+
+\begin{theorem}{1}
+        Suppose that we have a binary classification dataset $\mathcal{D}\subset \mathcal{X}\times [0,1]$ with $D$ features and $N$ instances whose labels were sampled according to a ground truth distribution $G:X \rightarrow [0,1]$. 
+
+    We define for $\theta \geq H(G)$ the hypothesis classes $\mathcal{H}_\theta$ of probabilistic classifiers of $D$ with empirical loss upper bounded by $\theta$:
+    \begin{equation*}
+        \mathcal{H}_\theta = \{h \in \mathcal{H} \mid L(h) \leq \theta\}
+    \end{equation*}
+
+    Assume that the distribution $G$ has the property that for any $\theta$ and any $P \in \mathcal{H}_\theta$, $L(G) \leq L(P)$. Further assume that $G$ is unique among hypotheses in having this property. 
+
+    Let $(\theta_n)$ be an decreasing sequence of non-negative numbers bounded below by $H(G)$. Then, if for any pair $n,n+1$ we have $\mathds{E}_{P\sim \mathcal{H}_{\theta_{n+1}}}[H(P)] - \mathds{E}_{P'\sim \mathcal{H}_{\theta_{n}}}[H(P')] \geq 0$, the following sequence of terms is non-increasing in $n$. Here we assume the expectations are computed with respect to some probability measure on $\mathcal{H}$.
+    \begin{equation*}
+        \mathds{E}_{P\sim \mathcal{H}_{\theta_{n+1}}}[D_{KL}(P || G)] - \mathds{E}_{P\sim \mathcal{H}_{\theta_n}}[D_{KL}(P || G)] 
+    \end{equation*}
+\end{theorem}
+
+\begin{proof}
+    \begin{gather*}
+         \mathds{E}_{P\sim \mathcal{H}_{\theta_{n+1}}}[D_{KL}(P || G)] - \mathds{E}_{P'\sim \mathcal{H}_{\theta_n}}[D_{KL}(P || G)] =  \mathds{E}_{P\sim \mathcal{H}_{\theta_{n+1}}}[L(P) - H(P)] - \mathds{E}_{P'\sim \mathcal{H}_{\theta_n}}[L(P')-H(P')]  \\
+    \end{gather*}
+    Thus we seek to satisfy
+    \begin{gather*}
+        \mathds{E}[L(P)]-\mathds{E}[L(P')] \leq \mathds{E}[H(P)]-\mathds{E}[H(P')]
+    \end{gather*}
+    We know that the LHS is $\theta_{n+1}-\theta_n < 0$, so since we hypothesized that $\mathds{E}[H(P)]-\mathds{E}[H(P')] \geq 0$ the inequality is assured. 
+\end{proof}
+
+\begin{proposition}{1}
+    Suppose that we have a binary classification dataset $\mathcal{D}\subset \mathcal{X}\times [0,1]$ with $D$ features and $N$ instances whose labels were sampled according to a ground truth distribution $G:X \rightarrow [0,1]$. 
+
+    We define for $\theta \geq H(G)$ the hypothesis classes $\mathcal{H}_\theta$ of probabilistic classifiers of $D$ with empirical loss upper bounded by $\theta$:
+    \begin{equation*}
+        \mathcal{H}_\theta = \{h \in \mathcal{H} \mid \hat{L}(h;D) \leq \theta\}
+    \end{equation*}
+
+    Assume that the distribution $G$ has the property that for any $\theta$ and any $P \in \mathcal{H}_\theta$, $\hat{L}(G;D) \leq \hat{L}(P;D)$. Further assume that $G$ is unique among hypotheses in having this property. 
+
+    Let $(\theta_n)$ be an decreasing sequence of non-negative numbers bounded below by $H(G)$ such that for every $n$, we may construct a finite sample $\hat{\mathcal{H}}_{\theta_n}$ that is non-empty. Define $M_n = |\hat{\mathcal{H}}_{\theta_n}|$. Then there are constants $B_{n+1},B_{n\setminus n+1}>0$ such that the following bound holds.
+
+    \begin{equation*}
+        \mathds{E}_{P\sim \hat{\mathcal{H}}_{\theta_{n+1}}}[D_{KL}(P || G)] - \mathds{E}_{P\sim \hat{\mathcal{H}}_{\theta_n}}[D_{KL}(P || G)] \leq M_{n+1}B_{n+1}(\frac{1}{M_{n+1}} - \frac{1}{M_n}) - \frac{1}{M_n}(M_n - M_{n+1} + 1)B_{n\setminus n+1}
+    \end{equation*}
+\end{proposition}
+
+\begin{proof}
+    % By Lemma 1, $(\hat{\mathcal{H}}_{\theta_n})$ is a non-increasing sequence of sets. Therefore, it is the case that:
+    % \begin{equation*}
+    %     \lim_{n\rightarrow \infty} \hat{\mathcal{H}}_{\theta_n} = \bigcap_{n\geq 1} \hat{\mathcal{H}}_{\theta_n}
+    % \end{equation*}
+    % By definition of $G$, $G \in \bigcap_{n\geq 1} \hat{\mathcal{H}}_{\theta_n}$. Further, because of its uniqueness $\bigcap_{n\geq 1} \hat{\mathcal{H}}_{\theta_n} = \{G\}$ (this can be proved by reductio). 
+    % It then follows that
+    % \begin{equation*}
+    %     \lim_{n\rightarrow \infty} \mathds{E}_{P \sim \hat{\mathcal{H}}_{\theta_n}}[D_{KL}(P||G)] = D_{KL}(G||G) = \hat{L}(G) - \hat{H}(G)
+    % \end{equation*}
+    Let us begin by considering an arbitrary pair $\theta_{n+1}$ and $\theta_n$ for some $n$. We need to give an upper bound to the following expression
+    \begin{gather*}
+        \mathds{E}_{P\sim \hat{\mathcal{H}}_{\theta_{n+1}}}[D_{KL}(P || G)] - \mathds{E}_{P\sim \hat{\mathcal{H}}_{\theta_n}}[D_{KL}(P || G)] 
+    \end{gather*}
+    We are assuming that the expectations are computed with respect to uniform distributions.  So, we have
+    \begin{gather*}
+       \frac{1}{M_{n+1}} \sum_{i=1}^{M_{n+1}} D_{KL}(P_i||G) - \frac{1}{M_n}\sum_{j=1}^{M_n} D_{KL}(P_j||G)
+    \end{gather*}
+    We may write this difference of sums in terms of the summands held in common and those that are exclusive to the larger set $\hat{\mathcal{H}}_{\theta_n}$:
+    \begin{gather*}
+        \sum_{i=1}^{M_{n+1}} D_{KL}(P_i||G)(\frac{1}{M_{n+1}}-\frac{1}{M_n}) - \frac{1}{M_n}\sum_{j=M_{n+1}+1}^{M_n} D_{KL}(P_j||G)
+    \end{gather*}
+    Let $B_{n+1}$ be an upper bound of $D_{KL}(\cdot||G)$ on $\hat{\mathcal{H}}_{\theta_{n+1}}$ and $B_{n\setminus n+1}$ be a lower bound of $D_{KL}(\cdot||G)$ on $\hat{\mathcal{H}}_{\theta_n} \setminus \hat{\mathcal{H}}_{\theta_{n+1}}$. This yields the following inequality:
+        \begin{gather*}
+        \sum_{i=1}^{M_{n+1}} D_{KL}(P_i||G)(\frac{1}{M_{n+1}}-\frac{1}{M_n}) - \frac{1}{M_n}\sum_{j=M_{n+1}+1}^{M_n} D_{KL}(P_j||G) \\
+        \leq \sum_{i=1}^{M_{n+1}} B_{n+1}(\frac{1}{M_{n+1}}-\frac{1}{M_n}) - \frac{1}{M_n}\sum_{j=M_{n+1}+1}^{M_n} B_{n\setminus n+1}\\
+        = M_{n+1}B_{n+1}(\frac{1}{M_{n+1}} - \frac{1}{M_n}) - \frac{1}{M_n}(M_n - M_{n+1} + 1)B_{n\setminus n+1}
+    \end{gather*} 
+    as required.
+\end{proof}
+
+\begin{corollary}{1}
+    Define 
+    \begin{gather*}
+        P_{n+1}:=\arg \min_{P\in \hat{\mathcal{H}}_{\theta_{n+1}\setminus \{G\}}} D_{KL}(P||G) \\
+        P_{n\setminus n+1} := \arg \max_{P\in \hat{\mathcal{H}}_{\theta_{n}\setminus \hat{\mathcal{H}}_{\theta_{n+1}}}} D_{KL}(P||G) \\
+    \end{gather*}
+    
+    If, in the settings of Proposition 1 we additionally assume that the sequence $\hat{\mathcal{H}}_{\theta_n}$ can be constructed so that for any $n,n+1$, the following hold:
+    % "loss reduction exceeds entropy reduction"
+    \begin{itemize}
+        \item $\mid \hat{\mathcal{H}}_{\theta_n} \mid > \mid \hat{\mathcal{H}}_{\theta_{n+1}}\mid$
+        \item $L(P_{n\setminus n+1}) - L(P_{n+1}) \geq H(P_{n\setminus n+1}) - H(P_{n+1})$
+    \end{itemize}
+    Then the sequence indexed by $n$
+    \begin{equation*}
+        (\mathds{E}_{P\sim \hat{\mathcal{H}}_{\theta_n}}[D_{KL}(P || G)])
+    \end{equation*}
+    is a non-increasing sequence. %furthermore it converges to H(G)
+
+    \bigskip
+
+    Note that since we should often be able to safely assume that $L(P_{n\setminus n+1}) - L(P_{n+1}) \geq 0$, in such cases a more relevant hypothesis is that $H(P_{n\setminus n+1}) - H(P_{n+1}) \leq 0$, i.e. that the distribution in $\mathcal{H}_{\theta_n}\setminus\mathcal{H}_{\theta_{n+1}}$ that is furthest from $G$ in terms of KL divergence has less entropy than the closest distribution to $G$ in $\mathcal{H}_{\theta_{n+1}}$ does. 
+\end{corollary}
+
+\begin{proof}
+    The previous proposition stated the following bound:
+    \begin{equation*}
+        \mathds{E}_{P\sim \hat{\mathcal{H}}_{\theta_{n+1}}}[D_{KL}(P || G)] - \mathds{E}_{P\sim \hat{\mathcal{H}}_{\theta_n}}[D_{KL}(P || G)] \leq M_{n+1}B_{n+1}(\frac{1}{M_{n+1}} - \frac{1}{M_n}) - \frac{1}{M_n}(M_n - M_{n+1} + 1)B_{n\setminus n+1}
+    \end{equation*}
+    The above is negative whenever $B_{n\setminus n+1} \geq B_{n+1} > 0$ and $M_n > M_{n+1}$. The latter constraint was assumed. 
+    Tight choices of $B_{n+1}$ and $B_{n\setminus n+1}$ that satisfy the first constraint are:
+    \begin{gather*}
+        B_{n+1} = \min_{P \in \hat{\mathcal{H}}_{\theta_{n+1}} \setminus \{G\}} D_{KL}(P||G) \\
+        B_{n\setminus n+1} = \max_{P \in \hat{\mathcal{H}}_{\theta_n} \setminus \hat{\mathcal{H}}_{\theta_{n+1}}} D_{KL}(P||G)
+    \end{gather*}
+
+    Our requirement then becomes $L(P_{n\setminus n+1}) - H(P_{n\setminus n+1}) \geq L(P_{n \setminus n+1}) - H(P_{n+1})$, which is true by hypothesis. 
+    % TRY BOUNDING IN TERMS OF THE THETAS!!!!
+\end{proof}
+
+\begin{proposition}{2}
+    $L(P_{n\setminus n+1}) - L(P_{n+1}) \geq H(P_{n\setminus n+1}) - H(P_{n+1})$ holds with probability...
+
+    \item $L(P_{n\setminus n+1}) - L(P_{n+1}) \geq 0$ holds with probability ....
+
+    \item \item $H(P_{n\setminus n+1}) - H(P_{n+1}) \leq 0$ holds with probability....
+\end{proposition}
+
+
+
+\begin{proposition}{TEMP}
+    Suppose that we have a binary classification dataset $\mathcal{D}\subset \mathcal{X}\times [0,1]$ with $D$ features and $N$ instances whose labels were sampled according to a ground truth distribution $G:X \rightarrow [0,1]$. 
+    
+    For $\theta \geq 0$ if we define $\hat{\mathcal{H}}_\theta = \{h\in \mathcal{H} \mid \hat{L} \leq \theta\}$ to be the class of probabilistic classifiers of $\mathcal{D}$ with empirical loss at most $\theta$. Then we have the following three upper bounds:
+    \begin{gather*}
+        \mathds{E}_{P\sim \hat{\mathcal{H}}_\theta}[\widehat{D(P||G)}] \leq \mathds{E}_{P\sim \hat{H}_\theta}[\hat{L}(P)] - H(G) \\
+        \mathds{E}_{P\sim \hat{\mathcal{H}}_\theta}[\widehat{D(P||G)}] \leq \hat{L}(\mathds{E}_{P\sim \hat{H}_\theta}[P]) - H(G) \\
+        \mathds{E}_{P\sim \hat{\mathcal{H}}_\theta}[\widehat{D(P||G)}] \leq \theta - H(G) \\
+    \end{gather*}
+    %Furthermore, both upper bounds are non-increasing as $\theta \rightarrow 0$. 
+\end{proposition}
+
+\begin{proof}
+We begin by decomposing KL divergence using its relation with cross entropy. 
+\begin{gather*}
+    \mathds{E}_{P\sim \hat{\mathcal{H}}_\theta}[\widehat{D(P||G)}] = \mathds{E}_{P\sim 
+    \hat{\mathcal{H}}_\theta}[\hat{L}(P) - \hat{H}(P)] \\
+    = \mathds{E}_{P\sim \hat{\mathcal{H}}_\theta}[\hat{L}(P)] - \mathds{E}_{P\sim \hat{\mathcal{H}}_\theta}[\hat{H}(P)] \\
+\end{gather*}
+
+%https://math.stackexchange.com/questions/1114589/entropy-is-upper-bounded-by-cardinality-of-the-random-variable
+% Now may obtain the first upper bound in the theorem statement by upper bounding the second summand using Jensen's inequality and the fact that a uniform distribution maximizes entropy:
+% \begin{gather*}
+%     %\mathds{E}_{P\sim \mathcal{H}_\theta}[H(P)] \leq \log_2 |\mathcal{H}_\theta|
+%     \hat{H}(P) = \mathds{E}_{x\sim X}[-\log(P(x))] \leq -\log(\mathds{E}[P(x)]) \\
+%     = \log\left( \frac{1}{\mathds{E}[P(x)]} \right) \\ 
+%     \leq \log |X| = \log N
+% \end{gather*}
+Since for random variables $A,B$ it is the case that $A \leq B \implies \mathds{E}[A] \leq \mathds{E}[B]$, we now have the first upper bound:
+\begin{equation*}
+     \mathds{E}_{P\sim \hat{\mathcal{H}}_\theta}[\widehat{D(P||G)}] \leq \mathds{E}_{P\sim \hat{\mathcal{H}}_\theta}[\hat{L}(P)] - \log N
+\end{equation*}
+Then the second upper bound in the theorem statement follows by applying Jensen's inequality to the above, noting that cross entropy is convex. 
+
+The third inequality follows from the first and the definition of $\hat{\mathcal{H}}_\theta$. 
+
+ \end{proof}
+
+\begin{corollary}{TEMP}
+    If the assumptions of proposition are modified so that $\mathcal{H}_\theta = \{h \in \mathcal{H}\mid \hat{L}(h) = \theta\}$ and we define a decreasing sequence $(\theta_n)$ such that for each $n$ there exists at least one $h \in \mathcal{H}$ such that $\hat{L}(h)=\theta_n$, and the sequence $(\mathds{E}_{P\sim \hat{\mathcal{H}}_{\theta_n}}[\hat{H}(P)])$ (indexed by $n$) is decreasing, then
+    \begin{gather*}
+        \mathds{E}_{P\sim \hat{\mathcal{H}}_{\theta_n}}[\widehat{D(P||G)}] = \theta_n - \mathds{E}_{P\sim \hat{\mathcal{H}}_{\theta_n}}[\hat{H}(P)]
+    \end{gather*}
+    and the sequence of these terms (indexed by $n$) is decreasing. In other words, the expected KL divergence between distributions in $\mathcal{H}_{\theta_n}$ and $G$ decreases with $n$. 
+\end{corollary}
+% 
+
+\begin{proposition}{Hellinger Bound}
+    %Given a binary classification dataset $\mathcal{D}=\mathcal{X}\times \mathcal{Y}$ with $D$ features and $N$ instances and an expected prediction error rate $\epsilon$, if we define $\mathcal{R}$ to be the class of probabilistic classifiers of $\mathcal{D}$ that achieve expected error rate $\epsilon$, then 
+    Let $\lambda$ be \emph{any} probability measure on $\mathcal{H}$ and let $\delta,\theta$, $\mathcal{H}_\theta$ be as defined previously, and $D_H$ be the Hellinger distance. Then the terms
+    \begin{equation*}
+        \mathds{E}_{P,Q\sim \mathcal{H}_\theta}[D_H(P,Q)]
+    \end{equation*}
+    may be upper bounded such that the upper bound is non-increasing as $\theta \rightarrow \delta$. 
+\end{proposition}
+
+\begin{proof}
+    Since Hellinger distance is a metric, we may invoke the triangle inequality and use Hellinger distance's relation to KL Divergence to obtain the following bounds. 
+    \begin{gather*}
+        D_H(P,Q) \leq D_H(P,G) + D_H(G,Q) \\
+        = D_H(P,G) + D_H(Q,G) \\
+        \leq \sqrt{D_{KL}(P||G)/2} + \sqrt{D_{KL}(Q||G)/2} \\
+    \end{gather*}
+    Taking expectations over $\mathcal{H}_{\theta}$, we have
+    \begin{equation*}
+        \mathds{E}_{P,Q\sim \mathcal{H}_\theta}[D_H(P,Q)] \leq \mathds{E}_{P\sim \mathcal{H}_\theta}[\sqrt{D_{KL}(P||G)/2}] + \mathds{E}_{Q\sim \mathcal{H}_\theta}[\sqrt{D_{KL}(Q||G)/2}] \\
+        = 2\mathds{E}_{P\sim \mathcal{H}_\theta}[\sqrt{D_{KL}(P||G)/2}]
+    \end{equation*}
+    Since the square root function is monotonic, under the assumptions of Theorem 1 the RHS is non-increasing. 
+\end{proof}
+
+\begin{theorem}{Main}
+    %Given a binary classification dataset $\mathcal{D}=\mathcal{X}\times \mathcal{Y}$ with $D$ features and $N$ instances and an expected prediction error rate $\epsilon$, if we define $\mathcal{R}$ to be the class of probabilistic classifiers of $\mathcal{D}$ that achieve expected error rate $\epsilon$, then 
+    Let $\lambda$ be \emph{any} probability measure on $\mathcal{H}$ and let $\delta,\theta$, $\mathcal{H}_\theta$ be as defined previously, and $D$ be a divergence measure (probability-distance measure). Then,
+    \begin{equation*}
+        \mathds{E}_{P,Q\sim \mathcal{H}_\theta}[D(P,Q)]
+    \end{equation*}
+    is non-increasing as $\theta \rightarrow \delta$. In the expectation, $P$ and $Q$ are sampled from $\mathcal{H}_\theta$. 
+\end{theorem}
+
+\begin{proof}
+%     First, we apply a Lebesgue decomposition to $\lambda$: 
+%     \begin{equation*}
+%         \lambda = \lambda_{AC} + \lambda_S + \lambda_{D}
+%     \end{equation*}
+%     where $\lambda_{AC} << \mu$ and $\mu$ is the Lebesgue measure, $\lambda_S \perp \mu$, and $\lambda_D$ is a discrete measure. 
+
+%     The theorem follows by lemma 1, propositions 2,3,4, and the fact that the sum of finitely many decreasing functions is decreasing. (?)
+
+%     \textcolor{red}{INCOMPLETE}
+ \end{proof}
+% 
+
+
+%--------------------------------------------------------------
+%     EXTRA STUFF BELOW
+% --------------------------------------------------------------
+
+
+\pagebreak
+
+  \begin{definition}[Rashomon Set $\hat{R}_{set}(\mathcal{F}, \theta)$]
+        Given 
+        \begin{itemize}
+            \item $n$ data points $S = \{z_i\}_{i=1}^n$ with $z_i=(x_i,y_i)\sim \ i.i.d \ \mathcal{D}$ on bounded set $\mathcal{Z} = \mathcal{X}\times \mathcal{Y} \subset \mathbb{R}^p \times \mathbb{R}$
+            \item Hypothesis space $\mathcal{F} = \{f:\mathcal{X}\rightarrow \mathcal{Y}\}$
+            \item (Uniform) prior $\rho$ over $\mathcal{F}$
+            \item Loss $\phi:\mathcal{Y}\times \mathcal{Y}\rightarrow \mathbb{R}^+$
+            \item Empirical risk $\hat{L}(f) = \frac{1}{n}\sum_i \phi(f(x_i),y_i)$
+        \end{itemize}
+
+        A \emph{Rashomon Set} is then defined as $\hat{R}_{set}(\mathcal{F}, \theta) = \{f \in \mathcal{F} \mid \hat{L}(f) \leq \hat{L}(\hat{f})+\theta\}$; $\hat{f}$ is an empirical risk minimizer on $S$ w.r.t $\phi$. 
+    \end{definition}
+
+\bigskip
+
+
+\section{Extra Theorems}
+
+ \begin{theorem}{(Easy Combinatorial Version)}
+     Given a binary classification dataset $\mathcal{D}=\mathcal{X}\times \mathcal{Y}$ with $D$ features and $N$ instances, setting $\mathcal{H}$ as the hypothesis class of all $2^N$ binary decision functions, and $\theta < .5$, the $\theta$-Rashomon sets $\mathcal{R}(\mathcal{D};\mathcal{H},\theta)$ computed with respect to classification error are such that 
+     \begin{equation*}
+         \frac{\mid \mathcal{R}(\mathcal{D};\mathcal{H},\theta) \mid}{\mid \mathcal{H} \mid} 
+     \end{equation*}
+     is non-increasing as $\theta$ is decreased.
+ \end{theorem}
+
+\begin{proof}
+    A value of $\theta$ corresponds to an error rate. The number of models in $\mathcal{H}$ with a given error rate is finite since the hypothesis space is finite. Supposing that the error rate $\theta$ is the proportion $m/n$, the number of models with error rate $\theta$ can be represented by the expression ${n \choose m}$ since there are $n \choose m$ ways to make $m$ errors on a dataset with $n$ instances. Thus the proportion of models with error rate $\theta$ is simply ${n \choose m}/{n}$. Reduction of the error rate $\theta$ corresponds to a reduction of $m$. Therefore the theorem will follow by showing that ${n \choose m}/n$ is non-increasing as as $m$ is decreased (and $n$ is fixed).
+    \begin{gather*}
+        \frac{{n\choose m}}{n} = \frac{\frac{n!}{m!(n-m)!}}{n} = \frac{n!}{nm!(n-m)!} = \frac{(n-1)!}{m!(n-m)!}
+    \end{gather*}
+    Since $n>m$ and $m \rightarrow 0$ the dominant term in the expression is $(n-m)!$. Since $n$ is fixed, this increases as $m\rightarrow 0$. It follows that $\frac{{n\choose m}}{n}$ decreases as $m$ is decreased. 
+\end{proof}
+
+\pagebreak
+
+
+
+\begin{proposition}{1}
+     Suppose that $\delta=\theta$, and $\mathcal{H}_\theta$ is defined as was previously. Assume that for every $\theta$ the ground truth model $\mathcal{G}$ lies in $\mathcal{H}_\theta$. Let $\lambda$ be the Dirac measure centered on some $h^* \neq \mathcal{G}$, so that $\lambda(E)=1$ when $h^*\in E$ and $\lambda(E)=0$ otherwise. Then:
+    \begin{equation*}
+        \mathds{E}_{P \sim \mathcal{H}_\theta}[\text{KL}(P || \mathcal{G})]
+    \end{equation*}
+    is non-increasing as $\theta \rightarrow 0$. In the expectation, $P$ is  sampled from $\mathcal{H}_\theta$. 
+\end{proposition}
+
+\begin{proof}
+    \begin{equation*}
+        \mathds{E}_{P \sim \mathcal{H}_\theta}[\text{KL}(P || \mathcal{G})] = \int_{H_\theta} \text{KL}(P||\mathcal{G}) d\lambda(P) \\
+        = \int_{H_\theta} \left[ \int_\mathcal{X} \log\left(\frac{P(x)}{\mathcal{G}(x)}\right) dP(x)\right] d\lambda(P)
+    \end{equation*}
+    Assuming that the inner integral is $\lambda$-measurable, by definition of Dirac measure the above reduces to $\text{KL}(h^* || \mathcal{G}) \cdot \delta_{h^* \in \mathcal{H}_\theta}$. Now note the following important relation between KL Divergence and cross entropy ($\text{CrsEnt}$):
+    \begin{gather*}
+        \text{KL}(h^* || \mathcal{G}) = \text{CrsEnt}(h^*,\mathcal{G}) - \text{CrsEnt}(h^*,h^*) \\
+        = L(h^*) - \mathds{E}[-\log h^*(\mathcal{X})]
+    \end{gather*}
+    It follows from the previous two steps that
+    \begin{equation*}
+        \mathds{E}_{P \sim \mathcal{H}_\theta}[\text{KL}(P || \mathcal{G})] = (L(h^*) - \mathds{E}[-\log h^*(\mathcal{X})])\cdot \lambda(\mathcal{H}_\theta)
+    \end{equation*}
+    By Lemma 1, this is non-increasing as $\theta$ is decreased.
+    
+\end{proof}
+
+
+\begin{proposition}{2}
+    The conclusion of proposition 1 holds in the more general case that $\lambda$ is a discrete probability measure   on $\mathcal{H}$ supported on a finite subset. 
+\end{proposition}
+
+\begin{proof}
+    Suppose $\lambda(h) = p_1 \delta_{h=h_1}(h) + p_2 \delta_{h=h_2}(h) + \ldots + p_K \delta_{h=h_k}(h)$ with $h_1,\ldots,h_K$ distinct hypotheses in $\mathcal{H}$ and $\sum_k p_k=1$. Then the expected KL Divergence over $\mathcal{H}_\theta$ is 
+    \begin{equation*}
+        \sum_{k=1}^K p_k \text{KL}(h_k || \mathcal{G}) \delta_{h=h_k}(\mathcal{H}_\theta)
+    \end{equation*}
+    By Lemma 1, each summand is decreasing as $\theta \rightarrow 0$. The sum of finitely many decreasing functions is itself a decreasing function, so the above is decreasing as $\theta \rightarrow 0$. 
+\end{proof}
+
+\begin{proposition}{3}
+    The conclusion of proposition 1 holds in the case that $\lambda$ is a.c. w.r.t. Lebesgue ($\lambda << \mu$). 
+\end{proposition}
+
+\begin{proof}
+    Since $\lambda << \mu$, we may apply the Radon-Nikodym theorem. Let $f:\Sigma(\mathcal{H}) \rightarrow [0,\infty)$ be the Radon-Nikodym derivative (here $\Sigma(\mathcal{H})$ is the sigma-algebra generated by $\mathcal{H}$). Then by the Radon-Nikodym theorem, we have
+    \begin{gather*}
+        \mathds{E}_{P \sim \mathcal{H}_\theta}[\text{KL}(P || \mathcal{G})] = \int_{H_\theta} \text{KL}(P||\mathcal{G}) d\lambda(P) = \int_{H_\theta} \text{KL}(P||\mathcal{G}) f(P) d\mu(P) \\ 
+        = \int_{H_\theta} (L(P) - Ent(P)) f(P)d\mu
+    \end{gather*}
+    \textcolor{red}{INCOMPLETE}
+    % BWOC suppose there exists $\theta'< \theta$ such that $\mathds{E}_{P' \sim \mathcal{H}_{\theta'}}[\text{KL}(P' || \mathcal{G})] > \mathds{E}_{P \sim \mathcal{H}_\theta}[\text{KL}(P || \mathcal{G})]$. It follows that:
+    % \begin{gather*}
+    %     \int_{H_{\theta}} \text{KL}(P||\mathcal{G}) d\lambda(P) - \int_{H_{\theta'}} \text{KL}(P||\mathcal{G}) d\lambda(P) < 0 \\
+    % \end{gather*}
+    % From the argument in Lemma 1 we know that $H_{\theta'} \subseteq H_{\theta}$, and so by the additivity of integration over unions of disjoint sets $\int_{H_{\theta}} \text{KL}(P||\mathcal{G}) d\lambda(P) = \int_{H_{\theta'}} \text{KL}(P||\mathcal{G}) d\lambda(P) + \int_{H_{\theta}\setminus H_{\theta'}} \text{KL}(P||\mathcal{G}) d\lambda(P)$. It follows that:
+    % \begin{equation*}
+    %     \int_{H_{\theta}\setminus H_{\theta'}} \text{KL}(P||\mathcal{G}) d\lambda(P) < 0
+    % \end{equation*}
+    % This is a contradiction because KL-Divergence is non-negative. Hence it must be the case that for $\theta' < \theta$ we have $\mathds{E}_{P' \sim \mathcal{H}_{\theta'}}[\text{KL}(P' || \mathcal{G})] \leq \mathds{E}_{P \sim \mathcal{H}_\theta}[\text{KL}(P || \mathcal{G})]$
+\end{proof}
+
+\begin{proposition}{4}
+    The conclusion of proposition 1 holds in the case that $\lambda$ is singular w.r.t. Lebesgue $\lambda \perp \mu$. 
+\end{proposition}
+
+\begin{proof}
+    \textcolor{red}{INCOMPLETE}
+\end{proof}
+
+
+% \begin{proposition}{4}
+%     Let $\lambda$ be \emph{any} probability measure on $\mathcal{H}$ and let $\delta,\theta$, $\mathcal{H}_\theta$ be as defined previously, and $D$ be a divergence measure (probability distance metric). Then,
+%     \begin{equation*}
+%         \mathds{E}_{P,Q\sim \mathcal{H}_\theta}[D(P,Q)]
+%     \end{equation*}
+%     is non-increasing as $\theta \rightarrow \delta$. In the expectation, $P$ and $Q$ are sampled from $\mathcal{H}_\theta$. 
+% \end{proposition}
+
+% \begin{proof}
+%     It suffices to show that for any $\theta' < \theta$, we have 
+%     \begin{equation*}
+%         \mathds{E}_{P,Q\sim \mathcal{H}_{\theta'}}[D(P,Q)] - \mathds{E}_{P,Q\sim \mathcal{H}_\theta}[D(P,Q)] \leq 0
+%     \end{equation*}
+%     Since $H_\theta \supseteq H_{\theta'}$ we may instead check that
+%     \begin{equation*}
+%         \mathds{E}_{P,Q\sim \mathcal{H}_\theta\setminus \mathcal{H}_{\theta'}}[D(P,Q)] \geq 0
+%     \end{equation*}
+%     This follows immediately from the non-negativity of metrics. 
+% \end{proof}
+
+\end{document}

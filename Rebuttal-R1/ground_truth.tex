@@ -1,0 +1,130 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{dsfont}
+\usepackage{graphicx}
+\usepackage{forest}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[mathscr]{euscript}
+
+\usepackage{physics}
+
+%NECESRY
+\usepackage{principia}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{remark}{Remark}[section]
+\usepackage{bxcjkjatype}
+
+\title{Ground Truth Ideas}
+\author{You}
+
+\begin{document}
+\maketitle
+
+\section{Assumptions}
+Suppose there are mutually independent features $x_1^I,\ldots,x_d^I$ and features $x_{d+1}^C,\ldots,x_D^C$ that are each (possibly nonlinear) functions of the mutually independent features. We have a data sample $\mathcal{D} = \{\mathbf{x}^{(n)}\}_{n=1}^N$
+% That is, there are functions $f_{d+1},\ldots,f_D$ such that:
+% \begin{gather*}
+%     x_{d+1}^C = f_{d+1}(x_1^I,\ldots,x_d^I) \\
+%     x_{d+2}^C = f_{d+2}(x_1^T,\ldots,x_d^I) \\
+%     \ldots \\
+%     x_{D}^C = f_D(x_1^T,\ldots,x_d^I) \\ 
+% \end{gather*}
+
+Let the ground truth model be a (nonlinear) function $g$ of the features:
+\begin{equation*}
+    \mathcal{G}(x) = g(x_1^I,\ldots,x_d^I,x_{d+1}^C,\ldots,x_D^C)
+\end{equation*}
+
+We can write this as a composite function of only the independent variables:
+\begin{equation*}
+    \widetilde{g}(f_{d+1}(x_1^I,\ldots,x_d^I),\ldots,f_D(x_1^I,\ldots,x_D^I))
+\end{equation*}
+
+\section{Estimand In Practice}
+\begin{equation*}
+    \text{importance of } x_j = \frac{1}{N} \sum_{n=1}^N \mid \text{SHAP}_\mathcal{M}(x_j^{(n)}) \mid 
+\end{equation*}
+where $\mathcal{M}$ is some XGBoost model. 
+
+\section{Ground Truth Possibilities}
+    \subsection{Total Derivative}
+        \textbf{Meaning}: $\dv{\widetilde{g}}{x_1^I}$ is the influence of $x_I^I$ on $g$ considering every appearance of $x_1^I$ in all arguments of $\widetilde{g}$
+
+        \bigskip
+
+        % https://math.stackexchange.com/questions/4131291/is-the-total-derivative-defined-for-a-function-of-multiple-independent-variables
+        \textbf{Definition}:
+        \begin{gather*}
+            \dv{\widetilde{g}}{x_1^I} = \sum_{d'=d+1}^D \pdv{\widetilde{g}}{f_{d'}} \pdv{f_{d'}}{x_1^I} \\
+            \ldots \\
+            \dv{\widetilde{g}}{x_d^I} = \sum_{d'=d+1}^D \pdv{\widetilde{g}}{f_{d'}} \pdv{f_{d'}}{x_d^I} \\
+        \end{gather*}
+    
+        % For $d'=1,\ldots,d$:
+        % \begin{align*}
+        %     \dv{g(x_1^I,\ldots,x_d^I,x_{d+1}^C,\ldots,x_D^C)}{x_{d'}} = \pdv{g}{x_{d'}} + \sum_{d''=d+1}^D \pdv{g}{x_{d''}} \pdv{x_{d''}}{x_d'}
+        % \end{align*}
+
+        % \bigskip
+
+        % For $d'=d+1,\ldots,D$ there is no total derivative $\dv{g}{x_{d'}}$
+
+    \subsection{Marginal Effect}
+        \subsubsection{Average Marginal Effects (AME)}
+        \textbf{Meaning}: Estimate of the expected marginal effect w.r.t. the data distribution, using a sample of data $\mathcal{D} = \{\mathbf{x}^{(n)}\}_{n=1}^N$ for the estimate. \textbf{Given the prevalent use of mean absolute SHAP values, I think this version of marginal effect is the closest marginal effect-based analogue of a ground truth.}
+
+        \bigskip
+
+        \textbf{Definition}: 
+        %Let $\text{fME}_{\mathbf{x}^{(n)},h_j} = g(x_1,\ldots,x_j + h_j,\ldots,X_D) - g(\mathbf{x}^{(n)})$ 
+        \begin{equation*}
+            \text{AME}_{\mathcal{D},h_j} = \frac{1}{n}\sum_{n=1}^N \left[ g(x_1^{(n)},\ldots,x_j^{(n)} + h_j,\ldots,x_D^{(n)}) - g(\mathbf{x}^{(n)}) \right]
+        \end{equation*}
+        where $h_j$ is some perturbation.
+    
+        % \begin{equation*}
+        %     \mathds{E}_X\left[\pdv{g}{x_{d'}}\right]
+        % \end{equation*}
+
+        \subsubsection{Marginal Effect at Means (MEM)}
+        \textbf{Meaning}: ME evaluated at the expectation of X
+
+        \bigskip
+
+        \textbf{Definition}:
+        \begin{equation*}
+            \text{MEM}_{\mathcal{D},h_j} = g(\bar{x}_1,\ldots,\bar{x}_j + h_j,\ldots,\bar{x}_D) - g(\bar{\mathbf{x}})
+        \end{equation*}
+
+    
+        % \begin{equation*}
+        %     \pdv{g}{x_{d'}}\mid_{x=\bar{x}}
+        % \end{equation*}
+
+        \subsubsection{Marginal Effect for Categorical Feature}
+        \textbf{Meaning}:         For each observation, the observed categorical feature value is set to the reference category and we record the change in prediction when changing it to every other category. Given $k$ categories, this results in $k-1$ MEs for each observation. 
+
+        \bigskip
+
+        \textbf{Definition}: 
+
+    
+
+
+
+        \begin{equation*}
+            g(c',X_{-d}) - g(c,X_{-d})
+        \end{equation*}
+\end{document}

@@ -1,0 +1,321 @@
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Anonymous 6-Page Submission Template
+%% 11pt Times New Roman, Single Spaced, 1-inch margins
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ---------------------------------------------------
+% Page Setup (1-inch margins, 8.5 x 11 paper)
+% ---------------------------------------------------
+\usepackage[letterpaper, margin=1in]{geometry}
+
+% ---------------------------------------------------
+% Font: Times New Roman style
+% ---------------------------------------------------
+\usepackage{newtxtext,newtxmath}
+
+% ---------------------------------------------------
+% Single spacing (default in article, but enforce)
+% ---------------------------------------------------
+\usepackage{setspace}
+\usepackage{multirow}
+\singlespacing
+
+% ---------------------------------------------------
+% Math, figures, tables
+% ---------------------------------------------------
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% ---------------------------------------------------
+% References
+% ---------------------------------------------------
+\usepackage[numbers]{natbib}
+\bibliographystyle{plainnat}
+
+% ---------------------------------------------------
+% No page numbers (remove if not required)
+% ---------------------------------------------------
+\pagestyle{plain}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+% -------------------------------
+% Title (NO AUTHOR INFORMATION)
+% -------------------------------
+% -------------------------------
+% Title and Author Information
+% -------------------------------
+\begin{center}
+    {\Large \textbf{From Model Explanation to Data Misinterpretation: A Cautionary Analysis of Post Hoc Explainers in Business Research}}
+
+    \vspace{1em}
+
+    \textbf{Tong Wang} \\
+    School of Management, Yale University, New Haven, CT 06520 \\
+    \texttt{tong.wang.tw687@yale.edu}
+
+    \vspace{0.75em}
+
+    \textbf{Ronilo Ragodos} \\
+    Peter T. Paul College of Business and Economics, University of New Hampshire, Durham, NH 03824 \\
+    \texttt{Ronilo.Ragodos@unh.edu}
+
+    \vspace{0.75em}
+
+    \textbf{Lu Feng} \\
+    School of Economics and Management, Tsinghua University, Beijing, China \\
+    \texttt{fenglu@sem.tsinghua.edu.cn}
+
+    \vspace{0.75em}
+
+    \textbf{Yu Jeffrey Hu} \\
+    Mitch Daniels School of Business, Purdue University, West Lafayette, IN 47907 \\
+    \texttt{yuhu@purdue.edu}
+\end{center}
+
+\vspace{0.5em}
+
+% -------------------------------
+% Abstract
+% -------------------------------
+\noindent
+\textbf{Abstract.}
+Post hoc explainers such as SHAP and LIME are used widely in business research to interpret complex machine learning models. Although they were designed to explain model predictions, there has been an increasing trend in which the explanations they generate are treated as evidence about underlying data relationships. Based on a systematic review of 181 studies, we document that this explanation interpretation is widespread and examine its validity.
+We also evaluate how well post hoc explanations reliably recover the direction and relative importance of features in true data-generating process. We introduce two metrics—direction alignment and strength alignment—and assess SHAP and LIME using simulated data with known ground truth. Although explanations often appear reasonable on average, they exhibit substantial heterogeneity in their alignment and can fail to be aligned even when their predictive accuracy is high. High predictive performance is therefore necessary but insufficient for reliable explanation.
+We further show that feature correlation and the Rashomon effect (where many equally accurate models rely on different feature attributions) are key drivers of misalignment. Agreement in explanations across such models provides a practical diagnostic of reliability. Overall, our findings caution against using post hoc explainers for hypothesis validation and instead position them as exploratory tools that generate, rather than confirm, substantive insights.
+\vspace{0.5em}
+
+% -------------------------------
+% Keywords
+% -------------------------------
+\noindent
+\textbf{Keywords:}
+post hoc explanation; machine learning; Rashomon Set
+
+
+
+
+%\textcolor{red}{add somewhere that we prove theoretical evidence that SHAP is unsuited for this task}
+%
+
+% Sample
+%\KEYWORDS{deterministic inventory theory; infinite linear programming duality;
+%  existence of optimal policies; semi-Markov decision process; cyclic schedule}
+
+% Fill in data. If unknown, outcomment the field
+%\HISTORY{This paper was first submitted on April 12, 1922 and has been with the authors for 83 years for 65 revisions.}
+
+
+% use statistics of the citation of the post hoc papers
+% show how difficult it is to solve the problem, e.g., cite cynthia's paper
+
+
+\section{Introduction}
+
+Over recent decades, machine learning (ML) has become central to business analytics, particularly for prediction tasks \citep{kleinberg2015prediction,mullainathan17applied}. In these settings, researchers solve a supervised learning problem—predicting a target ($Y$) from features ($X$)—but are often equally interested in understanding \textit{how} features relate to outcomes. Since most high-accuracy ML models operate as black boxes, post hoc explainers such as SHAP \citep{lundberg17shap} and LIME \citep{ribeiro16lime} have become widely adopted tools for interpreting them.
+
+A common research workflow—which we term the \emph{Explanation Pipeline}—trains a black box ML model for prediction and then applies a post hoc explainer to illuminate model behavior. %SHAP grounds feature attribution in cooperative game theory, assigning each feature a Shapley value reflecting its average contribution across feature subsets. LIME approximates model behavior locally with a sparse linear model, whose coefficients serve as feature influence measures. Both methods characterize feature influence in terms of direction (positive or negative) and strength (magnitude).
+Although these tools are designed to explain predictive models, a growing body of research interprets their outputs as evidence about the underlying data-generating process—generalizing explanations of $X \mapsto \hat{Y}$ to conclusions about $X \mapsto Y$. %For example, \citet{park2024extracting} interpret SHAP values as indicators of customer feature preferences; \citet{jiang24churn} use SHAP to identify churn drivers; and \citet{sanchez2023role} use SHAP to motivate managerial decisions about hotel satisfaction. Some work has even proposed ML with SHAP as an ``alternative to OLS'' \citep{berger2023supply}. A manual review of 181 papers making substantive use of SHAP or LIME finds that approximately 42.5\% interpret post hoc explanations as evidence of data-level relationships.
+This raises a fundamental question: \textbf{to what extent can explanations derived from ML models ($X \mapsto \hat{Y}$) reliably reflect the underlying data-generating process ($X \mapsto Y$)?} We conduct extensive experiments to assess whether post hoc explanations recover the direction and relative strength of true $X \mapsto Y$ relationships, proceeding in four steps.
+
+First, we identify two types of interpretive claims prevalent in empirical research—\textbf{direction} and \textbf{strength} interpretations—and formalize them as measurable alignment criteria applicable to any additive explainer. Second, using simulated data with known ground truth, we find that while explanations are often accurate on average, their alignment with $X \mapsto Y$ exhibits substantial heterogeneity with pronounced long-tailed deviations, even under high predictive performance. Third, we investigate drivers of misalignment. High predictive accuracy is \textbf{necessary but insufficient}: models with nearly identical performance can yield markedly different explanations due to large Rashomon sets \citep{semenova22rashomon,paes23inevitable}. Among data characteristics, feature correlation is the dominant driver of misalignment. Finally, we identify diagnostic signals for misalignment. We introduce \emph{prediction agreement} and \emph{explanation agreement} within Rashomon sets and show that explanation-based agreement is strongly correlated with alignment, whereas prediction-based agreement is less informative. This provides a practical, dataset-level diagnostic for assessing when $X \mapsto \hat{Y}$ explanations are unlikely to recover the underlying $X \mapsto Y$ structure.
+
+Overall, our paper cautions against a growing trend of using post hoc explanations to draw inferences about data. We argue that post hoc explanations should not be used to \textbf{validate} hypotheses about data; rather, their proper role is to \textbf{propose} hypotheses for subsequent testing through more rigorous methods.
+
+
+   
+\section{Prevalence of Misinterpretation in Business Research}
+% ============================================================
+
+Researchers using post hoc explanations typically draw two types of interpretations from outputs such as SHAP beeswarm plots or LIME coefficient displays. \textbf{Direction interpretations} treat higher attribution values as indicating that a feature is positively associated with the outcome in the data---for instance, concluding that greater peer influence \emph{increases} the likelihood of app adoption because high values of that feature appear on the positive side of a SHAP plot. \textbf{Strength interpretations} treat attribution magnitudes as reflecting the relative importance of features to the outcome, for example, concluding that one feature is a more important driver of churn than another because its mean absolute SHAP value is larger. Both types of claims are formally statements about the model mapping $X \mapsto \hat{Y}$, but in practice they are frequently generalized to claims about $X \mapsto Y$.
+
+To assess prevalence, we compiled a sample of 181 papers published in journals included in the \textit{UTD 24}, the \textit{FT50}, and \textit{INFORMS} lists, as well as papers indexed in Web of Science and SSRN (to account for the long publication timelines of academic journals). All selected papers made substantive use of SHAP or LIME. To mitigate potential human bias in coding, we complemented manual annotation with an LLM-assisted review of each paper, with final classifications determined through an adjudication process that reconciled disagreements between human coders and LLM outputs. Among the 181 papers, 94\% used SHAP and 13\% used LIME, with 7\% using both methods.
+Across the full sample, 75.4\% made directional interpretations and 97.8\% made strength-based interpretations. Overall, \textbf{42.5\% engaged in data-level inference} we classify as problematic. The rate is lower but still substantial in leading journals: 14.3\% in UTD 24, 14.0\% in FT50, and 17.4\% in INFORMS journals---indicating that these interpretive practices are not limited to lower-prestige venues. Across the union of these three journal lists, the overall rate is 16.1\%. Furthermore, a majority of journals in each group have published at least one paper with problematic usage, underscoring that the issue is distributed broadly across outlets rather than concentrated in a small subset.
+
+% ============================================================
+\section{Measuring Alignment: Direction and Strength}
+% ============================================================
+
+To evaluate how well post hoc explanations recover true $X \mapsto Y$ relationships, we introduce two metrics applicable to any additive explainer. The framework is defined at a level of generality that applies to any explanation method that assigns feature-level attribution values, any predictive model $\mathcal{M}$, and any ground-truth data-generating process $\mathcal{G}$.
+
+\paragraph{Direction alignment.}
+Direction alignment evaluates, for each feature $j$, whether the direction of outcome change implied by an explainer matches the true direction of change in the data. For instance $i$, feature $j$, and perturbation $\delta$, we define the perturbed instance $\mathbf{x}^{(i)}_{j,\delta} = (x^{(i)}_1, \ldots, x^{(i)}_j + \delta, \ldots, x^{(i)}_d)$ and compare the explainer-implied direction of change $\Delta e^{(i)}_{j}(\delta) = e_{\mathcal{E}}\!\left(\mathbf{x}^{(i)}_{j,\delta},\, j\right) - e_{\mathcal{E}}\!\left(\mathbf{x}^{(i)},\, j\right)$ to the true direction $\Delta Y^{(i)}_{j}(\delta) = \mathcal{G}\!\left(\mathbf{x}^{(i)}_{j,\delta}\right) - \mathcal{G}\!\left(\mathbf{x}^{(i)}\right)$.
+
+Agreement requires these quantities to share the same sign. To avoid penalizing explainers when the true effect is negligibly small, we treat small-magnitude true changes as directionally uninformative. The direction alignment score $\rho_{\mathrm{dir},j} = \frac{1}{|S|\cdot|\Delta|} \sum_{i=1}^{|S|} \sum_{\delta \in \Delta} I^{\mathrm{dir}}_{ij}(\delta) \;\in\; [0,1]$ 
+aggregates the resulting agreement indicators across evaluation instances $S$ and a finite perturbation grid $\Delta$. For SHAP, $e_{\mathcal{E}}(\mathbf{x}^{(i)}, j)$ is the Shapley value of feature $j$ at instance $i$. For LIME, it corresponds to the coefficient $w^{(i)}_j$ of the local surrogate model, scaled by a small perturbation magnitude.
+
+\paragraph{Strength alignment.}
+Strength alignment evaluates whether an explainer correctly recovers the relative importance ranking of features. Let $I_{\mathcal{E}}(j)$ denote explainer-implied global importance (e.g., mean absolute SHAP value across the dataset) and $I_{\mathcal{G}}(j)$ denote the analogous ground-truth importance computed from $\mathcal{G}$ directly. The strength alignment score is the Spearman rank correlation between the induced rankings $R_{\mathcal{E}}$ and $R_{\mathcal{G}}$, 
+% \[
+%     \rho_{\mathrm{strength}} = 1 - \frac{6\sum_{j=1}^{d}(R_{\mathcal{E}}(j) - R_{\mathcal{G}}(j))^2}{d(d^2-1)},
+% \]
+taking values in $[-1,1]$ where $+1$ indicates perfect rank agreement and values near $0$ or below indicate weak or systematically incorrect alignment.
+
+\paragraph{Simulation setup.}
+We evaluate SHAP and LIME on 81 simulated binary classification datasets with known ground truth, generated by varying four factors: number of features (10, 20, 30), correlation strength (0, 0.5, 1), number of nonlinear (squared) terms (0, 5, 10), and number of pairwise interaction terms (0, 5, 10), with sample size fixed at 5{,}000 and noise standard deviation fixed at 0.1. For each dataset, we select the best-performing model from a systematic search across multiple families---gradient-boosted decision trees (XGBoost, CatBoost, LightGBM, Gradient Boosting), Random Forests, multilayer perceptrons, and support vector machines---with hyperparameters tuned via cross-validation.
+
+\paragraph{Results.}
+Post hoc explainers exhibit high average alignment with the ground-truth process in both direction and strength, with SHAP consistently outperforming LIME on average. However, the full distributions exhibit pronounced \textbf{long left tails}, indicating substantial heterogeneity across datasets. For SHAP, strength alignment drops to approximately 0.5 in the worst cases---implying near-random feature importance rankings for certain datasets. For LIME, direction alignment similarly falls to roughly 0.5 in extreme cases, corresponding to near-chance directional accuracy. These long left tails are practically consequential: because researchers typically lack reliable ex ante indicators of when an explainer is operating in a low-alignment regime, the presence of heavy tails raises serious concerns about the robustness of post hoc explanations for drawing conclusions about the underlying $X \mapsto Y$ relationship.
+
+% ============================================================
+\section{What Factors Drive Misalignment?}
+% ============================================================
+
+The preceding section establishes that alignment between post hoc explanations and the true data-generating process varies substantially across dataset--model pairs, even when average performance appears strong. We now examine which factors systematically drive this variation, focusing on three classes: predictive model performance, the Rashomon effect, and intrinsic data properties.
+
+\paragraph{Predictive accuracy is necessary but insufficient.}
+Because post hoc explainers explain the model $\mathcal{M}$, not the data-generating process $\mathcal{G}$ directly, the model must approximate $\mathcal{G}$ well for explanations to be informative. We confirm that higher predictive accuracy is associated with significantly better alignment. To examine this relationship, we construct, for each dataset, multiple models spanning accuracy ranges $[0.70, 0.75)$, $[0.75, 0.80)$, $[0.80, 0.85)$, and $[0.85, 0.90)$ by varying training set size and hyperparameter configurations. A 0.05 increase in test accuracy corresponds to an average increase of 0.104 in SHAP direction alignment. Nevertheless, high accuracy does not guarantee alignment: models within the same accuracy bin can produce markedly different explanations, reflecting the influence of the Rashomon effect described below.
+
+\paragraph{The Rashomon effect.}
+Even equally accurate models can produce substantially different explanations. We obtain 10 high-accuracy models per dataset (all within 3\% test accuracy of each other, drawn from diverse model families) and apply SHAP to each. Feature importance rankings---defined by mean absolute Shapley values---are then compared across models. We find that feature importance rankings vary by an average of 10\% of the total number of features across models, with a pronounced right tail in which disagreement can be extreme. For example, in a representative 20-feature dataset, one feature is ranked both first and eleventh by different models achieving nearly identical test accuracy. The Rashomon effect \citep{semenova22rashomon, paes23inevitable} formalizes this intuition: when learning from finite and noisy data, many distinct models are compatible with the observed data, meaning post hoc explanations of any single model reflect only one of many plausible hypotheses about $X \mapsto Y$. The implication is fundamental---even a perfect explanation of a single model is insufficient evidence of the true data-generating relationship when a large Rashomon set exists.
+
+\paragraph{Data characteristics.}
+Among intrinsic data properties, \textbf{feature correlation strength} has by far the largest and most consistent negative effect on alignment. When features are correlated, multiple variables can act as proxies for one another, enabling models with very different internal attributions to achieve comparable predictive accuracy. This feature substitutability expands the Rashomon set and amplifies the instability of post hoc explanations. A plausible mechanism is that correlated features make the learned model's internal attribution more sensitive to arbitrary modeling choices, such as the random initialization of a gradient-boosted tree or small changes in training data. The number of nonlinear and interaction terms in the data-generating process also negatively affects alignment: as the true function becomes more complex, a larger set of functional forms can fit the observed data equally well, increasing model flexibility without a commensurate increase in identifiability. The number of features, by contrast, has a negligible positive effect that we attribute to metric artifacts rather than any meaningful structural relationship.
+
+% ============================================================
+\section{Robustness and Diagnostic Signals}
+% ============================================================
+
+\paragraph{Robustness checks.}
+Three robustness checks confirm that misalignment is not an artifact of particular implementation choices. First, averaging explanations across all 10 models within a Rashomon set yields modest improvements in some settings---notably improving LIME strength alignment---but does not eliminate the long left tails in either metric. This is consistent with recent findings that Rashomon-set averaging can partially stabilize explanations \citep{donnelly2023rashomon}, but also confirms that consensus across plausible models cannot fully recover the true $X \mapsto Y$ structure when the Rashomon set is large and diverse. Second, varying LIME hyperparameters---specifically, the kernel bandwidth and neighborhood sample size---can modestly improve strength alignment; this is consistent with a theoretical result showing that LIME recovers true linear coefficients in the large-sample limit under idealized (non-discretized, independent-feature) conditions. However, increasing the kernel bandwidth also reduces direction alignment, illustrating that parameter choices involve nontrivial trade-offs. Averaging LIME explanations across multiple random seeds improves both direction and strength alignment, though misalignment persists. Third, varying the perturbation magnitude $\delta$ in the direction alignment metric does not materially change the shape of the alignment distributions or our qualitative conclusions, confirming that our results are robust to this evaluation design choice.
+
+\paragraph{Rashomon agreement as a diagnostic.}
+The robustness checks motivate a key question: if misalignment cannot be fully remedied, can it at least be detected? We propose that disagreement among equally accurate models in a Rashomon set provides a practical signal of explanation unreliability. When models achieve similarly high predictive accuracy yet rely on different feature attributions, the space of hypotheses compatible with the observed data is large---and any single model's post hoc explanation reflects only one of many admissible stories about $X \mapsto Y$. We operationalize this intuition through two agreement metrics computed pairwise across 10 equally accurate models and then averaged to obtain a dataset-level score. \textit{Prediction agreement} is the fraction of test instances on which two models produce identical predicted labels. \textit{Explanation agreement} is the Spearman rank correlation between two models' feature importance rankings. Table~\ref{tab:rashomon_agreement_corr} reports the correlations between each agreement metric and the direction and strength alignment scores.
+
+\begin{table}[h]
+\centering
+\small
+\caption{Correlation between Rashomon agreement and explanation alignment}
+\label{tab:rashomon_agreement_corr}
+\begin{tabular}{l l c c}
+\toprule
+\textbf{Explainer} & \textbf{Agreement Type} & \textbf{Direction Alignment} & \textbf{Strength Alignment} \\
+\midrule
+\multirow{2}{*}{SHAP}
+    & Explanation agreement & 0.326 & \textbf{0.792} \\
+    & Prediction agreement  & 0.344 & 0.088  \\
+\midrule
+\multirow{2}{*}{LIME}
+    & Explanation agreement & 0.217 & \textbf{0.695} \\
+    & Prediction agreement  & 0.131 & 0.023  \\
+\bottomrule
+\end{tabular}
+\end{table}
+\normalsize
+
+Explanation-based agreement is a far stronger predictor of alignment than prediction-based agreement. For SHAP, explanation agreement correlates with strength alignment at 0.792; for LIME, at 0.695. The near-zero correlations between prediction agreement and strength alignment (0.088 for SHAP, 0.023 for LIME) reveal an important asymmetry: models can agree closely in their predicted outputs while relying on structurally different feature attributions to arrive at those predictions. Prediction-based agreement therefore fails to detect the kind of internal heterogeneity that undermines explanation reliability. Explanation-based agreement, by contrast, directly probes whether models converge on a consistent account of feature importance---making it a far more sensitive indicator of whether explanations reflect stable, data-supported structure. Low explanation agreement is an actionable warning sign: when equally accurate models tell different stories about which features matter and in what direction, none of those stories should be taken at face value as a characterization of $X \mapsto Y$. Researchers can compute this diagnostic from any set of high-performing models before drawing inferential conclusions from post hoc explanations.
+
+% ============================================================
+\section{Conclusions and Implications}
+% ============================================================
+
+Our study makes four contributions to the use of post hoc explanations in business research.
+
+\noindent\textbf{1.\ Documentation of widespread misuse.} Through a systematic review of 181 papers, we find that 42.5\% interpret model-level explanations as data-level evidence. This practice appears even in leading journals at rates of 14--17\%, indicating it is a systemic concern rather than an isolated problem. The near-universal use of strength-based interpretations (97.8\%) and the widespread use of directional interpretations (75.4\%) further suggest that the conceptual distinction between explaining a model ($X \mapsto \hat{Y}$) and describing data ($X \mapsto Y$) is not yet well-established in applied business research.
+
+\noindent\textbf{2.\ Empirical evidence of unreliable alignment.} Using simulated data with known ground truth, we show that SHAP and LIME explanations do not reliably recover the direction or strength of true feature effects, even when predictive models achieve high accuracy. Alignment distributions exhibit pronounced long left tails, meaning that severe failures in recovering both direction and strength occur with nontrivial frequency across realistic data scenarios. The high average alignment can create a false sense of security: a researcher who observes plausible-looking explanations has no guarantee that those explanations reflect the true $X \mapsto Y$ structure.
+
+\noindent\textbf{3.\ Identification of structural drivers.} Misalignment is driven primarily by the Rashomon effect and feature correlation. Both are fundamental properties of empirical modeling \citep{paes23inevitable} that are difficult to eliminate in practice---feature correlation is ubiquitous in business datasets, and the Rashomon effect is mathematically inevitable when learning from finite noisy data. This implies that misalignment is the rule rather than the exception in realistic business settings, and that the problem cannot be resolved by simply choosing a better model or a more careful explainer.
+
+\noindent\textbf{4.\ A practical diagnostic.} Explanation agreement among equally accurate models within a Rashomon set strongly predicts alignment, especially for feature strength ($r \approx 0.79$ for SHAP, $r \approx 0.70$ for LIME). Crucially, it is disagreement in \emph{explanations}---not in \emph{predictions}---that signals heightened risk of misinterpretation: prediction-based agreement correlates with strength alignment at only 0.088 for SHAP and 0.023 for LIME. This provides researchers with an actionable, dataset-level check that can be computed before drawing inferential conclusions.
+
+\paragraph{Implications for practice.}
+Post hoc explanations are best positioned as hypothesis-generating tools rather than hypothesis-validating ones. When post hoc explanations are used to guide inquiry rather than to justify conclusions, they can complement existing empirical tools without overstating their inferential content. The appropriate workflow uses SHAP or LIME to identify candidate features or mechanisms, and then applies causal inference techniques, regression-based identification strategies, or experimental designs to test whether those features genuinely affect outcomes. Several studies in the literature already illustrate this more appropriate workflow: \citet{zhang2023can} use SHAP to identify potentially important features for restaurant survival, but then rely on causal forests to assess causal influence; \citet{hanauer22boosting} treat traditional regression as a trusted baseline against which SHAP explanations are compared rather than as conclusions drawn directly from the explanations themselves. Making this distinction between exploration and validation is essential to prevent business research from overstating the reliability of insights derived from post hoc explainers and to ensure that empirical conclusions rest on sound theoretical and methodological foundations.
+{\small
+\bibliographystyle{informs2014}
+\bibliography{refs}}
+% \section*{Figures and Tables}
+%     \begin{figure}[ht!]
+%         \centering
+%   \begin{subfigure}[t]{.35\textwidth}
+%     \centering
+%     %\includegraphics[width=\linewidth]{Rebuttal-R1/sec4_shap_dir_best.png}
+%     \includegraphics[width=\linewidth]{Rebuttal-R1/feng_lu_figures/sec4_best81_shap_dir_v2.pdf}
+%     \caption{SHAP direction alignment}
+%     \label{fig:shap_sec4_direction}
+%   \end{subfigure}
+%    % \hfill
+%   \begin{subfigure}[t]{.35\textwidth}
+%     \centering
+%     %\includegraphics[width=\linewidth]{Rebuttal-R1/Rebuttal_Figures/shap_filtering_best_sec5_vary_none_strength_ecdf.png}
+%     \includegraphics[width=\linewidth]{Rebuttal-R1/feng_lu_figures/sec4_best81_shap_strength_v2.pdf}
+%     \caption{SHAP strength alignment}
+%     \label{fig:shap_sec4_strength}
+%   \end{subfigure}
+%   % \hfill
+%   % \begin{subfigure}[t]{.45\textwidth}
+%   %   \centering
+%   %   \includegraphics[width=\linewidth]{example-image-c}
+%   %   \caption{SHAP strength recall}
+%   % \end{subfigure}
+%   \smallskip
+
+%   \begin{subfigure}[t]{.35\textwidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{Rebuttal-R1/feng_lu_figures/sec4_best81_lime_dir_step3_v2.pdf}
+%     \caption{LIME direction alighment}
+%     \label{fig:lime_sec4_direction}
+%   \end{subfigure}
+%    % \hfill
+%   \begin{subfigure}[t]{.35\textwidth}
+%     \centering
+%     %\includegraphics[width=\linewidth]{Rebuttal-R1/Rebuttal_Figures/lime_filtering_best_sec5_vary_none_strength_ecdf.png}
+%     \includegraphics[width=\linewidth]{Rebuttal-R1/feng_lu_figures/sec4_best81_lime_strength_v2.pdf}
+%     \caption{LIME strength alignment}
+%     \label{fig:lime_sec4_strength}
+%   \end{subfigure}
+%   % \hfill
+%   % \begin{subfigure}[t]{.45\textwidth}
+%   %   \centering
+%   %   \includegraphics[width=\linewidth]{example-image-c}
+%   %   \caption{LIME strength recall}
+%   % \end{subfigure}
+%   \caption{Evaluation of direction and strength metrics for explanations of the best models for all 81 datasets by SHAP and LIME }\label{fig:sec4_best81}
+% \end{figure}
+%  \begin{figure}[h]
+% \centering
+% \includegraphics[width=0.7\linewidth]{Rebuttal-R1/feng_lu_figures/sec5_impact_model_accuracy_v2.pdf}
+% \caption{The impact of model accuracy on explanation alignment.}\label{fig:sec5_accuracy}
+% \end{figure}
+% \begin{figure}
+% \centering
+%   \begin{subfigure}[t]{.47\textwidth}
+%     \centering
+%     %\includegraphics[width=\linewidth]{Rebuttal-R1/Rebuttal_Figures/sec5_vary_nf_shap_dir_best.png}
+%     \includegraphics[width=\linewidth]{Rebuttal-R1/feng_lu_figures/nf20_cs100_nl5_in0_v2.pdf}
+%     \caption{The maximum difference of ranks by SHAP for models in a Rashomon Set in one dataset}\label{fig:dataset_ranking}
+%   \end{subfigure}
+% \hfill
+%   \begin{subfigure}[t]{0.47\textwidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{Rebuttal-R1/feng_lu_figures/sec5-range_dist_v3.pdf}
+%     \caption{The distribution of differences of feature ranks}
+%   \end{subfigure}
+%   \caption{The evidence of Rashomon Effect on Post hoc explanations}\label{fig:range_dist}
+% \end{figure}
+
+% \begin{figure}[h]
+% \centering
+%   \begin{subfigure}[t]{.95\textwidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{Rebuttal-R1/feng_lu_figures/sec5_SHAP_DGP_factors_v3.pdf}
+%     \caption{Impact of data characteristics on SHAP alignment}
+%   \end{subfigure}
+
+%   \begin{subfigure}[t]{0.95\textwidth}
+%     \centering
+%     \includegraphics[width=\linewidth]{Rebuttal-R1/feng_lu_figures/sec5_LIME_DGP_factors_v3.pdf}
+%     \caption{Impact of data characteristics on LIME alignment}
+%   \end{subfigure}
+%   \caption{Impact of data characteristics on post hoc explanation alignment. Numbers on the top right are the coefficients of the univariate OLS analyses.}
+%   \label{fig:alignment_data}
+% \end{figure}
+
+\end{document}

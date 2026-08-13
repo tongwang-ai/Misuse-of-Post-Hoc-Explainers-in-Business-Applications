@@ -1,0 +1,58 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% informs4_public.sty
+%% Overlay to remove INFORMS / Management Science branding
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{informs4_public}[2026 Public clean overlay]
+
+\makeatletter
+
+% ----------------------------------------------------------------------
+% 1. Remove manuscript number
+% ----------------------------------------------------------------------
+\renewcommand{\MANUSCRIPTNO}[1]{}
+\def\theMANUSCRIPTNO{}
+
+% ----------------------------------------------------------------------
+% 2. Remove red disclaimer abstract block
+% ----------------------------------------------------------------------
+\def\theARTICLEABSTRACT{%
+  \HOOKb
+  \vspace*{18pt}
+  \begin{minipage}[t]{\textwidth}\parindent1em
+    \ABSfont
+    \noindent\theABSTRACT\endgraf
+    \vskip5pt
+    \theFUNDING
+    \theKEYWORDS
+    \theSUBJECTCLASS
+    \theAREAOFREVIEW
+    \theMSCCLASS
+    \theORMSCLASS
+    \if@BLINDREV\else\theHISTORY\fi
+  \noindent\hrulefill
+  \end{minipage}
+  \vspace*{0pt}
+}
+
+% ----------------------------------------------------------------------
+% 3. Remove top journal header block entirely
+% ----------------------------------------------------------------------
+\def\theARTICLETOP{}
+
+% ----------------------------------------------------------------------
+% 4. Remove running headers
+% ----------------------------------------------------------------------
+\def\RRHSecondLine{}
+\def\LRHSecondLine{}
+\def\RRHFirstLine{}
+\def\LRHFirstLine{}
+
+% ----------------------------------------------------------------------
+% 5. Disable automatic first-page formatting hook
+% ----------------------------------------------------------------------
+\AtBeginDocument{}
+
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

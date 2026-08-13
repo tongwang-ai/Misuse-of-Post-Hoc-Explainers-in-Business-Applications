@@ -1,0 +1,265 @@
+\documentclass[11pt]{article}
+
+\usepackage{sectsty}
+\usepackage{graphicx}
+\usepackage{outlines}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\setlist[enumerate,1]{label=\Roman*)}
+\setlist[enumerate,2]{label=\arabic*)}
+\setlist[enumerate,3]{label=\roman*)}
+
+\usepackage{amssymb}
+\newcommand\syllogism[3][]{%
+  \begin{center}
+  \def\tmp{#1}%
+  \ifx\tmp\empty\else(#1)\quad\fi
+  \begin{tabular}{@{}l@{}}
+    #2\\\hline#3\quad$\therefore$
+  \end{tabular}
+  \end{center}
+}
+
+\usepackage{amsfonts,amsmath}
+\usepackage{physics}
+\usepackage{dsfont}
+
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\title{ R1 Outline Idea}
+%\author{ Author }
+\date{\today}
+
+\begin{document}
+\maketitle	
+\pagebreak
+
+% Optional TOC
+% \tableofcontents
+% \pagebreak
+
+%--Paper--
+
+% \section{Current Paper Outline}
+
+% \begin{outline}[enumerate]
+%     \1 Introduction
+
+%         \syllogism[S1]{
+%           Business researchers use explainers to make definitive claims about data. \\
+%           They think that SHAP/LIME values \textbf{describe} the data. \\
+%           They think that SHAP/LIME values count as evidence upon which \textbf{prescriptive} claims can be made. \\
+%           They do not suppose a mathematical definition when using the term ``importance." \\
+%           Previous research shows explainers cannot even explain $M$. \\
+%           We showed how and why explainers fail to give descriptive/prescriptive insights into $G$.
+%         }{
+%           Business researchers ought only to use explainers to \textbf{generate hypotheses} about the data (mention emerging field of research, including those using LLM for hypotheses) cite the QJE paper on hypotheses proposal from image gradient. \\
+%         }
+
+%     \1 Related Work
+%             need to add discussion on how econometrics methods are used to identify relationships between features and the target variable in data
+%     \1 Use of SHAP and LIME in Business Research
+%         \2 Uses with \emph{Descriptive} View of Feature Importance
+%             \3 Infer that $X_j$ more/less important than $X_k$ in DGP 
+%         \2 Uses with \emph{Prescriptive} View of Feature Importance
+%             \3  Causal Claims like Counterfactuals: ``If Stakeholders \emph{were} to perform intervention $X\mapsto X'$ then it \emph{would} be the case that $G(X')= Y^*$
+        
+
+%     \1 Explanation Pipeline
+%         \2 Introduce Stage 1 \& Stage 2
+        
+%         \2 Introduce synthetic data generation
+
+%         \2 Applying Pipeline
+
+%         \2 Pervasiveness of Misalignment
+
+%     \1 Obtaining Descriptive and Prescriptive Insights into a Linear Ground Truth Model
+    
+%         \2 Metrics for Linear Ground Truth
+%             \3 Descriptive: Directionality
+%             \3 Descriptive: Concordance
+%             \3 Descriptive: Relevance
+
+%         \2 sources of discrepancy (why SHAP and LIME cannot explain the data?)
+% Stage 1: SHAP and LIME quantify feature importance within the learned model, not within the underlying data or data-generating process, and the model's decision-making process does not necessarily align with the data generating process.
+% (we want to show that there exists so many mappings from x to y, and we have no idea which is the true model's)
+
+% Dataset Properties (number of features, feature correlations)
+
+% Predictive Power of $M$ - even you have perfect accuracy, you may not completely align because of the rashomon effect
+% (ask gpt if there's)
+
+% Stage 2: The ways in which researchers often use SHAP and LIME—such as inferring which features are important in the data or reasoning about how modifying a feature would affect the outcome—do not align with the formal definitions or intended interpretations of these methods.
+
+
+%     \1 Obtaining Descriptive and Prescriptive Insights into Nonlinear Ground Truth Models
+
+%         \2 General Characterizations of Ground Truth Feature Importance
+%             \3 LIME/SHAP val of $G(x)$ (\textcolor{red}{done})
+%             % \3 Local: $\nabla G\mid_x$ 
+%             % https://arxiv.org/pdf/2201.08837
+%             \3 Global: Average Marginal Effect (AME) of $G$: the conditional expectation of Y given X, focusing on the *average* marginal effect across the population.
+%             % \3 Global: Marginal Effect of $G$ at Mean Vector (MMR)
+%             % \3 Global: Marginal Effect of $G$ at Representative Value (MER)
+
+%         \2 Dataset Construction
+
+%         \2 Metrics for Nonlinear Ground Truth
+%             \3 Descriptive: Rank Concordance (Local + Global)
+%             \3 \textbf{Descriptive: Directionality using AME/MMR/MER (Local + Global)}
+%             \3 Prescriptive: Counterfactual Validity (cite the MISQ paper)
+            
+
+%         \2  Experiments
+
+%     \1 Robustness Checks
+
+%     \1 Discussion and Conclusion
+%         \2 Main Findings
+
+%         \2 On the Use of Post Hoc Explanations
+%                 talk about using it for hypotheses generation and cite emergent work on it
+%         \2 General Concerns
+
+
+%         \2 Final Remarks
+% \end{outline}
+
+% \pagebreak
+
+% \section{Argument Structures}
+
+% \subsection{v1}
+
+%         \syllogism[S1]{
+%           Business researchers use explainers to make definitive claims about data. \\
+%           They think that SHAP/LIME values \textbf{describe} the data. \\
+%           They think that SHAP/LIME values count as evidence upon which \textbf{prescriptive} claims can be made. \\
+%           They do not suppose a mathematical definition when using the term ``importance." \\
+%           Previous research shows explainers cannot even explain $M$. \\
+%           We showed how and why explainers fail to give descriptive/prescriptive insights into $G$.
+%         }{
+%           Business researchers ought only to use explainers to \textbf{generate hypotheses} about the data (mention emerging field of research, including those using LLM for hypotheses) cite the QJE paper on hypotheses proposal from image gradient. \\
+%         }
+
+%     \subsection{v2}
+
+%         \textbf{Reduce emphasis on CORRECTNESS of explanations}
+
+%         \syllogism[S2]{
+%           Business researchers use explainers to derive a theoretical model $T'$ of a social phenomenon. \\
+%           They want $T'$ to have fewer internal theoretical inconsistencies than their previous theory $T$ had. \\
+%           They want to be able to use $T'$ to solve more empirical problems than they could using their previous theory $T$. \\ 
+%           % They think that SHAP/LIME values \textbf{describe} the data. \\
+%           % They think that SHAP/LIME values count as evidence upon which \textbf{prescriptive} claims can be made. \\
+%           % They do not suppose a mathematical definition when using the term ``importance." \\
+%           Previous research shows explainers cannot even explain $M$. \\
+%           We showed how and why explainers fail to give descriptive/prescriptive insights into $G$.
+%         }{
+%           Business researchers ought only to use explainers to \textbf{generate hypotheses} about the data, \\\emph{must} check those hypotheses for contradictions, and \emph{should} test the hypotheses experimentally.   \\
+%         }
+
+
+% ===
+
+
+
+
+
+\section{Introduction}
+\section{Related Work}
+\section{Current Uses and Interpretations of SHAP and LIME in Business Research}
+\subsection{Prevalence of Data-Level Inference}
+summary statistics of the misuses, especially in top journals (Lu)
+\subsection{The Explanation Pipeline in Business Research}
+Talk about the pipeline, use one linear ground truth data as an example to demonstrate the explanations of SHAP and LIME
+
+show the SHAP plot (beeswarm plot) and coefficient plot for LIME
+\subsection{Types of Interpretations Drawn from SHAP and LIME}
+\subsubsection{SHAP Explanations}
+Claim 1: Larger shapley values indicate larger Y
+
+Claim 2: features with higher mean absolute SHAP values are more important
+
+\subsubsection{LIME explanations}
+LIME explanations approximate local marginal effects
+
+\section{Do Post-hoc Explanations Align with Data?}
+\subsection*{SHAP estimate marginal contribution}
+Shapley value represents the contribution of a feature to the dependent variable
+\paragraph{Claim 1: large SHAP values indicate larger (or more positive) $Y$ - \emph{Direction of Contribution}}
+
+evaluation:  Spearman $\rho$ and Kendall $\tau$ between shapley value ranking and $G(x_i)$ - do larger shapley values co-occur with larger outcomes? (this is the part that is undone)
+
+    Define the perturbation function $p^j_\delta(\mathbf{x}) := [x_1,x_2,\ldots,x_j+\delta,\ldots,x_d]$, and we can generate many different perturbed data points, such as $p^j_2\delta(\mathbf{x}), p^j_3\delta(\mathbf{x}), \cdots p^j_{-1\delta(\mathbf{x})}, p^j_{-2\delta(\mathbf{x})}, \cdots$.
+    For each of these ``counterfactual" or "perturbed" data points, we compute the shapley value for feature j, so we have $e_{j,\delta}, e_{j,2\delta}, \cdots$. We also have the ground truth $Y$ for each data point, $G(p^j_\delta(\mathbf{x})), G(p^j_2\delta(\mathbf{x}))$, etc. We compare the ranking based on $e_{j,\delta}$ with the ranking based on $G(p^j_\delta(\mathbf{x}))$, for a fixed $j$. The idea is, as the above interpretation claims ``if you see a larger shapley value (given everything else fixed), you should see a larger $Y$. If we rank the data points based on $e_{j}$ in an ascending order, we expect to see $Y$ also increases or the probability of positive increases.
+    
+    % Define $\rho,\ldots,\rho_d$ so that $\rho_j = \text{corr}(\{e^{\text{SHAP}}_j(\mathcal{M}(p_{k\delta}^j(\mathbf{x}))\}_{k=1}^{10}, \{(\sigma\circ \mathcal{G})(p_{k\delta}^j(\mathbf{x})) - (\sigma \circ \mathcal{G})(\mathbf{x})\}_{k=1}^{10})$
+
+    % Thus $\rho_j$ can be used to check how similar the effect of increasing a $X_j$ while holding the other features constant are on SHAP values and on increases to $\mathds{P}[Y=1]$.
+
+
+\paragraph{Claim 2: SHAP identifies important features based on mean absolute SHAP value}
+evaluation: Spearman $\rho$ and Kendall $\tau$ between ranking based on mean absolute SHAP values and true shapley from G
+experiments done by Lu Feng 
+
+
+\subsection*{LIME estimates marginal effect}
+
+evaluation: directionality, relative importance (old results from 1st submission and need to do new ones for non-linear)
+
+
+\subsection{Data Simulation}
+\subsubsection{Results of SHAP evaluation}
+\subsubsection{Results of LIME evaluation}
+\subsection{Results}
+
+
+
+
+\section{why it happened}
+M is not G (we can just focus on SHAP, put LIME in the appendix)
+
+\subsection{the number of features}
+
+\subsection{correlation of features}
+
+\subsection{the M's accuracy }
+    1) M is not perfect: alignment gets better when accuracy increases (experiments)
+    2) even M has high accuracy, the Rashomon set theory (discussion) -> show evidence of m highly accurate models disagree in explanations
+
+\subsection{Explainer Properties}
+
+
+regression analyses
+
+\section{Robustness Check}
+1. Average explanation (e.g., 10 M, each with a shap explanation)
+2. Average the model first and then explain the ensemble
+3. for LIME, average LIME with different seeds
+
+take-away: talk about using agreement among the models as a sign for not trusting or generalizing the explanations from the model to the data. 
+\section{Discussion}
+
+
+call for future work on "confidence interval" or "p-value" for model explanations
+
+suggestions on diagnoses (how do we know we should not trust the explanation?)
+
+advocate for using post-hoc explanations for hypotheses generation rather than evidence
+
+
+
+===
+What we need from Lu:
+
+Data generation code
+were models saved? were shapley values saved?
+\end{document}

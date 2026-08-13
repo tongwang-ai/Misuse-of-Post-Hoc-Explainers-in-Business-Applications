@@ -1,0 +1,490 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Papers submission guideline
+
+%●     Maximum of 10 pages (including abstract, tables, figures, and references).
+
+%●     Single-spacing and 11-point font with one-inch margins on four sides.
+
+%●     Papers must be submitted via this link. Late submission will not be considered for further review.
+
+%●     Copyright: The DM workshop will not retain the copyrights on the papers; so, the authors are free to submit their papers to other outlets.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[11pt]{article}    % <--- 11pt font
+\usepackage[margin=1in]{geometry}% <--- 1 in margin
+\usepackage{setspace}
+\usepackage{times} % <--- times new roman
+\singlespacing
+%\doublespace   
+%%\OneAndAHalfSpacedXII % Current default line spacing
+%%\DoubleSpacedXII
+%%\DoubleSpacedXI
+
+% If hyperref is used, dvi-to-ps driver of choice must be declared as
+%   an additional option to the \documentclass. For example
+%\documentclass[dvips,mnsc]{informs3}      % if dvips is used
+%\documentclass[dvipsone,mnsc]{informs3}   % if dvipsone is used, etc.
+
+% Private macros here (check that there is no clash with the style)
+\usepackage{color, colortbl}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{dsfont}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{url}
+\def\UrlBreaks{\do\/\do-}
+\usepackage{breakurl}
+\usepackage[breaklinks]{hyperref}
+\usepackage{makecell}
+\usepackage{mwe}
+\usepackage{footnote}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{tikzviolinplots}
+\usepgfplotslibrary{external}
+\tikzexternalize
+\usepackage{minted}
+\usemintedstyle{gruvbox-light}
+\usepackage{scontents}
+
+\newcommand{\gray}{\rowcolor[gray]{.90}}
+% Natbib setup for author-year style
+\usepackage{natbib}
+ \bibpunct[, ]{(}{)}{,}{a}{}{,}%
+ \def\bibfont{\small}%
+ \def\bibsep{\smallskipamount}%
+ \def\bibhang{24pt}%
+ \def\newblock{\ }%
+ \def\BIBand{and}%
+\def\pipeline{prediction insight pipeline}
+\newcommand{\tw}[1]{\textcolor{red}{Tong: #1}}
+
+%% Setup of theorem styles. Outcomment only one.
+%% Preferred default is the first option.
+%\TheoremsNumberedThrough     % Preferred (Theorem 1, Lemma 1, Theorem 2)
+%\TheoremsNumberedByChapter  % (Theorem 1.1, Lema 1.1, Theorem 1.2)
+%\ECRepeatTheorems
+
+%% Setup of the equation numbering system. Outcomment only one.
+%% Preferred default is the first option.
+%\EquationsNumberedThrough    % Default: (1), (2), ...
+%\EquationsNumberedBySection % (1.1), (1.2), ...
+
+% For new submissions, leave this number blank.
+% For revisions, input the manuscript number assigned by the on-line
+% system along with a suffix ".Rx" where x is the revision number.
+\date{}
+%%%%%%%%%%%%%%%%
+\begin{document}
+
+\title{On the Incorrectness and Multiplicity of Post Hoc Explanations for Business Research}
+
+\author{Anonymous Authors}
+%\date{April 2020}
+
+% palette for colorblindness https://davidmathlogic.com/colorblind/#%23000000-%23E69F00-%2356B4E9-%23009E73-%23F0E442-%230072B2-%23D55E00-%23CC79A7
+
+
+
+% Sample
+%\KEYWORDS{deterministic inventory theory; infinite linear programming duality;
+%  existence of optimal policies; semi-Markov decision process; cyclic schedule}
+
+% Fill in data. If unknown, outcomment the field
+%\KEYWORDS{post hoc, explainable, interpretable} \HISTORY{This paper was first submitted on April 12, 1922 and has been with the authors for 83 years for 65 revisions.}
+
+\maketitle
+
+\begin{abstract}
+    Attributive post hoc explanation methods like LIME and SHAP have become very popular in interpreting machine learning models for solving business problems. Existing research has illuminated potential issues with post hoc explanations, but unique problems arise when they are used in business contexts, since stakeholders may want to make decisions or draw managerial insights based on them. %This is a problem because post hoc explainers have been shown to have intrinsic issues that may make their results untrustworthy. Worse yet, human evaluation studies have shown that data scientists often misuse or misunderstand post hoc explanations.
+    In this work, we investigate how and why post hoc explanations can be misused or misunderstood in business research. Our investigation proceeds by diagnosing and demonstrating issues we identify in what we call the Prediction Insight Pipeline in business research. The pipeline starts with researchers building a black-box machine learning model for predictions, then using a post-hoc explainer to explain the model, and ends with researchers using the explanations of the black box to make inferences about their business. We \textit{demonstrate} two issues with the post-hoc explanations, incorrectness and inconsistency,  and demonstrate their consequences on managerial insights. We then \textit{identify} the causes of the two issues. Finally, we propose and test some intuitive \textit{mitigation} strategies for these issues. 
+    Our paper calls for business researchers not to view post hoc explainers as oracles and to only use them with great caution.
+\end{abstract}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% RONILO: Idea for the structure of our critique
+% 1. Identify the underlying assumptions and conditions for the use of post hoc explainers. e.g. it's hard to make an intrinsically interpretable model, small rashomonon set, already have good bviolin (sunk cost fallacy...)
+% 2. Presuppose the conditions for post hoc explainer ot be effective. e.g. M is accurate, data satisfies causal inference conditions. What are the effects when they are and aren't satisfied?
+% 3. Examine the social relations generated by post hoc explainers. In this paper we just care about those between data scientists, model builders, and ***MANAGERS***. 
+% 4. Identify the contradictions and tensions within the use of post hoc explainers. e.g. multiplicity, wrong explanations, no actionable recourse, business owners misled into making harmful decisions
+% 5. Evaluate the potential for mitigation strategies involving G, M, the data, and post hoc explainers both alone and together. 
+
+%\newpage
+
+\section{Introduction}
+
+
+
+    % Mention Marketing Science Institute "consistently identified attribution as a topmost research priority over the last few years" (from SHAP meets uniform paper)
+
+% =========================== Tong ===========================
+In the past decade, the volume and complexity of data have increased significantly, leading to the widespread adoption of machine learning for business analysis. 
+
+
+However, business researchers who use machine learning models prioritize finding useful managerial insights instead of making predictions.
+
+Therefore, a new class of machine learning methods naturally caught the attention of business researchers: \emph{post hoc} explainers. 
+
+% \textcolor{red}{1) Write in the appendix how you got these numbers with enough detail. 2) Replace the Figure with a table. }
+
+The business research community readily adopts this new type of method to understand their black-box models and obtain managerial insights.
+
+    \begin{figure}[t!]
+        \centering
+        \includegraphics[width = .8\textwidth]{Figures/pipeline.png}
+        \caption{Prediction Insight Pipeline: the pipeline of using post hoc explainers to obtain managerial insights in business research.}
+        \label{fig:pipeline}
+    \end{figure}
+
+
+Although post hoc explanations seem like a magical tool via which researchers and practitioners can enjoy both high predictive accuracy and explainability at the same time, an alarm has gone off in the machine learning community. 
+
+Despite the heated debate about the usage of post hoc explainers, the discussion in the machine learning community is mainly focused on one leg of the pipeline in Figure \ref{fig:pipeline}  (``explaining a black-box'').
+
+Therefore, in this paper, our aim is to identify the issues in the pipeline in Figure 1 and how they could lead to incorrect and inconsistent managerial insights in business research. 
+
+We design various experiments to demonstrate incorrectness and inconsistency.
+
+
+    We will review related work in Section \ref{sec:related_work}. 
+    
+    \vspace{-3mm}
+\section{Related Work}
+    \label{sec:related_work}
+   This section introduces popular post hoc explainers and then gives a review of prior literature discussing their weaknesses. 
+   
+    \subsection{Background and Weaknesses of LIME and SHAP}
+        LIME and SHAP are advertised as model agnostic attributive post hoc explainers. 
+
+
+Post hoc explainers aim to help humans understand black boxes, but their current designs are often not conducive to that goal. 
+
+
+\section{Prediction Insight Pipeline}
+\label{sec:dataset}
+In this section, we use a realistic simulated dataset to demonstrate the pipeline in Figure \ref{fig:pipeline}.
+ 
+ \paragraph{Generating Simulated Data}
+
+Table \ref{tab:simulated} summarizes the meanings of all the features used by $\mathcal{G}$ and how they were generated. 
+\begin{equation}
+\label{eqn:gt}
+\small
+\begin{split}
+ p(x) = \sigma(2.50 +.0005\cdot\text{Age} -0\cdot\text{Sex} +.1 \cdot \text{Married} + .25\cdot \text{Cosigner} + 1.5 \cdot \text{Credit History} \\  + 3.00 \cdot \text{Income} - 1.00\cdot\text{Utilization} -.75 \cdot \text{Delinquency} - .50\cdot\text{Inquiries} + 5.00\cdot\text{Credit Score})
+\end{split}
+\end{equation}
+
+where $\sigma$ is a sigmoid function and $p(x)$ is the probability that an individual $x$ is approved for a loan.
+
+\paragraph{Predictive Model $\mathcal{M}$}
+The first step in the pipeline is to train an accurate machine learning model $\mathcal{M}$, such as an MLP, on the data. 
+
+\paragraph{Insight Pipeline Usage}
+After training a model $\mathcal{M}$, the next step in the pipeline is to apply a post hoc explainer $\mathcal{E}$ to $\mathcal{M}$. 
+ \begin{table}[h]
+ \small
+\centering
+\caption{Description of features for simulated loan data.   }
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Feature} & \textbf{Explanation}                           & \textbf{Formula}       & \textbf{Comment}                             \\ \hline
+%\rowcolor[gray]{.9}
+Age              & Applicant Age                                   & Uniform(18,100)        &                                              \\ \hline
+%\rowcolor[gray]{.9}
+Sex              & Applicant Sex                                   & Bernoulli(.5)          &                                              \\ \hline
+Married          & Applicant Marital Status                        & Bernoulli(.5)          &                                              \\ \hline
+Social Support   & 0 = no support, 1 = perfectly supported        & Uniform(0,1)           & Not observable                               \\ \hline
+Cosigner         & Indicator of presence of loan cosigner         & Bernoulli(.5)          & Depends on social support and marital status \\ \hline
+%Economy          & Health of the economy in the customer's region & Uniform(0,1)           &                                %              \\ \hline
+Income           & Applicant Income                                & Normal(40,000, 30,000) & %Colinear with Economy 
+\\ \hline
+%\rowcolor[gray]{.9}
+Utilization      & Proportion of total credit utilized            & Uniform(0,1)           & %Colinear with Economy 
+\\ \hline
+Delinquencies    & Number months since of last deliquent payment                   & Uniform(0,25)          &                                              \\ \hline
+%\rowcolor[gray]{.9}
+Inquiries         & Number of credit inquiries                     & Uniform(0,6)           &                                              \\ \hline
+%\rowcolor[gray]{.9}
+Credit Score\footnote{Credit scores based on a partial FICO credit scoring model \citep{ligons_fico} are calculated as follows: $\text{credit score} = 650 + (10 + 2.5\cdot \text{credit history}) + (70 - 15 \cdot \text{Inquiries}) + (35 - 4 \cdot \text{delinquencies}) + (105 - 100 \cdot \text{Utilization})$}     & Credit score based on FICO scoring             & Given below            & Depends on inquiries, delinquencies, and utilization.                                             \\ \hline
+\end{tabular}%
+}
+%Note that for demonstration purposes, Section \ref{sec:pipeline_demo} experiments use all features but the unobserved social support variable.}
+\label{tab:simulated}
+\end{table}
+
+
+
+\section{Incorrectness of Post Hoc Explanations}
+    In this section, we investigate the correctness of managerial insights derived from post hoc explanations.
+
+
+            \subsection{Unfaithful  Insights}
+                \label{sec:unfaithful_descriptive}
+                LIME and SHAP explanations may be unfaithful, so that unimportant features are implied to be important or features that correlate negatively with the outcome of interest are implied to correlate positively. 
+
+
+                \subsubsection{Identifying Relative Importance and Effect of Features}
+                    \label{sec:relative_and_signed_importance}
+                    We can tell the relative importance and effects of features from LIME and SHAP by inspecting the magnitudes and signs (respectively) of their surrogate model's coefficients. 
+ 
+                        
+        We evaluate LIME and SHAP by computing their Spearman rank correlations for rankings of 100 applicants in the test set. 
+        \paragraph{Discussion}
+        These results suggest that when managers attempt to use LIME to find how features affect the outcome of interest, LIME can tell them that the features have the opposite of their true effect.
+
+                    \subsubsection{Recall of the Most Important Features}
+                        \label{sec:recall}
+                        In practice, managers may only care about identifying, say, the top 5 most important features.
+
+    
+    \paragraph{Discussion} 
+        Managers may only want to find the handful of features that are most important to their business, especially when many features are involved. 
+
+\begin{figure*}[ht!]
+\centering
+    \begin{subfigure}[T]{0.3\textwidth}
+    \centering
+        \includegraphics[width=.9\linewidth]{Figures/fig3a.pdf}%{Figures/lime_shap_Spearman_magnitude.png}
+        \caption{Spearman rank correlations of ranked feature importance magnitudes from LIME and SHAP against the true ranked magnitudes from $\mathcal{G}$.}
+        \label{fig:lime_shap_Spearman_magnitude}
+    \end{subfigure}\hfill
+    \begin{subfigure}[T]{0.3\textwidth}
+        \centering
+        \includegraphics[width=.9\linewidth]{Figures/fig3b.pdf}%{Figures/lime_shap_Spearman_signed.png}
+        \caption{Spearman rank correlations of signed feature importance magnitudes from LIME and SHAP against the true ranking from $\mathcal{G}$.}
+        \label{fig:lime_shap_Spearman_signed}
+    \end{subfigure}\hfill
+    \begin{subfigure}[T]{0.3\textwidth}
+        \centering
+
+        \raisebox{-.3cm}{
+            \includegraphics[width=.9\linewidth]{Figures/fig4.pdf}        
+        }    
+
+        \caption{Average recall of LIME and SHAP when attempting to capture the top K most important features to $\mathcal{G}$ when explaining $\mathcal{M}$, for varied $K=1,2,3,...\#\text{Features}$.} 
+        \label{fig:avg_recall}
+    \end{subfigure}
+\caption{Violin plots showing LIME and SHAP's ability to order features from least to most important (left), most harmful to most beneficial (middle), as well as line plots showing LIME and SHAP's ability to identify the top $K$ features for varied $K$.}
+\label{fig:descriptive_figs}
+\end{figure*}
+
+\section{Inconsistency of Post Hoc Explanations}
+         Inconsistency of post hoc explainers refers to situations in which one or more post hoc explainers provide a set of explanations that contains some internal disagreement.
+
+        
+
+       \subsection{Inconsistencies Between Explainers}
+        \label{sec:conflict_between}
+                We suppose that business researchers dealing with tabular data would be likely to try both LIME and SHAP due to their popularity, and so we test how often and to what extent their explanations agree. 
+    
+            To investigate how different LIME and SHAP explanations of the same points are, we sample 100 test set applicants and obtain feature rankings according to the importance assigned to them by both LIME and SHAP.
+
+            % \begin{figure}[ht!]
+            %     \centering
+            %     \includegraphics[width=.5\textwidth]{Figures/fig16.pdf}%{Figures/lime_shap_spearman_together.png}
+            %     \caption{Violin plot of Spearman Rank Correlations between LIME and SHAP explanations of 100 points}
+            %     \label{fig:lime_shap_spearman_together}
+            % \end{figure}
+            
+            % REWORK NEXT TO PARAGRAPHS
+            \paragraph{Discussion}
+            These results suggest once more that post hoc explainers should be used with caution.
+
+            %Being that it is impossible in practice to know what explainer is the most correct, this experiment illustrates the importance of leveraging multiple explainers to maximize the likelihood that correct insights are drawn. Although \citep{kommiya21towards} recommended this, to the best of our knowledge, exactly how to leverage multiple explainers is an open problem. We treat this problem in Section \ref{sec:mitigation}.
+        
+
+
+
+    \subsection{Inconsistency from the Same Explainer}
+            \label{sec:conflict_within}
+        We will now give a demonstration of explainer inconsistency focusing on LIME.
+
+             To demonstrate the inconsistency of LIME in our simulated loan application context, we create 10,000 different instances of LIME by varying LIME's random seed and kernel width and investigate how consistently they rank features from most harmful to most beneficial for a single denied applicant. 
+
+             \paragraph{Discussion}
+             Because there is never a ground truth hyperparameter settings available when using LIME, Figure \ref{fig:lime_rankings_signed} should alert researchers to the possibility that LIME misleads them due to unfortunate hyperparameter choices because any feature can get (almost) any ranking. 
+
+    % \begin{figure}[ht!]
+    % \centering
+    %     \begin{subfigure}{.48\textwidth}
+    %           \centering
+    %         \includegraphics[width=\linewidth]{Figures/fig17a.pdf}%{Figures/lime_ranking_dist_mag.png}
+    %   \caption{Violin plots of feature rankings from LIME computed over 10,000 combinations of kernel widths and random seeds.}
+    %   \label{fig:lime_rankings_mags}
+    %     \end{subfigure}%
+    %     \hfill
+    %     \begin{subfigure}{.48\textwidth}
+    %           \centering
+    %         \includegraphics[width=\linewidth]{Figures/fig17b.pdf}%{Figures/lime_ranking_dist.png}
+    %   \caption{Violin plots of signed feature rankings from LIME computed over 10,000 combinations of kernel widths and random seeds.}
+    %   \label{fig:lime_rankings_signed}
+    %     \end{subfigure}
+    %     \hfill
+    % \caption{Violin plots of feature rankings from LIME computed over 10,000 combinations of kernel widths and random seeds.}
+    % \label{fig:lime_rankings}
+    % \end{figure}
+
+
+
+
+
+\begin{figure}
+\centering
+\begin{minipage}[t]{.3\textwidth}
+  \centering
+        \raisebox{.4cm}%{1.7cm}
+        {\includegraphics[width=1.2\linewidth]{Figures/fig16.pdf}}%{Figures/lime_shap_spearman_together.png}
+        \caption{Violin plot of Spearman cank correlations between LIME and SHAP explanations of 100 points}
+                \label{fig:lime_shap_spearman_together}
+\end{minipage}
+%\hfill
+\hspace{1cm}
+\begin{minipage}[t]{.3\textwidth}
+  \centering
+            \includegraphics[width=\linewidth]{Figures/fig17b.pdf}%{Figures/lime_ranking_dist.png}
+      \caption{Violin plots of signed feature rankings from LIME computed over 10,000 combinations of kernel widths and random seeds.}
+      \label{fig:lime_rankings_signed}
+\end{minipage}
+\end{figure}
+    
+    \section{Attempted ``Mitigation" Strategies}
+    Given the identified issues above, we test whether some intuitive mitigation strategies can improve the quality and consistency of post hoc explanations.  
+        
+\subsection{Attempted ``Mitigation'' Strategies for Incorrectness}
+\label{sec:incorrectness_mitigation} %\textcolor{red}{move this to the end of section 4. this is the mitigation strategy for incorrectness}
+    We propose several mitigation strategies. We show the relationship between the accuracy of $\mathcal{M}$ and the accuracy of LIME and SHAP's feature importance rankings to isolate the effects of $\mathcal{M}$ on LIME and SHAP. 
+
+
+\subsubsection{Does High-Accuracy of $\mathcal{M}$ Imply High-Quality Explanations?}
+\label{sec:m_fidelity}
+    Intuitively, holding the ability of a post hoc explainer to accurately explain models $\mathcal{M}$ constant, explanations of increasingly accurate models should be increasingly faithful to the ground truth. 
+
+    To answer this question, we control the accuracy of an MLP $\mathcal{M}$ by varying its training parameters.
+
+
+
+
+
+\subsubsection{Does High-Fidelity of $\mathcal{E}$ Imply High-Quality Explanations?} 
+\label{sec:e_fidelity}
+    LIME is meant for local explanations, so it is natural to wonder if its global approximation error is related to its ability to find the correct (global) feature rankings. 
+
+    The set of LIME explainers is constructed as follows and is motivated by \citep{laugel18defining}. 
+            
+            
+    Figure \ref{fig:lime_fidelity} shows some interesting phenomena when the local fidelity of $\mathcal{E}$ is very low and very high. 
+
+\begin{figure}
+\centering
+\begin{minipage}[t]{.3\textwidth}
+  \centering
+              \includegraphics[width=\linewidth]{Figures/fig10a.pdf}%}%{Figures/feng_fig/acc_increase_size_1.png}
+              \caption{Relative importance rankings }
+              \label{fig:acc_increase_metric1_strategy1}
+\end{minipage}%
+\hspace{.5cm}
+\begin{minipage}[t]{.3\textwidth}
+  \centering
+              \includegraphics[width=\linewidth]{Figures/fig11a.pdf}%}%{Figures/feng_fig/acc_increase_size_1.png}
+              \caption{Signed feature importance value rankings }
+              \label{fig:acc_increase_metric2_strategy1}
+\end{minipage}%
+\hspace{.5cm}
+\begin{minipage}[t]{.3\textwidth}
+  \centering
+    \includegraphics[width=\linewidth]{Figures/fig_fidelity.pdf}
+    \caption{Local fidelity versus its explanation quality}%, measured via Spearman rank correlation. The vertical bars at each fidelity level indicate the 95\% confidence interval for the Spearman correlation taken over all the models that had that level of accuracy.}
+    \label{fig:lime_fidelity}
+\end{minipage}
+\end{figure}
+
+\paragraph{Discussion}
+    Intuitively, as the accuracy of $\mathcal{M}$ and $\mathcal{E}$ increases, the quality of the explanations from $\mathcal{E}$ should also increase.
+
+\subsection{Attempted ``Mitigation'' Strategies for Inconsistency} 
+\label{sec:inconsistency_mitigation}
+    In this section, we explore whether it is worthwhile to average multiple explanations to avoid having to choose one of a multitude of explanations. 
+    
+\subsubsection{Averaging Explanations of One Explainer}
+    This section investigates whether the inconsistency of the explanations described in Section \ref{sec:conflict_within}, as well as in \citep{kommiya21towards}, can be leveraged.  \par
+    
+    Figure \ref{fig:avering_within_lime_metric2} shows that when averaging the increasing number of LIME instances, the quality of the resulting explanations does not improve, but the variability decreases somewhat.
+
+
+
+%\textcolor{red}{ADD FENGLUS FIGURES (on averaging) BACK!!!}
+\subsubsection{Averaging Explanations across Explainers}
+    Since \citep{kommiya21towards} demonstrated that feature importance rankings differed significantly across different explainers, we test whether averaging explanations from LIME and SHAP together gives higher quality explanations than those of LIME and SHAP individually.
+
+    Unfortunately, averaging LIME and SHAP rankings together does not seem to provide a clear advantage. 
+
+
+\begin{figure}
+\centering
+\begin{minipage}[t]{.3\textwidth}
+  \centering
+          \includegraphics[width=\linewidth]{Figures/fig19a.pdf}%{Final_Figures/fig23a.png}%{Figures/feng_fig/lime_1_v1.png}
+          \caption{Averaging LIME}
+          \label{fig:avering_within_lime_metric2}
+\end{minipage}%
+\begin{minipage}[t]{.3\textwidth}
+  \centering
+          \includegraphics[width=\linewidth]{Figures/fig19b.pdf}%{Final_Figures/fig23a.png}%{Figures/feng_fig/lime_1_v1.png}
+          \caption{Averaging SHAP}
+          \label{fig:avering_within_shap_metric2}
+\end{minipage}%
+\begin{minipage}[t]{.3\textwidth}
+  \centering
+    \raisebox{.375cm}{\includegraphics[width=\linewidth]{Figures/fig21.pdf}}%{Final_Figures/fig20.png}%{Figures/feng_fig/average_lime_shap_1_v1.png}
+    \caption{Averaging LIME/SHAP}
+    \label{fig:lime_shap_Spearman_together}
+\end{minipage}
+\end{figure}
+
+
+% removed this (temporarily?) for DMDA
+\paragraph{Discussion}
+%discuss future research on smarter ways of integrating it.
+%\tw{1. summary of results; connect to rashomon effect 2. discuss that simple mitigation methods do not help and future research is needed. See if there's any related literature. 3. talk about inherently interpretable ML. But even that, one still needs to be cautious about making causal claims because interpretable ML still creates a mapping based on correlation not causation. 4. General recommendations}
+ Results from our mitigation strategy experiments suggested that averaging the rankings of an ensemble of explanations is not advantageous.
+
+
+\section{Conclusion}
+Throughout this paper, we have identified various consequences of the use of model-agnostic post hoc explainers that could lead to incorrect business and managerial insights. 
+
+Our results suggest, e.g., that it is possible that businesses or customers trying to improve upon some outcome could waste time and resources adjusting for an irrelevant feature that LIME or SHAP implied was important.
+
+        
+
+
+% References here (outcomment the appropriate case)
+
+% CASE 1: BiBTeX used to constantly update the references
+%   (while the paper is being written).
+%\bibliographystyle{informs2014} % outcomment this and next line in Case 1
+%\bibliography{<your bib file(s)>} % if more than one, comma separated
+
+% CASE 2: BiBTeX used to generate mypaper.bbl (to be further fine tuned)
+%\input{mypaper.bbl} % outcomment this line in Case 2
+
+%If you don't use BiBTex, you can manually itemize references as shown below.
+
+%\clearpage
+
+\bibliographystyle{informs2014}
+\bibliography{refs}
+
+\clearpage
+
+%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%
+

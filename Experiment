@@ -1,0 +1,40 @@
+Sep 29 meeting
+1. Use FICO data to prove the feature importance differs across different explainers (compare LIME and SHAP) --> Feng Lu
+2. Use FICO to prove the feature importance differs even for the same explainer with different hyper-parameters (use LIME) --> Feng Lu
+3. Use FICO to prove the feature importance differs even for the same explainer with different seeds (run multiple times) --> Feng Lu
+
+4. Show the correlation between feature importance and fidelity (LIME), needs to simulate the ground truth of the predictive model --> Ronilo
+5. thinking about experiments for Misuse 1
+
+datasets: FICO, bank marketing (https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) 
+
+=========================
+
+Misunderstanding the explainer experiments
+1.
+
+Misusing the explainer experiments
+1. Show examples where actionable recourse using LIME/SHAP leads to an unexpected outcome (e.g. increasing feature with positive weight leads to lowering the response variable). This is a result of not choosing sufficient features in explanations.
+2. If we want to use counterfactuals, show example where the counterfactual is not realistic/possible/out-of-distribution
+3. Show a run of KernelSHAP on an unfair explainer that would suggest that the explainer is actually fair
+
+Choice of explainer experiments
+1. Using Simulated data with many features, show how feature importance given by LIME/SHAP diverge as more and more features are used.
+2. Compare explanations of different explainers using OpenXAI's metrics: https://github.com/AI4LIFE-GROUP/OpenXAI
+3. Follow Alvarez '18 paper to show examples when LIME is more unstable than SHAP
+4. Follow Kommiya '21 paper to show examples when LIME and SHAP explanations use neither necessary nor sufficient features to explain outcomes. 
+5. Need experiments to show source of the difference
+6. Check how relationships between features in dataset affects difference in explainers. E.g. show different effects of deleting causal child from feature list.
+7. Investigate data/label shift in LIME; try to figure out when to discard LIME
+8. Illustrate effect of deleting irrelevant feature that is a proxy for a relevant but unobserved feature on kernel vs tree shap
+9. Show consequences of using an unstable explainer e.g. what if instability of the explainer causes manager to think fair model is actually unfair?
+10. Following Kommiya '21, show the utility of using multiple explainers
+
+Choice of hyperparameter experiments
+1. Do sufficiently many runs of LIME with different hyperparameters to observe cases where an important feature has positive, negative, and zero importance in different runs. Show histogram of feature importances across many runs.
+2. Box plot of distances between LIME rankings and default SHAP ranking when varying LIME hyperparameters using OpenXAI's metrics: https://github.com/AI4LIFE-GROUP/OpenXAI
+3. Box plot of distances between LIME rankings and default SHAP ranking when varying LIME random seed using OpenXAI metrics
+4. Visualize differences of LIME rankings from varying hyperparameters (e.g. histograms of feature importance scores for each feature)
+5. Visualize differences of LIME rankings with same (default) parameters but on different folds. Plot histogram of weights for each feature.
+6. Show that user may be misled if they just run LIME one time instead of e.g. averaging 
+ 

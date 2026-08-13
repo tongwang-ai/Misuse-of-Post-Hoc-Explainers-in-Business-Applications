@@ -1,0 +1,250 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Author template for Management Science (mnsc) for articles with no e-companion (EC)
+%% Mirko Janc, Ph.D., INFORMS, mirko.janc@informs.org
+%% ver. 0.95, December 2010
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[mnsc,blindrev]{informs3}
+%\documentclass[mnsc,nonblindrev]{informs3} % current default for manuscript submission
+
+\OneAndAHalfSpacedXI
+%%\OneAndAHalfSpacedXII % Current default line spacing
+%%\DoubleSpacedXII
+%%\DoubleSpacedXI
+
+% If hyperref is used, dvi-to-ps driver of choice must be declared as
+%   an additional option to the \documentclass. For example
+%\documentclass[dvips,mnsc]{informs3}      % if dvips is used
+%\documentclass[dvipsone,mnsc]{informs3}   % if dvipsone is used, etc.
+
+% Private macros here (check that there is no clash with the style)
+
+%https://tex.stackexchange.com/questions/400692/different-height-of-tikz-subfigures-despite-same-axis-width-height
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{multirow,calc,amsmath}
+\newlength\mylenA
+\newlength\mylenB
+\newlength\mylenC
+\newlength\mylenD
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{etoolbox}
+\AtBeginEnvironment{tcolorbox}{\normalsize}
+
+\usepackage{adjustbox}[valign=t]
+
+\tcbuselibrary{skins, breakable}
+
+\makeatletter
+\tcbset{
+  tabular/.style={
+    boxsep=\z@,top=\z@,bottom=\z@,leftupper=\z@,rightupper=\z@,
+    toptitle=1mm,bottomtitle=1mm,boxrule=0.5mm,
+    fontupper=\small,
+    before upper={\arrayrulecolor{tcbcolframe}\def\arraystretch{1.1}%
+      \tcb@hack@currenvir\tabular{#1}},
+    after upper=\endtabular\arrayrulecolor{black}},
+}
+\makeatother
+
+\usepackage{color, colortbl}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{subcaption}
+%\usepackage{tcolorbox}
+\usepackage{physics}
+\usepackage{dsfont}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{makecell}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{tikzviolinplots}
+\usepgfplotslibrary{external}
+\tikzexternalize
+\usepackage{minted}
+\usemintedstyle{gruvbox-light}
+\usepackage{scontents}
+\usepackage{statmath}
+\usepackage{outlines}
+ 
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+
+\newcommand{\gray}{\rowcolor[gray]{.90}}
+% Natbib setup for author-year style
+\usepackage{natbib}
+ \bibpunct[, ]{(}{)}{,}{a}{}{,}%
+ \def\bibfont{\small}%
+ \def\bibsep{\smallskipamount}%
+ \def\bibhang{24pt}%
+ \def\newblock{\ }%
+ \def\BIBand{and}%
+\def\pipeline{prediction insight pipeline}
+\newcommand{\tw}[1]{\textcolor{red}{Tong: #1}}
+
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+
+% \newtheorem{theorem}{Theorem}
+% \newtheorem{corollary}{Corollary}[theorem]
+% \newtheorem{lemma}[theorem]{Lemma}
+% \newtheorem{remark}{Remark}
+% \newtheorem{proof}{Proof}
+
+
+%% Setup of theorem styles. Outcomment only one.
+%% Preferred default is the first option.
+\TheoremsNumberedThrough     % Preferred (Theorem 1, Lemma 1, Theorem 2)
+%\TheoremsNumberedByChapter  % (Theorem 1.1, Lema 1.1, Theorem 1.2)
+\ECRepeatTheorems
+
+%% Setup of the equation numbering system. Outcomment only one.
+%% Preferred default is the first option.
+\EquationsNumberedThrough    % Default: (1), (2), ...
+%\EquationsNumberedBySection % (1.1), (1.2), ...
+
+% For new submissions, leave this number blank.
+% For revisions, input the manuscript number assigned by the on-line
+% system along with a suffix ".Rx" where x is the revision number.
+\MANUSCRIPTNO{MS-0001-1922.65}
+
+%%%%%%%%%%%%%%%%
+\begin{document}
+%%%%%%%%%%%%%%%%
+
+% Outcomment only when entries are known. Otherwise leave as is and
+%   default values will be used.
+%\setcounter{page}{1}
+%\VOLUME{00}%
+%\NO{0}%
+%\MONTH{Xxxxx}% (month or a similar seasonal id)
+%\YEAR{0000}% e.g., 2005
+%\FIRSTPAGE{000}%
+%\LASTPAGE{000}%
+%\SHORTYEAR{00}% shortened year (two-digit)
+%\ISSUE{0000} %
+%\LONGFIRSTPAGE{0001} %
+%\DOI{10.1287/xxxx.0000.0000}%
+
+% Author's names for the running heads
+% Sample depending on the number of authors;
+% \RUNAUTHOR{Jones}
+% \RUNAUTHOR{Jones and Wilson}
+% \RUNAUTHOR{Jones, Miller, and Wilson}
+% \RUNAUTHOR{Jones et al.} % for four or more authors
+% Enter authors following the given pattern:
+%\RUNAUTHOR{}
+
+% Title or shortened title suitable for running heads. Sample:
+% \RUNTITLE{Bundling Information Goods of Decreasing Value}
+% Enter the (shortened) title:
+\RUNTITLE{The Illusion of Interpretation}
+
+% Full title. Sample:
+% \TITLE{Bundling Information Goods of Decreasing Value}
+% Enter the full title:
+%change title!!!
+\TITLE{The Illusion of Interpretation: Post Hoc Explanations Aren't a Silver Bullet for Business Research}
+
+% Block of authors and their affiliations starts here:
+% NOTE: Authors with same affiliation, if the order of authors allows,
+%   should be entered in ONE field, separated by a comma.
+%   \EMAIL field can be repeated if more than one author
+\ARTICLEAUTHORS{%
+\AUTHOR{Snidely Slippery}
+\AFF{Department of Bread Spread Engineering, Dairy University, Cowtown, IL 60208, \EMAIL{slippery@dairy.edu}} %, \URL{}}
+\AUTHOR{Marg Arinella}
+\AFF{Institute for Food Adulteration, University of Food Plains, Food Plains, MN 55599, \EMAIL{m.arinella@adult.ufp.edu}}
+% Enter all authors
+} % end of the block
+
+% palette for colorblindness https://davidmathlogic.com/colorblind/#%23000000-%23E69F00-%2356B4E9-%23009E73-%23F0E442-%230072B2-%23D55E00-%23CC79A7
+
+\section{Things to add}
+
+\section{Things to discuss}
+\begin{outline}[enumerate]
+ \1 What should we do about the reviewer who asked to see the list of papers we use in our paper review?
+% \1 	How to increase novelty and distinguish our paper from others which have criticized post hoc explainers?
+% \2	Explaining data-driven decisions made by AI systems by Fernandez-Loria, Provost, and Han
+% \3	This paper focuses on explaining the decision process of an AI system, not explaining what’s going on in training data
+% \3	Provides a way to generate counterfactual explanations of AI system decision which are tailored to user preference
+% \3	Focuses on explaining individual decisions of AI system; reviewers want us to focus on evaluating global feature importance instead of individual explanations
+% \3	Attack SHAP by showing 1) feature with large importance may not affect the prediction, 2) SHAP values can be the same for two different decision procedures, 3) feature with zero SHAP value can affect the model decision. Illustrate these issues with 3 case studies.
+% \2	Fooling LIME and SHAP by Slack et al.
+% \3	Provides adversarial method to make biased classifiers s.t. SHAP/LIME cannot identify their bias. 
+% \2	Treatment of Rashomon effect (see below)
+% \2	We can articulate different views about what makes a good explanation and show that SHAP/LIME do not satisfy those views
+% \3	Consider philosophy of science study of (scientific) explanation
+% \4	There is no one-size-fits-all method of explanation, but SHAP/LIME are being used that way
+% \4	What kind of questions can SHAP/LIME answer? (Why, how possibly, how actually)
+% \4	SHAP explanations not causal
+% \4	E.g. When explaining probabilistic phenomenon, SHAP does not tell you how features relate to the probability of the phenomenon occurring. 
+% \4	When explaining a phenomenon, do not unify that phenomenon under more general ones 
+% \4	Ability to perform scientific explanation limited by data availability
+\1	What application to use other than loan approval. Details. (customer behavior explanation)
+\1 What should be the ground truth other than marginal effect
+% \1	How to characterize feature importance and marginal effect.
+%     \2	Types of univariate marginal effect (Scholbeck ’22)
+%         \3	Average marginal effect (AME)  – estimate of expected marginal effect w.r.t. distribution of $X$
+%         \3	Marginal effect at means (MEM) – marginal effect evaluated at the expectation of $X$
+%         \3	Marginal effects at representative value (MER) – marginal effect evaluated where $X_1,X_2,\ldots,X_d$ are set to specific values
+%     \2	Types of feature importance in a regression (Achen ’84):
+%         \3	Theoretical importance $\hat{\beta_j}$
+%         \3 Level importance $\hat{\beta_j}\bar{x_j}$
+%         \3 Dispersion importance $\hat{\beta_j} \sigma_j /\sigma_y$
+% 	\2 Types of feature importance for ML model other than LIME/SHAP
+% 	   \3 Univariate Perturbation Based
+% 	       \4 Compare model performance before and after replacing $X_j$ with perturbed version $\tilde{X}_j$
+% 	       \4 Examples: PFI, CFI, RFI
+% 	   \3 Marginalization Based (SAGE)
+% 	       \4 Remove features by marginalizing them out of the prediction function and then inspect change in performance 
+% 	       \4 Examples: SAGE, mSAGEvf, cSAGEvf
+% 	   \3 Model Refitting Based
+%         	\4 Remove features from data and refit the model
+%         	\4 Examples: LOCO, LOCI, WVIM
+% 	   \3 Rashomon set Based
+%         	\4 Average FI over models in Rashomon set(s)
+%         	\4 Examples: VIC, RID, ShapleyVIC
+% \1	What content relating to the Rashomon effect should be added?
+%     \2	Rashomon effect means there can be many ML models with near optimal accuracy but tell a different story about how X relates to Y
+%     \2 	Rashomon effect depends on the training data
+%     \2 	A Rashomon set is a set of distinct ML models with near optimal performance. The Rashomon ratio is the ratio of the number of simple near optimal models to the whole Rashomon set. 
+%     \2 	Correspondingly, there should be a something like a Rashomon set of explanations in a space of explanations. We can compute the ‘Rashomon Ratio’ of the good SHAP/LIME explanations in a family of good explanations 
+
+\1	What properties should the nonlinear ground truth have?
+    \2	Should it be polynomial? Interaction terms? Periodicity?
+    \2	Should we just use the Monk 3 DGP?
+
+% \1	If we move section 6 (mitigation strategies) to the appendix, what do we do with the econometric case study? 
+
+% \1 	One reviewer said we should discuss best practices and highlight common pitfalls for usage of post hoc explainers. Should we do this? If so, how?
+%     \2 Leverage domain knowledge and causal inference background to preprocess data
+%         \3	Estimate likelihood that unconfoundedness satisfied
+%         \3	Remove causal children?
+%         \3	Remove highly correlated features?
+%         \3	Use Bayesian network + domain knowledge to guess causal graph?
+%     \2 	Get feature importance in the RID style?
+%         \3	Generate Rashomon sets of bootstraps of training data
+%         \3	Aggregate feature importance over explainers and models
+%     \2 	Avoid relying on single explanation of single model, or even average explanation over test set predictions from one model
+
+\end{outline}
+
+
+\bibliographystyle{informs2014}
+\bibliography{refs}
+
+\newpage
+
+\end{document}
+%%%%%%%%%%%%%%%%%
+

@@ -1,0 +1,70 @@
+\documentclass{article} % \documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble
+
+\usepackage{amsmath} % \usepackage is a command that allows you to add functionality to your LaTeX code
+
+\title{Simple Sample} % Sets article title
+\author{My Name} % Sets authors name
+\date{\today} % Sets date for date compiled
+
+% The preamble ends with the command \begin{document}
+\begin{document} % All begin commands must be paired with an end command somewhere
+    \maketitle % creates title using information in preamble (title, author, date)
+    
+\section{CIST}
+    \subsection{R1}
+    \subsubsection{Summary}
+    This work leverages 1) the simulated data, 2) the ground truth model, 3) post hoc explainers applied to MLP, and 4) Spearman rank correlation coefficient to identify two specific and practical issues of post hoc explainers – incorrectness and multiplicity. Due to the two issues identified in this paper, scholars recommend that the business community use the managerial insights derived from these post hoc explanations with caution.
+
+The paper is well written and easy to follow. The figures are informative and nice. For example, Figure 5 shows the importance of improving the predictive accuracy of black-box models. This figure informs us that the post hoc explainers are more accurate and trustworthy for black-box models with higher accuracy; therefore, post hoc explainers should only be applied when accuracy of black-box model is high; post hoc explainers may help business researchers to identify the cause of outcomes more efficiently.
+
+    \subsubsection{Primary Concerns}
+
+My primary concern is that the significance and contribution of the paper are not substantial. The paper discusses the problem of using post hoc explanations, which have been extensively studied by machine learning researchers, as cited by the authors. This work gives an example to ascertain what is already known. Specifically, the data generating process is learner, the model is an MLP, and LIME and SHAP are used. However, the work does not show how to address the problem. Though the authors claim that this is the first work in business research, I cannot see how this claim holds since the paper only conducted a simulation study of loan approval, which, essentially, is a binary classification; from my perspective, it is not even necessary to name the covariates and the dependent variables. This work may be good enough as a course project but may not be good enough as a conference presentation, considering that the findings are incremental and no solution is provided.
+
+\subsubsection{Minor Concerns}
+    \begin{itemize}
+        \item Page 6-7: Although this paper claims that the ground truth is known, the source of the ground truth is unknown. My key concerns are: 1) It is unclear how the rank of the importance of the total 10 features (i.e., age, sex, income, etc.) is decided; 2) The only two citations are about the coefficients of age and sex. The ground truth model is particularly important because the correctness of all the conclusions in this paper relies on the coefficients of features in the ground truth model.
+        \item Page 10-11: In Section 4.2, “the proportion of times 100 previously rejected applicants got approved by both M and G for LIME and SHAP” is used as a measure for the incorrectness of a post hoc explainer. This proportion helps to “substantiate the claim that changing the most important feature(s) to an outcome identified by LIME or SHAP is unlikely to change the outcome.” However, one thing is missing. For the 100 rejected applicants, it is unknown whether adding the same perturbations to the K most important features identified in the ground truth model leads to loan approval. There is the possibility that even if we manipulate the K most important features identified in the ground truth model, the outcome will still not change from denial to approval; however, the probability of approval can be increased. Therefore, the robustness of the claim in this section may be improved.
+        \item In Section 5, the paper mentions that “Recent papers have confirmed that LIME’s hyperparameters can significantly change the explanation of the same outcome (Rahnama and Bostro 2019, Visani et al. 2021). ” If this is the case, the contribution of Section 5.2 is not sufficient.
+    \end{itemize}
+
+\subsection{R2}
+    \subsubsection{Summary}
+ The problem of incorrectness and multiplicity of post hoc explanations for business research, as mentioned in the title of the paper, is interesting. When I read the abstract and first couple of pages of the paper, I was excited that the authors are going to show us how to identify and overcome incorrectness and multiplicity problems when post hoc explanations are used for business research. However, as I read through the paper, I found my expectation was too high.
+
+ \subsubsection{Primary Concerns}
+ \begin{itemize}
+    \item First, the paper does not mention any business research reference (e.g., any paper published in business journals or conference proceedings) that have misused post hoc explanations for business research. So, it is not clear if the problem this study intends to address actually exists or not.
+    \item Second, the authors illustrate the incorrectness and multiplicity problems using a simulated dataset with a loan approval context. There are little or no justifications for the distributions and parameters used for generating the simulated dataset. There exist so many real-world loan/credit approval datasets publicly available. Why can’t the authors use some of the real data for this study? I think the results based on real data would be more convincing than those based on simulated data.
+
+    \item Third, the authors use a dataset generated with a global model to illustrate the limitations of LIME and SHAP. However, LIME is a local explanation method (as indicated in its name, Local Interpretable Model-Agnostic Explanations). SHAP also focuses on local explanation implementations (even though conceptually it is not necessarily a local method). It does not seem appropriate to evaluate local methods using a global model benchmark.
+
+    \item Finally, the paper does not propose any solution method or solid idea to deal with the incorrectness and multiplicity problems with post hoc explanations. The authors do provide an observation in Section 6 that as the prediction accuracy of the black-box model increases the accuracy of feature rankings also increases. However, it would be more interesting and important if the paper can suggest some direct mitigation approaches.
+ \end{itemize}
+
+\section{WITS}
+
+\subsection{R1: Weak Accept}
+\begin{itemize}
+\item The paper illustrates the limitations of post hoc explainers in terms of incorrectness and inaccuracy. The authors constructed a simulated data set from a logistic regression model with the ground truth. They trained an accurate machine learning model and applied the post hoc explainers LIME and SHAP to generate post hoc interpretations. They demonstrated the incorrectness of these post hoc explainers by computing Spearman rank order correlations, showing that the explainers often do not produce correct feature importance ranking. The authors further show that the explainers do not recall the most important features. Finally, they demonstrate inconsistency between LIME and SHAP explainers, and within the LIME explainers. The paper evaluates a number of mitigation strategies and finds that the mitigation strategies have limited merit.
+\item The paper is well written and sharp to the point. It has achieved the said purpose, namely, to demonstrate the weakness of post hoc explainers in interpreting black-box machine learning models. The methodology is appropriate and the evidence is compelling. However, the paper merely uncovers a problem (incorrectness and inaccuracy of post hoc explainers) but does not provide substantive guidance on how or when we can use these explainers. Are the authors categorically suggesting that we should not use post hoc explainers at all in interpreting black box machine learning models? I don't think this is the intention of the authors. But then, after reading the paper, I was left wondering, what should we do then?
+\item To take this study further, I suggest the authors to expand their exploration by considering the boundary of these post hoc explainers. Are there any kind of machine learning models or contexts where the post hoc explainers can interpret more accurately or consistently (e.g., do we expect a similar result for neural networks)? When can we use these post hoc explainers, and can we measure the degree of confidence in their use? The authors have partly addressed these questions when they consider the various mitigation strategies. Nevertheless, those analysis were all conducted in the logistic regression case. I wonder if this result can be generalized to other machine learning models, particularly the true black box models.
+\end{itemize}
+
+
+In any case, I think the paper will arouse an interesting and meaningful discussion at the conference. Hence, I recommend that it be accepted for WITS presentation. I wish the authors good luck.
+
+\subsection{R2: Weak Accept}
+The paper proposes a bold idea that the use of LIME and SHAP for post hoc explanations tends to lead to inconsistency and incorrectness in business research. I have several comments that I hope could help the authors further polish the study as follows.
+
+\begin{itemize}
+ \item The current results are based on simulation exercises. It would be very interesting to examine whether what the study proposes is aligned with human perception in reality.
+ \item The current mitigation strategies are rather limited. If the authors wish to treat mitigation strategies as one of the main contributions of the paper, I believe the authors will have to significantly enrich this section by discussing more novel, state-of-the-art potential techniques.
+\item The authors may wish to extend the discussion on the implications of inconsistency and incorrectness that occur when LIME/SHAP are used for post-hoc explanations. Examples of potential damages, especially for other studies, would be particularly insightful.
+\item While LIME and SHAP are common posthoc explainers, the authors may wish to discuss whether the inconsistency and incorrectness that the authors unveil are specific to LIME/SHAP, or they could occur regardless of the techniques.
+\end{itemize}
+
+
+All in all, I believe this is a good study that will generate decent discussions at the conference. I wish the authors the best of luck in moving this paper forward.
+
+\end{document} % This is the end of the document

@@ -1,0 +1,1739 @@
+% LaTeX rebuttal letter example.
+% 2018 fzenke.net
+\documentclass[11pt]{article}
+\usepackage{comment}
+\usepackage{booktabs}
+\usepackage{enumitem}
+% \usepackage[style=authoryear,maxcitenames=2]{biblatex}
+\usepackage{lipsum} % to generate some filler text
+\usepackage{fullpage}
+\usepackage{amsmath}
+% \usepackage{natbib}
+\usepackage{tikz}
+\usepackage{bbding}
+\usepackage{caption}
+\usepackage{tabularx}
+\usepackage{makecell}
+
+% \usepackage[normalem]{ulem}
+\usepackage{color,soul}
+\usepackage[colorinlistoftodos,prependcaption,textsize=footnotesize, color=lightgray]{todonotes}
+\usepackage{float}
+\usepackage{csquotes}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage[markup=underlined]{changes}
+% \usepackage{amsthm}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable}
+\tcbset {
+  base/.style={
+    arc=0mm, 
+    bottomtitle=0.5mm,
+    boxrule=0mm,
+    colbacktitle=black!10!white, 
+    coltitle=black, 
+    fonttitle=\bfseries, 
+    left=2.5mm,
+    leftrule=1mm,
+    right=3.5mm,
+    title={#1},
+    toptitle=0.75mm, 
+  }
+}
+
+\definecolor{brandblue}{rgb}{0.34, 0.7, 1}
+\newtcolorbox{mainbox}[1]{
+  colframe=lightgray,
+  breakable,
+  base={#1}
+}
+
+\newtcolorbox{subbox}[1]{
+  colframe=black!30!white,
+  base={#1}
+}
+\tcbuselibrary{listings}
+
+\newtcblisting{mainboxverb}{
+  colframe=lightgray,
+  colback=white,
+  listing only,
+  breakable,
+  listing options={
+    basicstyle=\ttfamily\small,
+    breaklines=true
+  }
+}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\DefineVerbatimEnvironment{shadedverbatim}{Verbatim}{
+  breaklines=true,
+  fontsize=\small,
+  bgcolor=gray!12
+}
+\setlength{\marginparwidth}{2cm}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+\usepackage{multirow}
+
+\usepackage{mathtools}
+\usepackage{adjustbox} %
+% import Eq and Section references from the main manuscript where needed
+% \usepackage{xr}
+% \externaldocument{manuscript}
+
+% package needed for optional arguments
+\usepackage{xifthen}
+\newcommand{\tw}[1]{\textcolor{red}{[TW: #1]}}
+
+\usepackage{natbib}
+ % \bibpunct[, ]{(}{)}{,}{a}{}{,}% g
+ % \def\bibfont{\small}%
+ % \def\bibsep{\smallskipamount}%
+ % \def\bibhang{24pt}% -
+ % \def\newblock{\ }%
+ % \def\BIBand{and}%
+\usepackage{caption}
+
+ \newenvironment{general}
+ {\par\medskip \noindent \begin{sf}\textbf{Reply}:\ }
+ {\medskip \end{sf}}
+ \setlength{\parskip}{10pt}
+
+% SE Counter
+\newcounter{se}[section]
+\newenvironment{se}[1][]{%
+    \refstepcounter{se}\par\medskip\noindent%
+    \textbf{SE \these: #1}\rmfamily\itshape%
+}{\medskip}
+
+\newenvironment{se*}[1][]{%
+    \par\medskip%
+    \rmfamily\itshape%
+}{\medskip}
+
+
+% AE Counter
+\newcounter{aed}[section]
+\newenvironment{aed}[1][]{%
+    \refstepcounter{aed}\par\medskip\noindent%
+    \textbf{AE \theaed: #1}\rmfamily\itshape%
+}{\medskip}
+ \setlength{\parskip}{10pt}
+
+\newenvironment{aed*}[1][]{%
+    \par\medskip%
+    \rmfamily\itshape%
+}{\medskip}
+\setlength{\parskip}{10pt}
+
+
+% define counters for reviewers and their points
+\newcounter{reviewer}
+\setcounter{reviewer}{0}
+\newcounter{point}[reviewer]
+\setcounter{point}{0}
+
+
+% This refines the format of how the reviewer/point reference will appear.
+
+
+
+
+
+
+\renewcommand{\thepoint}{R\,\thereviewer.\arabic{point}}
+
+% command declarations for reviewer points and our responses
+
+\newcommand{\sesection}
+{\newpage
+\section*{Response to the Senior Editor}}
+
+
+
+\newcommand{\aesection}
+{\newpage
+\section*{Response to the Associate Editor}}
+
+
+\newcommand{\reviewersection}{\stepcounter{reviewer} \newpage
+ \section*{Response to Reviewer \thereviewer}}
+
+\newenvironment{point}{
+    \refstepcounter{point} \bigskip \noindent {\textbf{\thepoint}}: \rmfamily \itshape
+}{\medskip}
+\setlength{\parskip}{10pt}
+
+\newenvironment{point*}{\bigskip \noindent \rmfamily \itshape}{\medskip} % chktex 6
+\setlength{\parskip}{10pt}
+
+\newcommand{\shortpoint}[1]{\refstepcounter{point} \bigskip \noindent
+{\textbf{\thepoint}} ---~#1\par }
+
+\newenvironment{reply}
+ {\par\medskip \noindent \begin{sf}\textbf{Reply}:\ }
+ {\medskip \end{sf}}
+ \setlength{\parskip}{10pt}
+
+\newcommand{\shortreply}[2][]{%
+    \medskip \noindent
+    \begin{sf}\textbf{Reply}:\ #2
+        \ifthenelse{\equal{#1}{}}{}{ \hfill \footnotesize (#1)}%
+        \medskip
+    \end{sf}
+}
+
+% \addbibresource{Neurips2024/LLMref.bib}
+
+\begin{document}
+\begin{sf}
+
+\flushleft{}
+Feb 25, 2026
+\vspace{15pt}
+
+Professor Hemant Bhargava\\
+Department Editor\\
+\textit{Management Science}\\
+\vspace{15pt}
+
+Dear Professor Bhargava,\\
+\vspace{20pt}
+
+
+
+We sincerely thank you and the review team for the thoughtful and constructive feedback on our manuscript, and we greatly appreciate the opportunity to revise and resubmit our work under a \textbf{major revision} decision. We apologize for the extended time taken to complete the revision. The reviewers’ comments were extremely valuable, and we took them very seriously. In the revised manuscript, we have addressed all comments and concerns raised, and we believe the paper has benefited significantly from this process.
+
+
+
+For ease of review, we provide a detailed Summary of Major Changes at the beginning of the revised manuscript. We hope the revised paper addresses the concerns raised and clarifies the paper’s contribution.
+
+We appreciate your time and consideration and look forward to your feedback on this revision.
+
+
+
+\vspace{10pt}
+
+Best regards\\
+The Authors
+
+\newpage
+\textbf{\Large Summary of Major Changes}\label{sec:majorchanges}
+
+The manuscript has been carefully revised in response to the reviewers’ and editors’ feedback. The revisions involve further development of the paper’s conceptual framework, a comprehensive reanalysis of the empirical results, and substantial streamlining of the presentation and exposition.
+
+In the previous submission, the central claim was that \emph{SHAP and LIME cannot be used to estimate marginal effects from data}. In the revised manuscript, we  sharpen this claim: \emph{post hoc explanations of model-level $\mathbf{X} \mapsto \hat{Y}$ relationships cannot be reliably used to infer $\mathbf{X}\mapsto Y$ relationships in the data, either in strength or in direction}.  
+
+Below we summarize the major changes.
+
+\begin{enumerate}
+\item \textbf{Strengthened Empirical Framework and Results}
+
+\begin{enumerate}
+    \item \textbf{New Evaluation Framework}
+
+    Following the review team’s guidance, we moved away from evaluating post hoc explainers in terms of marginal effect recovery. Instead, we propose a new evaluation framework that directly reflects how SHAP and LIME are interpreted in applied research. Specifically, we introduced two new metrics, \emph{direction alignment} and \emph{strength alignment} (\S~4.1)—motivated by the two dominant interpretations of post hoc explanations documented in the literature (\S~3).  
+
+
+Consistent with the reviewers’ suggestions, strength alignment is defined using \emph{aggregate} feature importance rather than instance-level explanations. We have produced a new suite of experiments using these new metrics in \S~4 and systematically analyze how both model-level and data-level factors (e.g., predictive accuracy, feature correlation, interactions, and noise) affect alignment in \S~5.
+
+\item \textbf{Richer Data-Generating Processes}
+
+We substantially expanded the data-generating processes used in the experiments. We developed a systematic procedure to generate data with varying levels of complexity by varying the number of features, interaction terms, feature correlations, nonlinear components, and also adding noise to make them realistic. This allows us to study a wide range of realistic scenarios and moves well beyond the purely linear settings considered in the previous submission.
+
+\item \textbf{Richer Sets of ML models}
+
+Instead of using neural networks as the default model, we now search through ten families of models (e.g., XGBoost, CatBoost, Random Forest, etc) when constructing a best model for a dataset. Then, depending on the specific analyses, we use the best model, or the best set of models (Rashomon Set), or a set of models with varying performance.
+\end{enumerate}
+
+\item \textbf{Enhanced and More Systematic Literature Review}
+
+We extended the literature review to include work published up to January 2026. To address concerns about journal quality and representativeness, we conducted a systematic and exhaustive review of all papers published in journals from the union of the UTD24, FT50, and INFORMS lists that use SHAP or LIME. To reduce human biases in the labeling, in addition to human manual review, we also use a SOTA LLM (\texttt{gpt-5.2}) to review each paper. Final labels were determined by reconciling disagreements between human annotations and LLM-based classifications. 
+
+We also expanded the related work discussion to reflect recent methodological progress and thoughtful use of post hoc explainers in applied research, including the papers highlighted by the reviewers.
+
+\item \textbf{Deeper Engagement with Rashomon Set Theory}
+
+In response to the review team’s suggestions, we significantly expanded the paper’s engagement with Rashomon set theory. First, in \S~5.2, we explain why a model having high predictive accuracy does not guarantee that explanations of that model align with $\mathbf{X}\mapsto Y$ in the data, emphasizing that the existence of a Rashomon set implies many distinct $\mathbf{X}\mapsto\hat{Y}$ mappings can achieve similar predictive performance.  
+
+Second, we introduce a new section (\S~7) that studies agreement  within a Rashomon set can be a useful diagnostic signal for assessing whether post hoc explanations reliably recover the direction and strength of relationships in $\mathbf{X}\mapsto Y$. This will be useful in practice to inform researchers and practitioners how much they can generalize model-level explanations.
+
+\item \textbf{Improved Exposition and Organization}
+
+
+We substantially improved the exposition throughout the paper. The introduction now provides a clearer and more accessible overview of SHAP and LIME for readers without prior familiarity. We expanded and clarified the literature review to document the prevalence of the issues studied and introduced a demonstration dataset to illustrate typical uses of SHAP and LIME, along with the common interpretations derived from them. In addition, following the suggestion of the review team, our mitigation strategies have been reframed as robustness checks.
+
+The manuscript is now organized around a clearer conceptual progression. The central message is - post-hoc explanation methods cannot reliably recover the direction or strength of features in the $\mathbf{X} \mapsto Y$ relationship in the data.  The paper is now structured to introduce the problem through an extensive literature review (\S 3), systematically evaluate explanation alignment (\S 4), analyze the underlying causes of misalignment (\S 5), assess robustness (\S 6), and investigate diagnostic signals (\S 7).
+
+
+\end{enumerate}
+
+
+\end{sf}
+
+\newpage
+
+% \textsf{For ease of reference, we copy your original comments here, in \emph{italics} font.}
+
+\sesection{}
+
+
+\begin{se*}
+
+Thank you for submitting your paper to Management Science. Attached please find reports from an excellent panel comprising 3 reviewers and an Associate Editor. The review find finds merit in the topic of the paper: how firms use post-hoc explainers and how research papers extrapolate from explanations to understand the data, seemingly inappropriately (the paper provides evidence of this practice, and offer mitigation strategies).
+
+
+There is a set of concerns raised about how well the research goals are executed, and presented. The reports underline several areas of weakness which would be critical to overcome in the next round. The AE has synthesized these very well, and the areas include: exposition quality; articulating the paper's advances beyond what current literature and practice already includes (reviewers have identified specific recent papers), employing suitable strawmen in your argument about the use of SHAP and LIME, and also presenting everything in a clear conceptual frame; convincing reviewers about the merits of the mitigation strategies presented; and a few other technical details.
+
+\end{se*}
+
+\begin{reply}
+We greatly appreciate the review team’s high-quality, constructive, and helpful feedback and we really appreciate the decision of a \textbf{major revision}. We have taken the comments very seriously, which has prompted us to think more deeply and broadly about the problem and its scope. We devoted significant effort to revising the manuscript, closely following the reviewers’ suggestions, which substantially improved the paper. A detailed \textbf{Summary of Major Changes} is provided on Page~\pageref{sec:majorchanges} of the rebuttal document.
+\end{reply}
+
+
+\begin{se}
+In terms of the work cut out for you, I can see some room for "slack" here. I hope the review team will find the paper to be of merit even if it does not achieve 100\% of what is set out in the reports. For instance, if some recent new papers have started addressing this problem already (R1, R3), that might not be a fatal problem (with regard to novelty of contribution) if you can explain and convince reviewers about the value-add from the current paper. Regarding the nature and quality of the journals where these "flawed" interpretations are presented (R3), I suspect reviewers will want to know that at least a good chuck of these are reputable journals. One way to also persuade the review team would be to address some of the deeper opportunities for adding value -- e.g., digging deeper into Rashomon set theory and investigating how the findings differ with "varying predictive power and degrees of complexity" (R2).
+
+\end{se}
+
+\begin{reply}
+We greatly appreciate the Senior Editor’s guidance and have strengthened the paper along the dimensions highlighted in the report.
+
+First, in response to concerns about novelty and contribution, we now clearly articulate the specific problem our paper addresses and explain how it differs from and complements prior work, including the recent papers cited by the reviewers. The revised manuscript explicitly clarifies the value added by our analysis relative to existing studies.
+
+Second, to address concerns regarding the quality and representativeness of the journals in which these interpretations appear, we conducted a systematic and exhaustive review of all papers published in journals from the FT50, UTD24, and INFORMS lists that use SHAP or LIME. In addition to manual review, we also use a SOTA LLM (\texttt{gpt-5.2}) to review all 181 papers. The final classifications were determined by reconciling disagreements between human classifications of the papers and LLM classifications. 
+
+Finally, in line with the suggestion to engage more deeply with Rashomon set theory, we substantially expanded both the conceptual discussion and empirical analysis related to Rashomon sets. In \S~5, we explain how the existence of a Rashomon set provides a structural source of unreliability in post hoc explanations. In addition, we introduce a new section (\S~7) that studies agreement among models and their explanations within a Rashomon set and proposes to use such agreement as a diagnostic signal for assessing explanation reliability. Empirically, we document a strong relationship between explanation alignment and Rashomon agreement, highlighting a practically useful signal for researchers and practitioners.
+
+These revisions reflect a thorough revision of the manuscript that incorporates the review team’s suggestions and improves the paper’s clarity, positioning, and contribution.
+\end{reply}
+
+
+
+\begin{se*}
+
+In sum, I agree with the review team's recommendation that the paper deserves a chance to convince the review team of its merits. And I want to express gratitude and appreciate to the review team for their thorough work and very informative reports - Thanks! 
+
+If you choose to submit a revision, please see the instructions below. Good luck!  
+
+\end{se*}
+
+
+
+\vspace*{0.5\baselineskip}
+
+\textsf{Thank you again for the opportunity to revise our paper! We are grateful to the constructive feedback from the review team. We hope that this revision satisfactorily addresses the concerns of the review team.}
+
+\aesection{}
+\begin{se*}
+This manuscript examines the growing trend in business research of using post hoc explainers,
+specifically SHAP and LIME, to infer data relationships and marginal effects, deviating from
+their intended use of explaining model predictions. The authors argue that this practice leads to
+misinterpretations because the explanations generated by these methods are often misaligned
+with the true data-generating process. Through theoretical analysis and empirical experiments
+using simulated and real-world data, the authors demonstrate this misalignment, even in simple
+models, and propose mitigation strategies to address the issue. They ultimately recommend that
+post hoc explainers should primarily serve to generate hypotheses for further investigation, rather
+than to draw definitive conclusions about data.
+
+
+This paper was sent to three reviewers with expertise and research in explainable ml across CS
+and business literature.
+
+
+The review team agree on the importance of the research question and issues raised. However,
+the review team sees several substantial concerns that require careful consideration and major
+revision. We have very involved and highly informative set of reviewers providing a lot of
+comments. I find the review team to be thorough, supportive, and helpful and thus the authors
+should put a high effort to address the team’s concern point-by-point. I highlight some issues,
+and revision points I want to see.
+\end{se*}
+\begin{reply}
+We greatly appreciate the review team’s high-quality, constructive, and helpful feedback. We greatly appreciate the opportunity to revise and resubmit our work under a \textbf{major revision} decision. We have taken the comments very seriously, which has prompted us to think more deeply and broadly about the problem and its scope. We devoted significant effort to revising the manuscript, closely following the reviewers’ suggestions, which substantially improved the paper. A detailed \textbf{Summary of Major Changes} is provided on Page~\pageref{sec:majorchanges} of the rebuttal document. Below we will discuss how we addressed each comment in detail. 
+
+
+\end{reply}
+\begin{aed*}
+\textbf{\textit{Manuscript Length and Clarity}}
+\end{aed*}
+
+\begin{aed}
+The manuscript exceeds the journal's length limits and requires substantial streamlining and rewriting – please do not take this task lightly. To enhance the paper's impact, the main content should be more concise and focused, avoiding unnecessary length as seen in its
+current form. Many sections can be relocated to the appendix without detracting from the core argument.
+\end{aed}
+\begin{reply}
+Thank you for this important guidance. We have substantially streamlined the manuscript and reorganized its structure to sharpen the core contribution. We removed or condensed material that was not essential to the main argument and relocated extensive technical details and auxiliary analyses to the Online Appendix.
+
+The manuscript is now organized around a clearer conceptual progression -- introduces the problem through an extensive literature review (\S 3), systematically evaluates explanation alignment (\S 4), analyzes the underlying causes of misalignment (\S 5), assesses robustness (\S 6), and investigates diagnostic signals (\S 7).
+
+The manuscript now has 41 pages including the bibliography, using double spacing and 11 fontsize.
+\end{reply}
+
+
+\begin{aed}
+    After presenting the key issues, the paper should begin with a clear and succinct introduction to foundational concepts such as marginal effects, SHAP, and LIME to ensure readers are equipped with the necessary context from the outset.
+\end{aed}
+
+\begin{reply}
+    Thank you for the suggestion! We no longer compare with marginal effects. But we do give a more friendly introduction of SHAP and LIME in the introduction. We discuss in more detail the unique forms and representations of explanations provided by SHAP and LIME, showing both visualization of the explanations and interpretations of the explanations using a demo dataset in Section 3. 
+\end{reply}
+
+
+
+\noindent \textbf{\textit{Novelty and Contribution}}
+\begin{aed}
+    Given the substantial body of prior research in computer science and business on the limitations and misuse of post hoc explainers, the authors must explicitly articulate the novel contributions of their work. Incorporating specific references, such as Slack et al. (2020) and Fernández-Loría et al. (2022), into the discussion would help clarify the study's incremental contribution and better position it within the existing literature.
+\end{aed}
+\begin{reply}
+We appreciate this suggestion and have incorporated Slack et al. (2020) and Fernández-Loría et al. (2022) into the related work section. We now explicitly clarify that, while these studies highlight limitations of post hoc explainers in explaining model behavior (i.e., $\mathbf{X}\mapsto \hat{Y}$), our paper addresses a different problem - that whether fundamental properties of $\mathbf{X} \mapsto \hat{Y}$ (model-level direction and strength) align with the data-level $\mathbf{X} \mapsto Y$.  The distinction is critical: explaining a model’s behavior is neither sufficient nor equivalent to explaining relationships in the underlying data. We also discuss how our work relates to and complements these prior studies, thereby situating it more clearly within the broader literature.
+
+Most importantly, we introduce an important source of misalignment - the Rashomon Effect - and discusse in depth the impact of Rashomon effect on explanation alignment and how to leverage the agreement within a Rahomon set to inform the reliability of post-hoc explanations. Therefore, we see our paper as complementary to prior work.
+\end{reply}
+
+\begin{aed}
+    The reviewers have raised concerns about conflating feature importance and marginal effects. The authors are encouraged to clearly differentiate between these concepts and refine their metrics to better align with the intended use cases. Additionally, the exposition should minimize strawman arguments, as pointed out in the reviewers' comments. I also share the view that the current framing does not adequately acknowledge the existing body of business research that has addressed similar issues. While instances of misuse were indeed prevalent in the past (and unfortunately indeed do continue to occur), the community has made strides in understanding and properly employing these tools. The paper should fairly represent the progress and efforts of researchers who have been thoughtfully using these methods as intended.
+\end{aed}
+\begin{reply}
+We thank the review team for raising this important concern about conflating feature importance and marginal effects. 
+
+
+A key challenge we faced early on was defining what researchers actually mean when they describe certain features as “important.” Most papers we reviewed do not specify this precisely—many simply report SHAP or LIME results as indicators of “importance,” without clarifying what they really mean. This lack of clarity makes it difficult to evaluate whether such explanations are appropriate. Therefore, we had to infer the intended meaning from context. Because many papers concluded by suggesting to increase or decrease specific features to influence outcomes, we chose to use \textit{marginal effects} as the ground truth for comparison and only use data simulated by linear models. The benefit in doing so is that in linear models, marginal effects correspond directly to model coefficients, providing a well-defined and empirically verifiable benchmark. 
+
+
+
+
+
+
+
+
+\noindent\textbf{Changes We Made.}
+The feedback from the review team prompted us to revisit our conceptual choice to use marginal effects - we now develop a new evaluation framework that better reflects the types of claims researchers typically draw from post-hoc explanation methods. We evaluate explanations along two dimensions—\emph{direction} and \emph{strength}—which correspond more closely to how SHAP and LIME are interpreted in empirical work.
+
+\emph{Direction alignment} evaluates, for each feature, whether the direction of outcome change implied by the explainer matches the true direction of outcome change in the data-generating process. Intuitively, if an explainer suggests that increasing feature $j$ raises (or lowers) the model prediction $\hat{Y}$, direction alignment checks whether the same perturbation produces a corresponding directional change in the true outcome $Y$.
+
+\emph{Strength alignment} evaluates whether an explainer correctly captures the relative importance of features in the underlying data-generating process. This metric can be computed in simulated settings, where the data-generating mechanism is known and fully controlled. 
+% While direction alignment is assessed at the feature level, strength alignment is a global measure that compares feature-importance rankings aggregated across the dataset.
+
+
+These definitions are directly inspired by how SHAP and LIME are used in practice (based on our literature review).  Based on our meticulous review of the 181 papers, 75.4\% of them make directional interpretations and 97.8\% of them make strength-based interpretation. For example, researchers often interpret larger Shapley values as indicating larger model predictions (a directional interpretation) and mean absolute Shapley values as reflecting a feature’s importance to the model (a strength interpretation). Our proposed metrics explicitly test whether such interpretations are valid with respect to the true $\mathbf{X} \mapsto Y$ relationship in the data. 
+
+In addition, we have also expanded the related work to include a new subsection \S 2.3 on the progress and efforts of researchers from the business community.
+
+\end{reply}
+
+ %------------pause here
+
+\begin{aed}
+    One critical analysis missing in the manuscript is the prevalent use of SHAP and LIME in the business literature, particularly the use of mean or median absolute SHAP. This key usage is absent but represents one of the primary ways researchers leverage these methods—to identify signals of variable importance and hypothesize or speculate about potential links between X and Y. In fact, many papers already follow the approach the authors recommend by using aggregated absolute SHAP values to gather evidence of predictive signals, often as a foundation for hypothesis generation. From my experience in handling and reviewing papers, most researchers do not heavily rely on instance-level explanations to make generalized claims, as doing so is inherently difficult to justify and hard to generalize. Instead, the focus tends to be on aggregated SHAP values to infer broader patterns. Instance-level explanations, while helpful for local interpretation, are naturally susceptible to critique due to the sampling-based nature of surrogate algorithms in post hoc explainable machine learning methods. As such, they are rarely used as the basis for generalizing statements. The authors, however, concentrate primarily on the relatively straightforward and already well-documented misuse of instance-level inference with SHAP and LIME. While this misuse is easy to critique, the manuscript would benefit greatly from shifting the focus to the more nuanced discussion of aggregated outputs and their relationship to marginal effects.
+Addressing this would significantly strengthen the paper’s critique. Furthermore, the issues with instance-level misuse have already been thoroughly explored in the mathematics of the original SHAP paper and in subsequent computer science research that followed shortly after
+its publication. Redirecting attention to aggregate-level interpretations would provide a more impactful and relevant contribution.
+\end{aed}
+\begin{reply}
+We thank the Associate Editor for this valuable observation and for sharing their experience of handling papers using SHAP. This comment prompted us to conduct a more careful review of the predominant ways SHAP explanations are employed in applied research and to revise the manuscript accordingly.
+
+Based on the literature review, we identify two common forms of  \textbf{aggregated} interpretation of SHAP explanations. First, many studies examine how SHAP values vary with feature values across instances—such as visualized through partial dependence–style plots—to infer the direction of a feature’s contribution (i.e., whether increasing or decreasing a feature is associated with higher predicted outcomes). This practice motivated our definition of a direction alignment metric. This metric is a aggregated view of a particular feature rather than instance-level explanations.
+
+Second, as the Associate Editor notes, a prevalent practice in the literature is to {aggregate} SHAP values by taking their \textbf{mean absolute values} across instances to assess overall feature importance. This usage motivated our definition of a complementary strength alignment metric, which evaluates whether the ranking of features induced by aggregated absolute SHAP values is consistent with the corresponding ranking implied by the data-generating process. 
+
+This redirection substantially improved the paper by aligning our analyses with how SHAP is most commonly and appropriately used in practice. Importantly, it also allowed us to sharpen our central message: both directional and magnitude-based aggregate SHAP interpretations characterize relationships between predictors ($X$) and model outputs ($\hat{Y}$), rather than relationships between $X$ and actual outcomes ($Y$).% As such, SHAP and related post hoc explainers should not be interpreted as direct evidence of empirical or causal relationships in the data.
+
+% Instead, we emphasize that these tools are best used for hypothesis generation—to propose potentially meaningful associations between $X$ and $Y$ that warrant further investigation. In the revised manuscript, we make this distinction explicit and present new analyses demonstrating that while aggregate SHAP explanations cannot reliably generalize to the underlying data-generating process. We believe this clarification strengthens the paper’s conceptual contribution and ensures that our critique directly addresses the dominant, aggregate-level use of SHAP in business research.
+\end{reply}
+
+\begin{aed}
+    While the proposed mitigation strategies provide some guidance, review team finds this exposition to be either obvious, ad hoc, and/or insufficiently explored in terms of their effectiveness. The authors should consider whether a deeper investigation into these strategies is feasible within the scope of this paper and revise if they think so.
+\end{aed}
+\begin{reply}
+We thank the review team for this valuable feedback. We agree that presenting this section as a set of “mitigation strategies” was not fully aligned with the paper’s central message, and that further development of such strategies would shift emphasis away from the core analyses prioritized in this paper.
+
+In the revised manuscript, we therefore reframe this section as a set of robustness checks rather than prescriptive mitigation strategies. The purpose is to illustrate that even when we deliberately attempt to improve alignment, the observed misalignment persists. This finding reinforces our main point that post hoc explanations should not be treated as reliable evidence about underlying $\mathbf{X}\mapsto Y$ relationships.
+\end{reply}
+
+
+
+\begin{aed}
+    Alternatively, the paper could make a significant impact by expanding the discussion on both current misuse and proper use of post hoc explainers. Laying out best practices for employing these tools would likely resonate with the broader business and economics community, many of whom may not yet be as informed or experienced with these techniques as the current review team. To achieve this, I recommend: 1) providing compelling evidence of how SHAP and LIME are being misused in business research, 2) categorizing the different forms of misuse with ample descriptions, and 3) offering clear guidelines on best practices and common pitfalls. This approach holds the greatest value for the business research community. This approach is also compatible with starting the paper by giving due credit to existing literature that addresses the same issue, which the current manuscript either overlooks or does not adequately acknowledge. While this would require considerable effort and pose challenges—particularly as developing robust guidelines is no small task—I trust the authors are well-equipped to undertake this work.
+\end{aed}
+
+\begin{reply}
+We sincerely thank the Associate Editor for these detailed and constructive suggestions. We took this guidance seriously and substantially revised the manuscript to better align with the proposed direction.
+
+Regarding points (1) and (2), we now provide systematic evidence documenting how SHAP and LIME are used—and misused—in business research. Our findings are based on a comprehensive review of 181 papers, each manually coded by the authors, cross-checked by a state-of-the-art LLM (\texttt{gpt-5.2}), and adjudicated through an additional round of human verification to reconcile disagreements. We focus on two prevalent forms of interpretation: directional interpretation (75.4\% of papers) and strength-based interpretation (97.8\%), both of which are described in detail in \S 3. This framework allows us to clearly categorize and illustrate the forms of misuse observed in the literature. In addition, we have expanded the related work section to more fully acknowledge prior contributions. Specifically, we added a new subsection (\S 2.3) that discusses recent efforts within the business research community to address interpretability challenges and the appropriate use of post hoc explainers. In addition to related work, we also added discussion in the Conclusion section introducing a few papers that made proper use of SHAP or LIME - where they obtained the explanations and interpreted results, and followed by validations, via theory, other analyses, or real-world experiments.
+
+
+For point (3), we made two changes. First, following the review team’s guidance, we reframed the previous “mitigation strategies” as robustness checks. Our analyses show that they can at best improve but cannot guarantee reliable explanation alignment.
+
+Second, we designed diagnostic signals that researchers and practitioners can use in practice to assess the reliability of post hoc explanations.  We find  in \S 5 that high predictive accuracy is necessary—but not sufficient—for post hoc explainers to reflect data-level relationships, due to the Rashomon effect: even among highly accurate models, explanation outcomes can vary substantially. This insight motivated a new section \S 7 that studies agreement within a Rashomon set of models as an informative, though imperfect, indicator of explanation reliability. While such signals are not definitive, they are practically valuable for helping users gauge how much trust to place in post hoc explanations.
+
+Accordingly, our central message for point (3) is that post hoc explainers should be used primarily for hypothesis generation, rather than a means of obtaining evidence of empirical or causal relationships between $X$ and $Y$. Researchers may rely on diagnostic signals from the data and model to assess how much confidence to place in these hypotheses, but validation ultimately requires complementary empirical analysis. We believe this framing provides clearer and more actionable guidance to the business research community.
+\end{reply}
+
+
+
+
+    \begin{aed}
+    \textbf{\textit{Metrics and Notation}}
+    \begin{itemize}
+        \item         Feature Importance vs. Marginal Effects: Reviewers noted concerns about conflating feature importance with marginal effects. The authors should refine their metrics to align with intended use cases and ensure this distinction is clear throughout the paper.
+        \item     Metrics: reviewers want some more clarity on metrics.
+\item     Notation Table: Introduce a comprehensive notation table to improve readability and reduce confusion. Several points of ambiguity in the current notation were highlighted by the review team.
+    \end{itemize}
+
+    \end{aed}
+
+\begin{reply}
+Thank you for these comments on metrics and notation. We have addressed each point through substantial revisions to both the content and presentation of the paper.
+
+As discussed earlier, we removed the evaluation of SHAP against marginal effects and proposed a set of new  metrics with explicit definitions and explanations in the paper.
+
+Finally, to improve readability, we streamlined the exposition by reducing reliance on heavy notation and removing theorem-style statements, favoring textual explanations where appropriate. As the revised manuscript now uses only a small number of symbols that are defined locally, we did not find it necessary to include a separate notation table.
+\end{reply}
+
+
+
+\begin{aed*}
+\textbf{\textit{Methodology and Evaluations}}
+\end{aed*}
+\begin{aed}
+    Broader Scope of Simulations: The simulations, while useful, may be simplistic and may not represent real-world scenarios (e.g., nonlinearity missing). Expanding the scope to include non-linear models, feature interactions, and noise would strengthen the findings and their applicability.
+\end{aed}
+
+\begin{reply}
+    We have followed the suggestion to add data with non-linearity, feature interactions, and noise in data simulation. For more details, please refer to \S 4 and Online Appendix \S 3.
+\end{reply}
+
+\begin{aed}
+    Ranking Methodology: The authors should consider using established journal rankings (e.g., FT50 or Dallas Rankings) to identify the pool of reviewed papers, ensuring a broader and more representative dataset.
+\end{aed}
+\begin{reply}
+Thank you very much for this suggestion. We agree that focusing on well-established journal rankings provides a clearer and more representative benchmark for the literature review.
+
+In response, we conducted a second wave of systematic and exhaustive review of journals in the union of the FT50, UTD24, and INFORMS journal lists. We identified all papers from these journals that use SHAP or LIME - 56 in total. Combining two waves, there are a total of 181 papers. To reduce bias of human coding, we also use a state-of-the-art LLM, \texttt{gpt-5.2}, to review each paper and provide labels. Final labels were determined by reconciling disagreements between human annotations and LLM-based classifications. Detailed documentation of the review protocol, coding procedure, and adjudication process is provided in Online Appendix \S 1.
+
+Overall, 42.5\% of the sampled papers engaged in what we classify as problematic interpretations of post-hoc explanations. The prevalence of such interpretations is substantially lower in leading journals: 14.3\% among \textit{UTD 24} journals, 14.0\% among \textit{FT50} journals, and 17.4\% among \textit{INFORMS} journals. Across the union of these three journal lists, the overall rate is 16.1\%.
+
+We also expanded the related work discussion to reflect recent methodological progress and thoughtful use of post hoc explainers in applied research, including the papers highlighted by the reviewers.
+
+\end{reply}
+
+\begin{aed}
+    Normalization Concerns: The proposed normalization of SHAP values requires further clarification, especially regarding edge cases (e.g., division by zero). The impact of this normalization on empirical results should also be addressed in detail.
+
+        SHAP Performance Claims: The claim that SHAP performs worse than random guessing should be revisited, as it appears to rely on the non-normalized version. Clarify whether this finding is specific to certain configurations or generalizable across contexts.
+    \end{aed}
+\begin{reply}
+Both comments pertain to the normalization procedure and the evaluation of SHAP relative to marginal effects in the original submission.
+
+In the revised manuscript, we no longer evaluate SHAP against marginal effects, and accordingly the associated normalization procedure has been removed entirely. As a result, the edge cases raised (e.g., division by zero) and the sensitivity of empirical results to this normalization are no longer applicable. We expalained to th.
+Similarly, the statement regarding SHAP performing worse than random guessing arose under the same marginal-effect-based evaluation framework and does not appear in the revised version. 
+
+
+\end{reply}
+
+\begin{aed}
+    Addressing these concerns and other review teams concerns faithfully will significantly enhance the quality and impact of the manuscript. The authors have tackled an important topic, and with careful revisions, the paper has the potential to contribute meaningfully to the literature on explainable AI in business research. But having said that, the authors have much work to do in this major revision to get to the next round.
+\end{aed}
+
+\begin{reply}
+We thank the review team for their constructive and thoughtful feedback. We took these comments very seriously and made major, meaningful changes. The revisions were substantial and  significantly improved the paper. 
+
+We really appreciate your feedback and we hope you find our revision satisfactory.
+\end{reply}
+
+
+
+
+\newpage
+\reviewersection{}
+% General intro text goes here
+\textsf{For ease of reference, we copy your original comments here, in \emph{italics} font.}
+
+\begin{aed*}
+
+I commend the authors for tackling an important and timely issue. The paper is well-written overall, and the main argument—that SHAP and LIME should not be used to infer marginal effects—presents a significant contribution to both the academic and practical communities. The experiments are thorough, and I appreciate the use of multiple metrics (e.g., directionality, concordance, and relevance) to evaluate the alignment between feature importance and marginal effects. The discussion about why SHAP and LIME fail to capture marginal effects is insightful and provides valuable guidance to researchers who may be misusing these methods. 
+
+\end{aed*}
+
+\begin{reply}
+Thank you so much for the constructive and helpful comments! We took your feedback very seriously and made substantial changes to the paper based on your comments.  A detailed \textbf{Summary of Major Changes} is provided on Page~\pageref{sec:majorchanges} of the rebuttal document.  Below we will discuss how we addressed each comment in detail. 
+
+
+
+
+
+
+\end{reply}
+
+\noindent \textbf{Key Issues to Address: }
+
+\begin{point}\label{q:clarify}
+Clarify the Distinction Between Feature Importance and Marginal Effects: The paper conflates feature importance with marginal effects at several points. It’s essential to clarify that feature importance reflects a feature’s predictive power, while marginal effects describe how the dependent variable changes when a feature’s value changes. Addressing this distinction is crucial for correctly interpreting the results.
+\end{point}
+
+\begin{reply}
+Thank you for this thoughtful and important comment regarding the distinction between feature importance and marginal effects. This issue is closely related to several other comments and ultimately led us to make significant revisions in this round. In response, we redesigned the experimental design and evaluation framework. In particular, we no longer treat marginal effects as the ground truth for evaluating post-hoc explanations. Instead, we introduce a new set of evaluation metrics that are explicitly aligned with how post-hoc explanation methods are typically interpreted and used in empirical research. Below, we explain our original motivation and then describe the changes we made.
+
+\noindent\textbf{Why marginal effects in the 1st submission}\\
+A key challenge we faced - both in our review of prior studies and in our initial framing—is that many papers use the term “feature importance” without specifying the estimand they intend to recover. Most papers simply report SHAP or LIME results as indicators of “importance,” without sufficiently clarifying what their definition of “importance” is in a technical sense. This lack of clarity makes it difficult to evaluate whether such explanations are appropriate. Therefore, we had to infer the intended meaning from context, effectively reading between the lines to understand how prior authors interpreted their explanations, what kinds of managerial insights they emphasized, and what kinds of recommendations they made. Because many papers concluded by suggesting to increase or decrease specific features to influence outcomes, we chose to use \textit{marginal effects} as the ground truth for comparison and only use data simulated by linear models. %This decision was pragmatic: in linear models, marginal effects correspond directly to model coefficients, providing a well-defined and empirically verifiable benchmark. 
+This allowed us to evaluate whether post-hoc explanation methods could correctly recover known effects under controlled conditions. %, without conflating different notions of “importance.”
+
+\noindent\textbf{Changes We Made.}\
+Your comment led us to refine this logic and to develop a new evaluation framework that better reflects the distinct types of claims researchers typically draw from post-hoc explanation methods. As a result, we no longer use marginal effects as the ground truth. Instead, we evaluate explanations along two dimensions—\emph{direction} and \emph{strength}—which correspond more closely to how SHAP and LIME are interpreted in empirical work.
+
+\emph{Direction alignment} evaluates, for each feature, whether the direction of outcome change implied by the explainer matches the true direction of outcome change in the data-generating process. Intuitively, if an explainer suggests that increasing feature $j$ raises (or lowers) the model prediction $\hat{Y}$, direction alignment checks whether the same perturbation produces a corresponding directional change in the true outcome $Y$.
+
+\emph{Strength alignment} evaluates whether an explainer correctly captures the relative importance of features in the underlying data-generating process, i.e., whether the explanations of $\mathbf{X} \mapsto \hat{Y}$ align with $\mathbf{X} \mapsto Y$.  To operationalize it, we compare the explanations (e.g., from SHAP) on the model $\mathcal{M}$ with the explanations on the data generation model $\mathcal{G}$, which we have direct access to it in the simulated data.
+
+
+These definitions are directly inspired by how SHAP and LIME are used in practice (based on our literature review).  Based on our meticulous review of the 181 papers, 75.4\% of them make directional interpretations and 97.8\% of them make strength-based interpretation. For example, researchers often interpret larger Shapley values as indicating larger model predictions (a directional interpretation) and mean absolute Shapley values as reflecting a feature’s importance to the model (a strength interpretation). Our proposed metrics explicitly test whether such interpretations are valid with respect to the true $\mathbf{X} \mapsto Y$ relationship in the data. 
+% \paragraph{Data.} We have also substantially expanded the data-generating process, moving beyond linear models to incorporate nonlinearity, interactions, feature correlation, varying dimensionality, and noise.
+
+% \paragraph{Models.} Finally, we have expanded the set of predictive models from neural networks alone to a broader class of up to ten model families, including state-of-the-art variants of XGBoost and related methods.
+
+In sum, we fundamentally redesigned the entire empirical analysis. All experiments from the original submission have been replaced. The paper employs a new experimental framework that includes new evaluation metrics, new data-generating processes, an expanded set of predictive models, and new robustness checks. 
+\end{reply}
+
+
+\begin{point}\label{r1:streamline}
+Streamline the Focus: The paper addresses too many points, which sometimes dilutes the central message. I recommend consolidating sections where key ideas are repeated and focusing on the core message that SHAP and LIME are not suitable for inferring marginal effects.
+
+
+\end{point}
+
+\begin{reply}
+Thank you for this helpful suggestion. In response, we have substantially streamlined and reorganized the paper to sharpen its core message: commonly used post-hoc explainers such as SHAP and LIME are unreliable tools for recovering the direction and strength of the true $\mathbf{X}\mapsto Y$ relationships in the data.
+
+In Section 3, we review the empirical literature to understand the prevalence of the data-level generalization of model explanations. We also summarize the dominant interpretations that empirical studies draw from SHAP and LIME outputs.
+
+In Section 4, we directly evaluate the validity of these interpretations in simulated environments where the data-generating process is known and controlled and thus we can directly evaluate the explanations against the true $\mathbf{X}\mapsto Y$.
+
+In Section 5, we examine the mechanisms that give rise to misalignment between post-hoc explanations and the true relationships in the data and specifically expanded the discussion on Rashomon effect, following reviewers' suggestions.
+
+In Section 6, we present a set of robustness checks (some of them previously framed as mitigation strategies). We show that while several approaches and recent methodological advances can improve certain aspects of post-hoc explanations, they do not overcome the fundamental limitations identified in our analysis.
+
+Finally, in Section 7, we propose to use Rashomon agreement as a diagnostic signal that can help practitioners assess the reliability of post-hoc explanations in applied settings.
+
+Overall, these changes eliminate repeated arguments, clarify the logical flow of the paper, and foreground the central claim that SHAP and LIME are ill-suited for inferring data level $\mathbf{X} \mapsto Y$ properties. We believe the revised structure more clearly communicates this message to readers.
+\end{reply}
+
+\begin{point}
+Improve the Evaluation of SHAP and LIME: The use of concordance and relevance metrics should focus on average marginal effects at the population level. Additionally, more realistic benchmarks should be introduced by comparing SHAP and LIME to other methods that could be used to estimate marginal effects (e.g., linear regression). The paper would also benefit from an example with non-linear relationships, showing that even when machine learning models outperform linear regression in capturing these relationships, SHAP and LIME still fail to accurately estimate marginal effects.
+
+\end{point}
+
+\begin{reply}
+Thank you for this thoughtful suggestion.
+
+In the revised version, we have introduced a new set of evaluation metrics - direction and strength, where strength alignment is defined  using average absolute Shapley value on the population level. 
+
+We also followed the reviewer’s suggestion to introduce richer data-generating processes. Specifically, we have expanded our simulations to include more complex relationships including non-linearity, feature correlations, interactions, and noise. Results show that  SHAP and LIME still fail to reliably reflect the underlying feature–target associations in our more general settings. 
+
+\end{reply}
+
+
+
+\begin{point}
+Reconsider Mitigation Strategies: The section on mitigation strategies may distract from the paper’s central message. I suggest either removing or reframing this section as a robustness check, showing that even with improvements, SHAP and LIME are still not suitable for inferring marginal effects. 
+
+\end{point}
+
+\begin{reply}
+Thank you for this helpful suggestion. We have followed your advice and reframed the mitigation strategies section as a set of \textbf{robustness checks}. As you recommended, the emphasis is now on showing that even with these improvements, SHAP and LIME still cannot reliably recover the true feature–outcome relationships in the data. This restructuring keeps the focus squarely on the paper’s central message.
+
+\end{reply}
+
+\noindent \textbf{Additional Questions: }
+
+\begin{point}
+Please provide a short summary of what you see as the key argument in the paper.: The paper examines whether popular feature-importance methods like SHAP and LIME, commonly used to explain black-box machine learning models, can be used to reliably infer marginal effects. The primary motivation is that feature importance values are often interpreted as proxies for marginal effects in business research. The authors define three metrics to measure alignment between feature importance and marginal effects: directionality (matching signs), concordance (matching rankings), and relevance (matching top k features). Experiments with synthetic data show significant misalignment, even in simple data-generating processes, influenced by factors like correlated features, model performance, and explainer parameters. While strategies are proposed to improve alignment, the authors conclude that post hoc explanations should not be used to infer marginal effects, but rather to generate hypotheses for empirical testing.
+
+\end{point}
+
+\begin{reply}
+Thank you for the summary of our previous submission. Below we provide an updated summary that reflects the revised version of the paper.
+
+The paper examines whether popular post-hoc explanation methods such as SHAP and LIME can reliably infer direction and strength of the underlying $\mathbf{X}\mapsto Y$ relationships in the \textbf{data}. 
+
+In the revised paper, we define evaluation metrics that correspond to the types of claims prior studies typically draw from SHAP and LIME, and we assess whether those claims hold at the data level. Using synthetic data, we find varying degrees of misalignment, influenced by factors such as data properties and  model performance. While we also examine several strategies that may improve alignment, our main conclusion is that post-hoc explanations should not be relied upon to infer $\mathbf{X}\mapsto Y$ in the data, but can instead serve as a useful starting point for generating hypotheses for subsequent empirical testing.
+\end{reply}
+
+\begin{point}\label{r1:research_question}
+Research question and contribution: Is the question clear? Is it important (why/why not)? What contribution does answering the question represent? Is it significant or incremental?: The research question is clear: Can feature-importance methods like SHAP and LIME reliably infer marginal effects? I believe this is an important question, but I have some reservations about how the paper supports its significance. Specifically, the paper asserts that feature importance values are often used as proxies for marginal effects in business research, particularly for inferring the sign of marginal effects, ranking features based on their effects, and identifying the top k features with the largest effects. While I can see how researchers could be mistakenly using feature importance to infer the sign of marginal effects, I am less convinced about the latter two uses.
+
+A key issue, which I discuss further in the rest of my review, is the paper’s implicit assumption that the size of the marginal effect is equivalent to feature importance. This is not accurate. Marginal effects describe the change in the dependent variable when a feature changes by one unit, while feature importance typically reflects the feature's predictive power. The distinction is crucial because factors like feature distributions matter for assessing predictive power, whereas it may not be as relevant for marginal effects. Based on the examples provided and my own experience, when researchers use SHAP and LIME to rank or select important features, they are often doing so to rank features based on their predictive power, not necessarily their marginal effects.
+
+The implication is that the paper may overstate the importance of its research question. The alleged misalignment between researchers’ goals and what they achieve using SHAP and LIME may not be as significant as portrayed, as their intended use may be more about feature importance for prediction than marginal effects.
+
+Regarding the prevalence of this issue, the paper conducted a review of 150 articles (109 published, 41 working papers) that used SHAP and LIME. After screening, they found that 42\% (up to 63 papers) appeared to extrapolate feature importance to make inferences about marginal effects. However, it’s plausible that many of these papers were using SHAP and LIME to identify features important for prediction—a reasonable use that may not involve misinterpreting marginal effects. The authors should provide the specific list of papers where SHAP and LIME are being misused along with the recorded quotations of problematic sentences that they mentioned in the paper. 
+
+If business researchers are indeed misusing SHAP and LIME to infer marginal effects, the paper’s contribution is significant. I personally agree that many researchers misunderstand the purpose of SHAP and LIME, so clarifying their proper use is valuable. However, I believe the paper overstates the prevalence of misinterpretation in terms of marginal effects. Researchers may be using SHAP and LIME appropriately for inferring feature importance related to prediction rather than marginal effects, and this distinction is critical for assessing the significance of the contribution.
+\end{point}
+
+\begin{reply}
+Thank you very much for this thoughtful comment.  We appreciate the opportunity to clarify both the intended scope of the paper and the distinction between model-level feature importance and data level  importance.
+
+\vspace{0.3cm}
+\textbf{(1) Our focus is on papers that interpret SHAP/LIME as revealing $\mathbf{X} \mapsto Y$ in the data, not papers that explicitly discuss model behavior}
+
+We agree that in many papers, when authors discuss feature importance using SHAP or LIME, they are referring to \emph{predictive importance}—that is, how strongly a feature contributes to a particular model’s predictions. We consider such usage appropriate and do \emph{not} classify these papers as controversial. These papers are not the target of our analysis and are not counted as misuse.
+
+We classify a paper as controversial only when the authors’ language goes beyond explaining model behavior and instead attributes data-level or causal meaning to SHAP/LIME explanations. Concretely, this includes statements that (i) describe a feature as having an “impact,” “effect,” or “influence” on the outcome variable itself, (ii) interpret the sign or relative magnitude of SHAP or LIME values as reflecting the direction or strength of the relationship $\mathbf{X} \mapsto Y$ in the data, or (iii) draw substantive or managerial conclusions—such as “increasing $x$ will increase (or decrease) $y$”—based directly on these explanations.
+
+ We provide a few example papers in the appendix \ref{app:examples} of this response document,  where SHAP or LIME are misused along with the recorded quotations of problematic sentences that they mentioned in the paper.
+
+
+
+\vspace{0.3cm}\textbf{(2) Prevalence of the controversial papers}
+
+To obtain more evidence of the prevalence of the controversial uses, we did another round of literature review, focusing specifically on the highly reputable journals comprising the FT50, UTD24, and INFORMS lists.  To reduce human biases in the labeling, in addition to human manual review, we also use LLM to review each paper and final labels were determined by reconciling disagreements between human annotations and LLM-based classifications. Detailed documentation of the review protocol, coding procedure, and adjudication process is provided in Online Appendix \S 1.  
+
+Overall, 42.5\% of the sampled papers engaged in what we classify as problematic interpretations of post-hoc explanations. The prevalence of such interpretations is substantially lower in leading journals: 14.3\% among \textit{UTD 24} journals, 14.0\% among \textit{FT50} journals, and 17.4\% among \textit{INFORMS} journals. Across the union of these three journal lists, the overall rate is 16.1\%.
+
+We hope our revision satisfactorily addressed this comment.
+
+% Given that the definitions of shapley values and LIME coefficients are intrinsically different - , LIME approximates \textit{local marginal effects}, whereas SHAP estimates \textit{marginal contributions} to model predictions, we create specific metrics for each explanation, along evaluating both along \emph{direction} and \emph{strength} of the X-Y link. 
+
+
+% Because SHAP and LIME differ fundamentally in what they estimate—LIME approximates \textit{local marginal effects}, whereas SHAP estimates \textit{marginal contributions} to model predictions—we evaluate each method using metrics tailored to its underlying interpretation, always along two dimensions emphasized in prior literature: \emph{direction} and \emph{strength} of the implied $X$–$Y$ relationship.
+
+% \textbf{SHAP}. Our literature review shows two predominant interpretations in empirical work:\\
+% 1)that larger SHAP values imply more positive outcomes ($Y$), and\\
+% 2)that features with higher mean absolute SHAP values are “more influential,” often visualized via beeswarm or summary plots.
+
+% We evaluate both interpretations directly. For (1), we examine whether SHAP values correspond to variation in the observed outcome, without imposing a specific estimand. For (2), we compare SHAP-based feature rankings with the ground-truth rankings implied by the \emph{true} generative model. To ensure fairness and consistency, we define the ground-truth “feature importance’’ using SHAP’s own theoretical construct—the marginal contribution of each feature to the prediction of the \emph{true} model $G$. Thus, we assess whether post-hoc SHAP explanations faithfully recover the ranking that SHAP would produce if applied to the actual data-generating process.
+
+
+% \textbf{LIME}. For LIME, the empirical literature consistently interprets local surrogate coefficients as local marginal effects. Accordingly, we benchmark LIME’s local coefficients against the true marginal effects implied by the generative model, focusing on whether LIME recovers the correct direction and relative strength of effects. In response to your comment, we have moved the “top-$k$” feature selection analysis to the Appendix, as it is of secondary importance.
+
+% \vspace{0.3cm}
+% \textbf{(3) Addressing the Possibility That Researchers Intend Predictive Power} \textcolor{red}{double check. Do we have this?}
+
+% Because you specifically raise the possibility that researchers may interpret SHAP or LIME in terms of \emph{predictive power}, we also examine this interpretation empirically (reported in the Appendix). We operationalize predictive importance through feature-ablation performance tests—i.e., measuring changes in predictive accuracy when each feature is removed. We then compare these benchmarks with SHAP-based ranking. The two do not align. This result is also consistent with SHAP’s theoretical purpose: explaining individual predictions, not reflecting the contribution of features to overall predictive performance.
+
+% Taken together, these revisions strengthen the contribution of the paper. We show that post-hoc explainers such as SHAP and LIME fail to reliably recover the true relationships between features and outcomes in the data. Therefore, while these tools may aid exploratory analysis, they should not be relied upon to infer substantive relationships in the data without additional empirical validation.
+\end{reply}
+
+
+
+
+
+\begin{point}
+Method: Is the method used well justified for the question? Is the method applied convincingly (if not, why not)? Does it produce convincing/robust results that answer the question?: There are several key technical issues that need to be addressed to strengthen the methodology and ensure that meaningful conclusions can be drawn from the results. These are outlined below. However, I believe these issues do not significantly undermine the paper’s main conclusion that SHAP and LIME are not suitable for inferring marginal effects.
+\end{point}
+
+\begin{reply}
+Thank you for acknowledging the value of our paper! We appreciate it! We address each of your comments below.
+\end{reply}
+
+
+\begin{point}
+1.      Feature Importance and Marginal Effects are Different 
+
+The most critical issue is the paper’s conflation of feature importance with marginal effects. Feature importance typically refers to a feature's ability to predict the dependent variable, whereas marginal effects quantify how the dependent variable changes when the feature itself changes. These are fundamentally different concepts, which the paper should clarify to avoid misleading conclusions.
+
+For instance, consider the linear model E[Y|X1, X2] = 3*X1 + 10*X2, where X1 and X2 are binary features. Here, X2 has a larger marginal effect (10 vs. 3). However, the predictive power depends on the feature distribution. For example, X1 could be more important for predicting Y if its distribution is more balanced in the population (e.g., P[X1=1] =0.5, P[X2=1] =0.001).
+Feature-importance methods typically quantify the information a feature provides about the dependent variable, which differs from marginal effects. Critically, the most important features might not correspond to the features with the largest marginal effects.
+
+This distinction is crucial because if researchers are using SHAP and LIME to rank features based on predictive power rather than marginal effects, then the concordance and relevance metrics are irrelevant; the metrics measure alignment with marginal effects but would not represent the intent behind using SHAP and LIME for feature ranking and selection in practice.
+
+\end{point}
+
+\begin{reply}
+Thank you for this comment. It is related to a previous comment \ref{q:clarify} and \label{r1:research_question} so we won't reiterate here. We agree with your observation that feature importance and marginal effect are not identical notions and have redone the experiments in the paper.
+
+
+
+% We fully agree with the reviewers that feature importance and marginal effects cannot be directly equated, particularly in the case of SHAP. In response, we have redesigned the evaluation framework in the paper. The revised analysis no longer treats marginal effects as a benchmark or target quantity. Instead, we evaluate whether the \emph{directional} and \emph{strength} interpretations commonly drawn from SHAP and LIME outputs are consistent with the true $\mathbf{X}\mapsto Y$ relationship in the data-generating process. This reframing directly aligns the evaluation with how these explainers are used in practice, without equating predictive importance with marginal effects.
+
+% As part of this revision, the empirical evaluation has been fully redone under the new framework, and all results reported in the original submission have been replaced.
+\end{reply}
+% % Thank you for this thoughtful and important comment. We agree that \textit{feature importance} and \textit{marginal effects} are conceptually distinct. Feature importance reflects a feature’s contribution to a model’s predictive power, whereas marginal effects describe how the dependent variable changes with a change in the feature itself.
+
+% % In the earlier version of the paper, our evaluation compared SHAP and LIME explanations against marginal effects for simplicity and interpretability. In the revised version, we have refined this approach to align with the theoretical definitions and intended use of each explainer. Specifically, SHAP estimates \textit{marginal contributions}—the expected change in the model’s output when a feature is added relative to a baseline—while LIME estimates \textit{local marginal effects} by fitting a linear surrogate model around each instance. We therefore evaluate them separately: SHAP explanations are compared with the true marginal contributions derived from the known data-generating process, and LIME explanations are compared with the true local marginal effects.
+
+% % We also want to clarify how we interpret the literature. If a paper explicitly mentions “predictive” or “model-based” explanations, we do not consider it problematic. Such uses are consistent with the intended purpose of post hoc explainers—to explain the predictive model. However, many papers in our review generalize these explanations to the data itself, often recommending practitioner actions or claiming that certain features are “important” without referring to the specific model or predictive context. These papers implicitly treat model-based explanations as evidence of data-level relationships, which goes beyond the valid interpretive scope of SHAP and LIME.
+
+% % Even under our refined evaluation framework, the empirical results remain consistent—SHAP and LIME explanations derived from black-box models do not align with the true relationships in the data, even when the models achieve high predictive accuracy. Thus, the key issue is not simply a matter of definition, but one of generalization: SHAP and LIME describe the behavior of the \textit{model}, not the underlying \textit{data-generating process}.
+
+% % We believe this is related to previous questions and have now been addressed. Specifically, in our revised paper, we use ``drop in accuracy" and the "ground truth shapley value estimaed from G" to represent the predictive power, the intended use of some researchers. Our findings are ....
+% % \textcolor{red}{we need to understand, in the literature, when authors say sth is important, do they refer to the predictive performance or the importance in the data. If they meant the data, it should usually be followed by languages that indicate increasing or decreasing some features for a better outcome, or some other evidence. If they actually meant the predictive importance, then we'll definitely need to include predictive importance as an estimand }
+% \end{reply}
+
+\begin{point}\label{q:discrepancy}
+2.      Clearly Define the Intended Estimand vs. the Target Estimand
+
+The paper lacks clarity in distinguishing between the intended estimand (marginal effects) and what SHAP and LIME actually estimate (feature importance). For example, SHAP values represent (an estimate of) the change in a model’s prediction that results from *knowing* a feature’s value. In Section 5.3.1, the authors suggest it is undesirable for a feature to have a SHAP value of 0 if its value equals the average. However, from a feature importance perspective, this is reasonable because an average feature value is unlikely to indicate a larger or smaller dependent variable value. Similarly, SHAP values being negative for features with a positive marginal effect can be appropriate for individuals with below-average feature values, as it reflects a decrease in the expected outcome for that specific individual.
+
+The authors need to more clearly differentiate between what SHAP and LIME estimate (feature importance) and what researchers may intend to estimate (marginal effects). While the paper reasonably explains the first source of discrepancy—SHAP and LIME explain model behavior, which may not align with the underlying data-generating process—it does not sufficiently address the second source: Even if the model is accurate, SHAP and LIME do not estimate marginal effects because their estimands are different. They measure how *knowing* the feature values contributes to changes in the expected outcome. In other words, SHAP and LIME quantify how predictive a feature is for an individual’s outcome, which is different from saying that a larger feature value would result in a larger outcome for that individual (marginal effect of the feature).
+
+A third source of discrepancy is that SHAP and LIME rely on local linear approximations of black-box models. However, assuming the black-box models correctly capture the data-generating process, this challenge also applies to traditional econometric approaches like linear regression.
+
+Finally, I recommend that the paper formally define marginal effects beyond the linear case, and the earlier this is done in the paper, the better. Marginal effects should be understood as the derivative of the conditional expectation of Y given X, focusing on the *average* marginal effect across the population. This should be contrasted with the estimands of SHAP and LIME (e.g., Shapley values in SHAP, which are based on the model, not the underlying data-generating process).
+
+\end{point}
+
+\begin{reply}
+Thank you for this careful and constructive comment. Issues related to marginal effects have been addressed in earlier responses, so here we focus specifically on the sources of discrepancy you identify and how the revised manuscript responds to them.
+
+We agree that, in the original submission—where SHAP and LIME explanations were implicitly evaluated by equating them with marginal effects—multiple sources of discrepancy were present. These included: (i) the possibility that a model’s behavior does not align with the underlying data-generating process; (ii) a mismatch between the estimands underlying SHAP and LIME and marginal effects; and (iii) approximation error arising from local explanations of potentially nonlinear models.
+
+Based on the reviewers’ feedback, we concluded that the second source of discrepancy is difficult to adjudicate in practice, because the term “feature importance” is often used ambiguously in empirical work. We recognize that when the intended estimand is not explicitly defined, it is hard to claim that an explanation is incorrect purely on the basis of estimand mismatch.
+
+Accordingly, in the revision we reformulate the evaluation task to align directly with the interpretations that follow from the mathematical definitions of SHAP and LIME, taking those interpretations as given. Rather than asking whether these methods recover a particular estimand, we ask whether the quantities they are designed to represent (when applied to a trained model) generalize to data-level. Specifically, we evaluate whether the \emph{directional} interpretation (e.g., larger Shapley values correspond to larger model predictions) and the \emph{strength} interpretation (e.g., mean absolute Shapley values reflect a feature’s overall importance) are valid with respect to the true $\mathbf{X}\mapsto Y$ relationship in the data. Because the data-generating process is known, we can compute the corresponding ground-truth quantities implied by these interpretations and assess alignment directly.
+
+This reframing removes discrepancies arising purely from mismatched estimands and places SHAP and LIME on a common interpretive footing. Importantly, however, it does not assume that misalignment arises only when models are inaccurate. Even when predictive accuracy is high, model behavior need not uniquely reflect the data-generating process. Structural properties of the data—such as feature correlation, interaction effects, and nonlinearity—can give rise to a large Rashomon set of models that achieve similar predictive performance but encode different feature–outcome relationships. Explanations derived from any single model may therefore fail to generalize to the data, not because the model is inaccurate, but because it represents only one element of a broader equivalence class.
+
+Accordingly, the revised analysis focuses on how properties of the data-generating process shape affects the reliability of post-hoc explanations through its influence on the Rashomon set effect. We also briefly examine aspects of the explanation procedure itself in robustness analyses.
+
+Thank you very much for the valuable suggestion!
+\end{reply}
+
+
+
+\begin{point}
+3.      Misaligned Metrics 
+
+The paper’s concordance and relevance metrics are calculated at the individual level and then averaged over the population. However, business researchers typically care about *average* marginal effects, not individual-level marginal effects. Therefore, SHAP and LIME should be evaluated based on their ability to rank and select features by their *average* marginal effects, not by individual-level marginal effects. Redefining these metrics to reflect population-level evaluation (as was done with the directionality metric) would make the results more representative of what is expected of SHAP and LIME in practice, assuming researchers are indeed using the methods to rank and select features based on marginal effects rather than predictive power.
+\end{point}
+
+\begin{reply}
+Thank you for this helpful suggestion. We have incorporated population-level evaluation in the revised analysis. Specifically, for \emph{strength} analyses, we rank features based on their \textit{mean absolute SHAP values}, which corresponds to the population-level aggregation of individual explanation values. This approach aligns with how prior studies typically identify “important” features. We have updated all our analyses using this new definition. %Hence, our revised evaluation now reflects the population-level interpretation that researchers often use in practice.
+
+
+% \textcolor{red}{SHAP and LIME should be evaluated based on their ability to rank and select features by their *average* marginal effects, not by individual-level marginal effects. - this is a key comment. Do we have it in the new experiment. Can we answer the question by saying sth like we defined new metrics where ... and ask them to see a particular section?}
+
+\end{reply}
+
+
+\begin{point}
+4.      Lack of Realistic Benchmarks
+
+The comparison of SHAP and LIME to a theoretical ground truth is insufficient, as this ground truth is often unattainable in practice. A more meaningful analysis would compare SHAP and LIME against traditional methods for estimating marginal effects, such as linear regression or machine learning models specifically designed for this purpose.
+
+Furthermore, since the paper argues that SHAP and LIME are favored for their ability to capture complex patterns in black-box models, it would be valuable to evaluate their performance in more complex scenarios. I recommend incorporating simulations that involve data-generating processes with non-linear relationships and feature interactions. These comparisons would not only serve as robustness checks but also provide a clearer benchmark for assessing whether SHAP and LIME outperform simpler methods in these cases (though I suspect they will not).
+\end{point}
+
+\begin{reply}
+Thank you for this suggestion. We agree that benchmarking SHAP and LIME against traditional methods for estimating marginal effects would be appropriate \emph{if} the goal were to assess how well these methods recover marginal effects from data.
+
+However, in the revised manuscript, marginal-effect estimation is no longer the object of evaluation. Instead, our evaluation is now organized around the interpretations that follow directly from the mathematical constructions of SHAP and LIME themselves. Taking these interpretations as given, we ask whether the quantities produced by SHAP and LIME—when applied to a trained model—can be meaningfully extrapolated to statements about the underlying data-generating process. In this sense, there is no natural “benchmark” estimator analogous to a marginal-effect estimator.
+
+
+
+
+In response to the reviewer’s second point, we substantially expand the simulation design to include nonlinear relationships, feature interactions, correlated covariates, and noise. These settings reflect precisely the types of complex environments in which SHAP and LIME are often motivated as being especially useful.
+Across these more complex scenarios, our conclusions remain unchanged. %: even when applied to highly expressive black-box models and evaluated in settings with nonlinearities and interactions, SHAP and LIME do not reliably recover the corresponding data-level directional or strength relationships implied by their common interpretations.
+
+% We believe this revised evaluation framework provides a more appropriate and informative benchmark, as it assesses SHAP and LIME on their own terms rather than against estimands they were not designed to recover.
+\end{reply}
+
+
+
+
+\begin{point}
+5.      Misleading Focus on Mitigation Strategies
+
+The section on mitigation strategies (Section 6) should be reconsidered. While the paper offers strategies for improving the alignment of SHAP and LIME with marginal effects, this section detracts from the core message: SHAP and LIME are not designed for inferring marginal effects. Proposing mitigation strategies gives the impression that SHAP and LIME could be adjusted to reliably estimate marginal effects, which contradicts the paper’s own findings. Instead, this section should be dropped or reframed as a robustness check, showing that while alignment can be improved in specific cases, it is generally not advisable to use SHAP and LIME for this purpose. As it stands, this section risks diluting the main takeaway: SHAP and LIME should not be used to infer marginal effects.
+\end{point}
+
+\begin{reply}
+Thank you for this insightful comment! We completely agree with you. We have now reframed the mitigation methods as robustness checks.
+
+\end{reply}
+
+\begin{point}
+6. Other Minor Things
+
+Why do the ordering and relative size of the importance values in Figure 3 do not match the coefficients in Equation (1)?
+\end{point}
+
+\begin{reply}
+The apparent differences between the importance values in Figure 3 and the model coefficients in Equation (1) arose because we had defined the importance of features that were causal ancestors of other features using \emph{total derivatives} and defined the importance of the other features using \emph{partial derivatives}. 
+
+This has been removed from the paper due to the changes we made to the entire evaluation framework.
+
+% For completeness, however, consider the following illustration. Using $f(x,y)=x+2y$ as an example, where $x$ is the causal ancestor of $y$ with $y=3x$, we would have set the importance of $y$ as its coefficient in $f(x,y)$ of $2$, but set the importance of $x$ as its coefficient in $f(x)=x+2(3x)=7x$ of $7$, to account for its influence on the output of $f$ acting through $y$. 
+\end{reply}
+
+\begin{point}
+The formulation of Equation (2) is somewhat awkward for cases where the marginal effect is not large enough, as it depends on the maximum marginal effect. While I understand and agree with the motivation that sign doesn't matter much when marginal effects are close to zero, I suggest introducing a new epsilon value (let’s call it epsilon2) to consider “large enough” importance values. This would allow for more refined comparisons. The approach could then be divided into three cases:
+
+a) If both the marginal effect and importance value are above their respective epsilon values, we check for a sign match.
+
+b) If the marginal effect is above the epsilon1 threshold but the importance value is not above epsilon2, we treat it as a mismatch: the importance value was not large enough to detect a relevant marginal effect.
+
+c) If the marginal effect is below epsilon1, then a sign match occurs if and only if the importance value is also below epsilon2, ensuring that the importance value does not falsely indicate a marginal effect when there isn’t one.
+
+\end{point}
+
+\begin{reply}
+Thank you for the thoughtful suggestion. We agree with the reviewer’s intuition that sign agreement should be interpreted differently when true effects are close to zero, and that separating “directional correctness” from “detecting a nontrivial effect” is important.
+
+Our revised direction-alignment metric follows the spirit of the proposed cases by comparing the sign of the explainer-implied change in $Y$ with the sign of the true change, while explicitly downweighting cases in which the true marginal effect is small via the $\epsilon_1$ threshold. The key difference is that we deliberately avoid introducing a second threshold on the explainer-indicated magnitude. Imposing such a requirement would conflate two distinct notions: (i) whether the explainer points in the correct direction, and (ii) whether it assigns an appropriately large importance to a feature.
+
+We separate these concerns across two complementary metrics. The direction metric is designed to capture pure directional alignment—i.e., whether the explainer moves $Y$ in the correct direction when the true effect is non-negligible, and refrains from indicating a directional effect when the ground truth is effectively zero. The magnitude-related concern raised by the reviewer is instead captured by our strength-alignment metric, which compares the ranking of features based on the explanations to the ranking implied by the ground-truth marginal effects, both computed using mean absolute values.
+
+This separation allows each metric to target a single conceptual objective and avoids introducing additional thresholds whose choice would be somewhat arbitrary and would mix directional and magnitude information within the same score. We have clarified this design choice in the revision to make the distinction between the two metrics more explicit.
+% except we do not distinguish whether the explanation  evaluates agreement only when 
+% We appreciate the proposed refinement for handling cases where marginal effects or importance values are small.
+
+% In our original paper, our framework already incorporates related ideas through two complementary metrics—\textit{concordance} and \textit{relevance}—which together address much of what the reviewer’s formulation aims to capture. Specifically, \textit{concordance} computes the Spearman correlation between features ranked by their ground-truth and SHAP importance, thereby evaluating whether the relative magnitudes of effects are aligned. This directly reflects cases (a) and (b) in the reviewer’s suggestion: when one measure identifies a feature as large and the other does not, concordance will penalize the inconsistency. Similarly, \textit{relevance} measures the recall of the top-$k$ most important features according to the ground truth—testing whether SHAP identifies the same features as being “large enough” to matter—which corresponds to case (c).
+
+% Given that these two metrics already capture both magnitude-based alignment (via ranks and thresholds) and top-feature overlap, we intentionally define the \textit{directionality} metric to focus solely on sign agreement when SHAP value exceed a small threshold. This makes the directionality measure an upper bound on the true rate of sign agreement—by ignoring very small values where sign is inherently unstable—and isolates the evaluation of whether the inferred direction of influence is correct, independent of magnitude.
+
+% In sum, the proposed refinement aligns closely with what our concordance and relevance metrics already measure. The separation of directionality from these magnitude-sensitive metrics ensures that each captures a distinct and interpretable aspect of how well post-hoc explanations reflect ground-truth relationships.
+\end{reply}
+
+\begin{point}
+For the relevance metric, I suggest weighting the result by the magnitude of the errors. For example, if the method fails to detect the top three features with the largest marginal effects but identifies features with marginal effects that are close in magnitude, this shouldn’t be considered a major error. Weighting by the size of the discrepancy would better reflect the severity of the mistake and provide a more nuanced evaluation. A similar argument could be made for the concordance metric.
+\end{point}
+
+
+\begin{reply} Thank you for this helpful suggestion. Since the relevance metric has been removed and the strength-alignment metric is defined analogously to concordance using Spearman rank correlation, we focus on the strength metric.
+
+The proposed magnitude-based weighting assumes a cardinal metric. In contrast, our strength-alignment measure is intentionally rank-based: it evaluates whether explanations recover the correct ordering of features rather than their exact effect sizes. Within this framework, misordering features with similar effects incurs a small penalty, while placing highly important features far down the ranking incurs a larger penalty.
+
+Introducing magnitude-based weights would require incorporating cardinal information about the feature importance, effectively shifting the objective from ranking recovery to effect-size estimation. This would conflate ordering accuracy with magnitude accuracy, which we intentionally separate for clarity and robustness.
+
+For these reasons, we retain the rank-based strength-alignment metric, which directly measures whether explanations correctly prioritize features.
+
+\end{reply}
+
+\begin{point}
+In Section 5.1, some metrics may be sensitive to the number of applicants selected, especially when evaluating effectiveness in making inferences about *average* marginal effects. Why limit the analysis to only 100 applicants instead of using the entire test set?
+\end{point}
+
+\begin{reply}
+Thank you for this comment. We limit the evaluation to 100 test instances per dataset because generating SHAP explanations is extremely computationally intensive in our experimental design. In our setting, a single SHAP explanation for one model–instance pair takes approximately 30 seconds for \S 5 models and about 90 seconds for \S 7 (Rashomon-set) models. To compute the directionality metric, we additionally generate six perturbed versions of each instance, resulting in 700 SHAP explanations per model.
+
+Across 81 datasets, we estimate 12 models per dataset in for \S 5 and 10 near-optimal models per dataset in \S 7, yielding a total of 1,782 models. Explaining 100 instances per model therefore requires roughly 125 million seconds of SHAP computation in serial. Even when executed on a dedicated server with 80 CPU cores and 30 parallel processes, the explanation stage alone requires approximately 28 days of continuous computation. Expanding the evaluation to the full test set would increase this cost by more than an order of magnitude and is therefore computationally infeasible.
+
+Because our objective is to compare explanation behavior across methods and models rather than to estimate population-level average marginal effects, using a fixed subsample of instances ensures comparability across explainers while keeping the analysis tractable. A detailed breakdown of computational costs for both model construction and explanation generation is provided in Online Appendix \S 6.
+% Thank you for this comment. We limit the evaluation to 100 examples per dataset due to the substantial computational cost of SHAP. This issue is particularly pronounced in experiments where we generate SHAP explanations for the decisions made by 10 different models on 100 individuals. In our setting, producing a single SHAP explanation for one data point by one model takes approximately 2 minutes. As a result, generating explanations for entire test sets across multiple models quickly becomes computationally infeasible.
+
+% Moreover, our experimental design involves a large number of dataset–model pairs. Specifically, we simulate 81 datasets, and for each dataset we train multiple models, as some analyses require comparing models with different levels of accuracy. Additionally, in Section 7 we construct a Rashomon set of 10 models with similar accuracy for each dataset. Taken together, this leads to a very large number of SHAP computations.
+
+
+
+
+% \textcolor{red}{Model construction constitutes a substantial computational burden in our experimental pipeline. Across all experiments, we generated 81 synthetic datasets and, for each dataset, estimated two distinct groups of predictive models: a heterogeneous-accuracy group (Group~1) and a high-accuracy ``Rashomon Set'' group (Group~2). All model training was conducted on a workstation equipped with 32~GB RAM and an Intel i7 processor. For Group~1, we employed XGBoost models and systematically varied hyperparameters and training sample sizes to obtain 12 models per dataset with evenly distributed predictive accuracy in the range of 0.7--0.9. To ensure sufficient dispersion in accuracy, we conducted an extensive grid search over a $60 \times 10 \times 4$ grid spanning the number of estimators, tree depth, and training-set size. Each parameter configuration required approximately 3 seconds of runtime, implying that constructing Group~1 models alone required $60 \times 10 \times 4 \times 3 \times 81 / (3600 \times 24) = 6.75 $ days of continuous computation. For Group~2, we estimated high-accuracy models using nine machine-learning algorithms (including XGBoost, CatBoost, and LightGBM et.all), generating 10 near-optimal models per dataset via grid search combined with five-fold cross-validation. On average, each algorithm explored 81 parameter settings, with each configuration requiring 2 seconds, yielding an additional $ 81 \times 5 \times 2 \times 81/ (3600 \times 24) = 0.76$ days. In total, predictive model construction alone consumed approximately \textit{7.5 days} of uninterrupted computation on a single high-end workstation.}
+
+% \textcolor{red}{The computational demands increase substantially in the explanation stage, where every trained model is analyzed using both SHAP and LIME. For each dataset--model pair, we explained 100 test instances and, to compute the Directionality metric, additionally generated six perturbed versions of each instance ($m=-3,-2,-1,1,2,3$), resulting in 700 explanation tasks per model. These experiments were executed on a dedicated server equipped with 80 CPU cores (2.5~GHz) and 256~GB RAM, with 30 parallel processes per task. SHAP proved particularly computationally intensive: for Group~1 models, explaining a single instance required on average 30 seconds, whereas for Group~2 models---due to heterogeneous model structures and varying SHAP compatibility---the average rose to 90 seconds per instance. Aggregating across all datasets and models, SHAP explanations required $(81 \times 12 \times 700 \times 30 + 81 \times 10 \times 700 \times 90)/(3600 \times 24 \times 30) = 27.6$ days of server-level computation. By contrast, LIME was considerably faster, with an average runtime of 0.1 seconds per instance, yielding a total of only 0.05 days. Even with heavy parallelization, the explanation stage alone thus required approximately \textit{28.1 days} of continuous high-performance computation.}
+
+% \textcolor{red}{Taken together, our experimental design entails a non-trivial computational investment that reflects both the scale and rigor of the study. Model construction required approximately 7.5 days on a high-end workstation, while post-hoc explanation consumed an additional 28.1 days on a multi-core server, yielding a total effective runtime of \textit{35.6 days}.}
+
+\end{reply}
+
+\begin{point}
+The paper repeatedly argues that ranking features based on their absolute SHAP values is undesirable because it sacrifices information about the directionality of a feature’s impact. I believe this sets up a straw man argument, as different approaches can be used for different purposes. If the goal is to rank or select features based on their importance, using absolute values may be perfectly appropriate. If directionality is important, a different approach—such as linear regression—can be used. Moreover, the paper does not demonstrate whether SHAP and LIME are effective at ranking or selecting features based on marginal effects when absolute importance values are applied, which is a critical omission.
+\end{point}
+
+
+% \textcolor{red}{Reviewer wants to use aboslute value to rank features, which is a fair comment and we should do it. Did we do it? this is actually a fair point and I think it is better than what we did}
+
+%While we of course agree that methods like classical linear regression can be used instead of SHAP to identify feature directionality, because we found evidence of researchers using SHAP and not linear regression we felt that a critique of this kind was pertinent. We believe that the fact that SHAP users cannot average the signed SHAP values of a collection of data samples to obtain a global explanation, and must take absolute values to avoid the issue that signed SHAP values average to zero, is unintuitive. Additionally, we also believe that it is fair to say that it would be more convenient for researchers if SHAP could be used to ascertain both local and global directionality (as they can with LIME). These two pieces of reasoning together, we think, are enough to legitimize our critique. We have re-phrased the argumentation in our paper to emphasize these justifications so as to mitigate the possibility that we give the impression of constructing straw man arguments. 
+
+% Your suggestion was well received. We would like to first note that our relevance metric (content relating to which has been moved to an Appendix in the present revision) takes rankings based on absolute feature importance as input. This is because the relevance metric is meant to capture how well an explainer can identify the most important features overall, without regard to the direction of impact on $Y$. Additionally, we have introduced a new metric in Section 8 denoted $\text{GlobalCorr}$ that we use to evaluate how well the mean absolute importance values of a model match the mean absolute importance values of the ground truth model. We were motivated to add this metric both due to the concern you pointed out here and so that the rather common practice we identified in our literature review of gleaning data insights from mean absolute SHAP values is represented in our paper. 
+
+\begin{reply} Your suggestion was well received. In the revised paper, we now rank features based on the mean absolute shapley values for strength-based evaluation (See \S 4.1) and have redone the experiments accordingly. 
+\end{reply}
+
+\begin{point}
+Equation (5) is unclear. Why is it expressed as a function of $\mathbf{x}$ on the left, but defined in terms of $\mathbf{\xi}$ within the equation? This inconsistency makes it difficult to follow.
+\end{point}
+
+\begin{reply}
+We have removed this part from the paper since the evaluation is no longer against the marginal effects.
+\end{reply}
+
+\begin{point}
+Computation time is a significant concern when using SHAP and LIME, as both rely on sampling-based approaches. Some of the proposed mitigation strategies involve running multiple iterations or increasing the sample size, which would directly increase computation time. This impact should be carefully considered in the analysis.
+\end{point}
+
+\begin{reply}
+You are absolutely right. As we have now reframed the mitigation strategies as robustness checks (following your earlier suggestion), we do not advocate these methods as practical solutions. Instead, we emphasize that even if researchers were to apply such mitigations (in spite of their added computational costs) SHAP and LIME still reliably align with the $\mathbf{X}\mapsto Y$.
+
+% \textcolor{red}{Should we add an experiment on the effect of SHAP sample size on SHAP data alignment? }
+\end{reply}
+
+\begin{point}
+Potential impact: Do the results have relevant managerial or policy implications that are potentially important (not necessarily directly, but possibly through a translation), or does the method itself represent a significant innovation? What are the implications? Are they novel and/or significant?: The results of this paper have potentially significant managerial implications, particularly because SHAP is one of the most widely used explainability methods in machine learning platforms. Many practitioners use SHAP alongside predictive models to gain insights into their data. This paper highlights that doing so is generally inappropriate if the goal is to infer marginal effects, which could prompt a necessary shift in how SHAP is applied. The implications are substantial if, as the paper suggests, researchers and practitioners are currently using SHAP to infer marginal effects.
+\end{point}
+
+
+\begin{reply}
+Thank you for highlighting the potential managerial significance of our work. We agree that the widespread use of SHAP makes the implications particularly important.  We believe the revised paper makes the managerial and methodological implications clearer and more compelling.
+\end{reply}
+
+
+
+\begin{point}
+I do not find the proposed mitigation methods particularly useful. In fact, they could be counterproductive by encouraging continued use of SHAP and LIME for estimating marginal effects, which this paper clearly demonstrates is an inappropriate use case.
+\end{point}
+
+\begin{reply}
+You are absolutely right! We have instead framed them as robustness checks in the revision.
+\end{reply}
+
+
+
+\begin{point}Writing: Is the paper written at a level of clarity, articulation, logic, and exposition that is appropriate for a major journal?: The paper is generally well-written, but I have a few suggestions to improve the clarity and focus of the argument:
+Introduce the formal definition of marginal effects earlier in the paper to provide a clearer foundation for the discussion. 
+\end{point}
+
+\begin{reply}
+Thank you for the suggestion. We have substantially revised and streamlined the paper. We hope you find the revised paper satisfactory.
+\end{reply}
+
+\begin{point}
+The related work section should include methods for estimating marginal effects, giving context for how SHAP and LIME compare to more traditional approaches.
+\end{point}
+
+\begin{reply}
+Thank you for this helpful suggestion. In the revised paper, we no longer compare against marginal effects but directly with the direction and strength of  $\mathbf{X} \mapsto Y$ in the underlying data.
+
+Accordingly, we have revised the related-work section to reflect this conceptual shift. We now include a dedicated subsection discussing classical econometric approaches to studying the $\mathbf{X} \mapsto Y$ relationship, including regression-based, quasi-experimental, and structural methods. This revision clarifies how SHAP and LIME differ from approaches that estimate relationships directly from the data-generating process, rather than via post-hoc explanations of a predictive model.
+\end{reply}
+
+\begin{point}
+In the discussion of SHAP and LIME, I recommend formalizing what SHAP and LIME quantify (e.g., Shapley values in SHAP) and contrasting these values with marginal effects to clarify their differences. 
+\end{point}
+
+\begin{reply}
+Thank you for the suggestion. We have explicitly discussed the meanings of SHAP and LIME in Section 2. %We have also introduced  new evaluation metrics that no longer directly compare with marginal effects.
+
+\end{reply}
+
+
+
+\begin{point}\label{r1:discrepancy}
+The authors may want to add a short section outlining the sources of discrepancy between SHAP/LIME estimates and marginal effects. Alternatively, this could be incorporated into the explanation pipeline section. The sources of discrepancy are:
+
+a) SHAP and LIME quantify feature importance in the model, not in the underlying data-generating process.
+
+b) Even if the model accurately reflects the data-generating process, a feature’s importance in the data-generating process does not necessarily correspond to a high marginal effect, and vice versa.
+
+c) SHAP and LIME rely on local linear approximations.
+
+Related to the above, the factors affecting the misalignment between SHAP/LIME and marginal effects could be framed in terms of the identified sources of discrepancy. For example, model accuracy reflects the misalignment between explaining the model versus explaining the underlying data. Correlated features can contribute to both issues: they can lead to the model failing to capture the true relationships in the data (e.g., if regularization is applied), and they can also hinder SHAP and LIME's ability to make accurate approximations when features are correlated (related to the third source of discrepancy). Lastly, the parameters for SHAP and LIME primarily impact the third source—issues arising from their reliance on local approximations.
+\end{point}
+
+
+
+\begin{reply}
+Thank you for this insightful suggestion. This comment is related to \ref{q:discrepancy}. In the revised version, we no longer rely on marginal effects and instead interpret results directly from the formal definitions of SHAP and LIME. This removes source (b). Our analysis therefore focuses on (a) and (c).
+
+Source (a) captures the central conceptual distinction of the paper: SHAP and LIME quantify feature importance within a fitted model, whereas researchers often seek to infer importance in the underlying data-generating process (DGP). We therefore examine factors related to (a), including model accuracy (how well the model approximates the DGP) and the Rashomon effect, which shows that even highly accurate models can imply substantially different explanations.
+
+We also explicitly analyze source (c) by studying the sensitivity of SHAP and LIME to explainer hyperparameters in the Robustness Checks in \S 6. Because both methods rely on local approximations, variation in explainer settings can generate meaningful differences in attributions even when the underlying model is fixed. Our experiments isolate and quantify this additional source of discrepancy.
+\end{reply}
+
+\vspace{-0.5cm}
+\begin{point}
+Streamlining the paper would help sharpen its focus. I found a few areas where the exposition could be tightened:
+
+a) Some key ideas are repeated across multiple sections, which could be consolidated.
+
+b) The paper tries to address too many points, which dilutes the central message (e.g., conditions where LIME may correspond to marginal effects, mitigation strategies). I recommend dropping these to keep the focus on the core message of the paper: importance-weight methods are not appropriate for making inferences about marginal effects.
+
+c) There are too many different data-generating processes, making it difficult to track which charts correspond to which simulations. Focusing on one or two processes would improve clarity. These processes don’t need to be overly realistic but should model various conditions where misalignment worsens.
+\end{point}
+
+\begin{reply}
+Thank you for this helpful suggestion.
+
+a) In response, we have substantially revised and streamlined the paper,  significantly improving the clarity and logical flow. 
+
+b) The revised manuscript now emphasizes a single central message: post-hoc explanation methods cannot reliably recover the direction or strength of features in the $\mathbf{X} \mapsto Y$ relationship in the underlying data.  The paper is now structured to introduce the problem through an extensive literature review (\S 3), systematically evaluate explanation behavior (\S 4), analyze the underlying causes of misalignment (\S 5), assess robustness (\S 6), and investigate diagnostic signals (\S 7).
+
+c) To improve clarity and consistency across experiments, we now use a fixed set of 81 datasets generated by systematically varying factors described in Section 4.2. These data-generating processes are designed to capture a range of conditions under which misalignment worsens, while keeping the experimental structure consistent and easier to follow. The data generating processes are included in the Online Appendix \S 2.
+\end{reply}
+
+\begin{point}
+The number of features discussed in Section 5.2 seems to be another factor contributing to misalignment (discussed in Section 5.3), so I don’t think they should be discussed in separate sections.
+\end{point}
+\vspace{-0.2cm}
+\begin{reply}
+Thank you for this suggestion. We have reorganized the discussion of factors contributing to misalignment to better reflect their relationships. In the revised manuscript, the role of the number of features is now discussed in Section 5.3 and grouped with other data-related factors under a unified section on data properties, rather than being treated separately.
+\end{reply}
+
+\begin{point}
+The current strategy of demonstrating misalignment even in a simple data-generating process is effective. However, there should also be an example with non-linear relationships that are better captured by a machine learning model, illustrating that while linear regression may perform poorly, SHAP and LIME still fail to accurately capture marginal effects in these more complex scenarios.
+\end{point}
+
+\begin{reply}
+Thank you for this suggestion! We have added experiments where the data-generating process is non-linear.
+\end{reply}
+
+\begin{point}
+If the authors decide to match simulations to a business context, I suggest choosing something other than loan data. Loan data is commonly used to explain models predicting default risk, which might detract from the paper’s point that SHAP and LIME explain models rather than the underlying data-generating process. Instead, I recommend a different scenario, such as social behavior (e.g., app downloads, product purchases), which may better illustrate the key points.
+\end{point}
+\vspace{-0.5cm}
+\begin{reply}
+Thank you for this suggestion.  We have exchanged the loan application simulation for a simulation of individuals' decision to download or ignore a mobile app.  
+\end{reply}
+
+
+
+\begin{point}
+The paper seems to confuse the distinction between understanding the data and understanding the data-generating process. For example, it states that “the goal of business researchers is to understand the data,” but this is not entirely accurate. Researchers aim to understand the data-generating process, and marginal effects are a characteristic of the process, not the data itself. Additionally, SHAP and LIME can provide insights into feature importance within the data-generating process, provided that the predictive model being explained accurately captures that process and that the linear approximations used by SHAP and LIME are accurate. However, even under these conditions, SHAP and LIME may still fail to capture marginal effects.
+\end{point}
+
+\begin{reply}
+    We thank the reviewer for this thoughtful comment and we completely agree. We have changed our evaluation accordingly. Now our ``ground truth" is the data generating process, $\mathbf{X}\mapsto Y$. Our claims is that the explanations on the model level, i.e., $\mathbf{X} \mapsto \hat{Y}$ does not repliably reflect the true direction or strength of $\mathbf{X} \mapsto Y$.
+\end{reply}
+% \begin{reply}
+% We concur with the reviewer’s insightful clarification. Indeed, there are two distinct levels at which one can characterize relationships in data: a \textit{descriptive} level and a \textit{generative} level.
+
+% The \textit{generative} level concerns the underlying data-generating process—often interpreted causally. Characterizing this level requires strong identification assumptions and rigorous econometric methods. Even in well-specified structural or causal models, recovering the true generative mechanism is difficult and typically demands domain knowledge, experimental variation, or exclusion restrictions. It is therefore straightforward and widely accepted that SHAP and LIME generally cannot discover causal or generative relationships of this kind; their theoretical design does not support causal interpretation.
+
+% Our paper focuses instead on the \textit{descriptive} level, examining whether SHAP and LIME can at least recover consistent associations observed in the data. These correspond to the kinds of interpretations researchers commonly make when they read SHAP or LIME plots, such as “a larger SHAP value implies a higher outcome $Y$” (a directional interpretation), or  “features with larger mean absolute Shapley values are more important" (a strength interpretation). Our results show that even these descriptive relationships are often unreliable. The estimated direction and relative magnitudes of feature effects frequently contradict the true data-level patterns in our simulations, even under idealized conditions where predictive models fit the data well.
+
+% Establishing that descriptive interpretations are unreliable has important implications; if post-hoc explanation methods fail to capture even descriptive patterns in the data, then any generative or causal interpretations derived from them are even less justified. Therefore, we deliberately focus on the descriptive level as it provides a minimal yet stringent test of interpretability that is conceptually prior to, and more attainable than, causal inference.
+
+% \end{reply}
+
+\begin{point}
+Typo in page 8: “desiderata”
+
+Typo in page: “its variant Section 5” should be “its variant in Section 5”
+
+\end{point}
+
+\begin{reply}
+We corrected it. Thank you for catching it!
+\end{reply}
+
+
+
+\begin{point*}
+Do you have any other important comments about the paper?: I have offered numerous suggestions in my previous comments. I hope the authors understand that my feedback is not intended to be negative. I believe the research has significant potential, and I agree with the main argument that SHAP and LIME should not be used to infer marginal effects. My goal is to help enhance what appears to be a promising and impactful piece of research. I hope my feedback is helpful, and I wish the authors the best in the review process. I enjoyed reading their paper.
+\end{point*}
+
+\begin{reply}
+We sincerely thank you for your thoughtful and constructive feedback throughout the review process. Your comments prompted us to fundamentally rethink both the framing and the empirical strategy of the paper. In response, we substantially revised the manuscript, including completely redesigning the experiments and evaluations, which led to a clearer articulation of the core message and a stronger, more coherent empirical analysis. We believe these changes have significantly improved the paper, and we are grateful for the time, care, and intellectual engagement you invested in this review. Thank you again for your encouragement and for recognizing the potential of this work.
+\end{reply}
+
+\vspace*{0.5\baselineskip}
+
+%Include concluding remarks here
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Let's start point-by-point with Reviewer 1
+\reviewersection{}
+
+\textsf{For ease of reference, we copy your original comments here, in \emph{italics} font.}
+
+
+
+
+\begin{point*}
+ The paper “From Model Explanation to Data Misinterpretation: Uncovering the Pitfalls of Post Hoc Explainers in Business Research” investigates the use of feature-based explanations to draw inferences about the data that underlies machine learning models. Specifically, the authors (i) review current business research to illustrate the scope of such practice, (ii) propose criteria to capture data alignment of feature-based explanations, (iii) run simulations to demonstrate how the two most popular methods (SHAP and LIME) fail to meet these criteria, (iv) propose and evaluate mitigation strategies, and (v) discuss implications for business research. In my view, the key argument is that business researchers increasingly rely on explanations to draw inferences, which is problematic due to the lack of data alignment. Instead, explanations (possibly improved by the authors' suggested modifications) should be used solely to propose hypotheses, not to validate them.
+\end{point*}
+
+\begin{reply}
+We sincerely thank the reviewer for the careful reading of our paper and for the clear and accurate summary of our original submission. Your comments have greatly helped us refine the paper’s framing, scope, and empirical validation. In response, we have made substantial revisions, which are detailed in the \textbf{Summary of Major Changes} on Page~\pageref{sec:majorchanges} of the rebuttal document. Below, we explain how each of your comments has been addressed and incorporated into the revised manuscript.
+\end{reply}
+
+\noindent \textbf{Additional Questions:}
+
+\begin{point}\label{q:research_question}
+Research question and contribution: Is the question clear? Is it important (why/why not)? What contribution does answering the question represent? Is it significant or incremental?:The authors pose the question whether “SHAP and LIME explanations [can] capture the correct relationship between X and Y, specifically the marginal effect of X on Y, in the data” (Page 3). I find this question relevant and believe the authors effectively highlight its importance by conducting a literature review, which shows that a significant number of business research papers already assume the answer is “yes”. I also think, however, that the authors' contribution to answering this question is relatively incremental.
+
+In the Related Work Section, I am missing some key works that have already made significant contributions to answering the research question. In both computer science, where SHAP and LIME originated, and information systems, the field aligned with the management science department to which the authors submitted, relevant studies have been overlooked. For instance, in their highly-cited AIES paper, Slack et al. (2020) clearly demonstrate that SHAP and LIME can be unreliable and fluctuating, making it hard to see how these methods could fulfill the “data alignment” criteria examined by the authors at all. Similarly, Fernández-Loría et al. (2022), in MIS Quarterly, demonstrate that SHAP values frequently fail to capture the true relationships in the decision-making process. Given the authors' own argument that data alignment corresponds to an earlier step in the “explanation pipeline,” I would consider this prior work as having already answered the research question to a significant extent.
+\end{point}
+
+
+% \textcolor{red}{Lu, please address this. Specifically the papers he mentioned.
+% For the Fernandez paper, read the paper carefully to see what is their main claim. Help the reviewer to understand the distinction: they still explain the model, our claims are related to the data. }
+
+% \textcolor{blue}{We thank the reviewer for pointing us to the important contributions by Slack et al. (2020) and Fernández-Loría et al. (2022). We agree that these papers are highly relevant to the broad discussion of post hoc explainers. Accordingly, we have revised the manuscript to explicitly acknowledge and discuss these works in subsection 2.3 (second paragraph) and section 3 (first paragraph). At the same time, we would like to clarify how our work differs in focus and contribution from these prior studies.}
+
+% \textcolor{blue}{First, Slack et al. (2020) do not fundamentally challenge the validity of SHAP and LIME explanations. Instead, their concern lies in the robustness of these methods against adversarial manipulations. As noted explicitly in the Introduction of their paper (Introduction, last paragraph, last sentence), the authors acknowledge the usefulness of LIME and SHAP but emphasize their vulnerability. Specifically, they design a “scaffolding” adversarial attack framework that constructs an alternative black-box model, which behaves identically to the original black box in-sample but diverges out-of-sample. In this way, they demonstrate that SHAP and LIME can be exploited under adversarial settings. This line of inquiry highlights vulnerabilities in explainer robustness but still takes the model-based explanations as meaningful. By contrast, our study shows that even when SHAP and LIME are applied properly in the absence of adversarial attacks, their explanations remain unreliable because they diverge from the true data-generating process. In this sense, our focus is not on robustness to attacks but on the deeper issue of whether post hoc explanations can faithfully align with the ground truth.}
+
+% \textcolor{blue}{Second, Fernández-Loría et al. (2022) argue that SHAP is not well suited for explaining system-level decisions and propose counterfactual explanations as an alternative. Importantly, their concept of “system decisions” is still based on black-box models, often a complex combination of multiple predictive models. For example, as described in their subsection “Explaining System Decisions” (fourth paragraph), a promotion decision system may include both a purchase probability model and a purchase amount model. Thus, their critique of SHAP is situated within the model-explanation paradigm: whether SHAP can properly explain the outputs of such complex black-box systems. In contrast, our paper takes a fundamentally different perspective by questioning whether post hoc explainers can ever capture the true data-generating mechanisms.}
+
+% \textcolor{blue}{Taken together, these two prior works analyze the limitations of post hoc explainers from the standpoint of model explanations. Slack et al. (2020) introduce adversarially modified models to reveal vulnerabilities, while Fernández-Loría et al. (2022) focus on complex system-level black boxes. In contrast, our contribution lies in constructing simulated data from real-world scenarios with known data-generating processes, and then systematically evaluating the gap between explainer outputs and ground-truth causal mechanisms.}
+
+
+
+% We understand the concern that our contribution may appear incremental given the existence of related studies. In the revised version, we will clarify how prior papers address related but distinct questions, and how our work complements this existing literature by tackling a different—yet closely connected—problem.
+
+\begin{reply} Thank you for mentioning papers by Slack et al. (2020) and Fernández-Loría et al. (2022). We now explicitly acknowledge and discuss both in the revised manuscript. At the same time, these studies address questions that are related but ultimately distinct from the one we investigate.
+
+\noindent\textbf{1. The highlighted papers evaluate explanations at the model level, not at the data level.}\\
+Both Slack et al. and Fernández-Loría et al. examine whether SHAP and LIME faithfully represent what the model has learned. Their focus is therefore on model-level. Our study asks a different question: can researchers use the explainer to infer the \textbf{true $\mathbf{X} \mapsto Y$ relationships in the data-generating process}? This data-level alignment is \textit{not} the focus of either paper.
+
+
+\noindent\textbf{2. Neither study rejects post-hoc explainers outright; their critiques concern specific contexts.}\\
+We appreciate the reviewer’s observation that if an explainer fails to faithfully represent the model, it cannot achieve alignment with the data.  However, the studies cited—Slack et al. (2020) and Fernández-Loría et al. (2022)—do \textbf{not} argue that SHAP or LIME generally fail at model-level fidelity generally but in \textbf{specific contexts}.
+
+Slack et al. (2020) show that SHAP and LIME can be manipulated under \textbf{adversarial attacks}, where a model is intentionally engineered to preserve its predictions while altering its explanations. Their results therefore speak to the robustness of explainers under \textbf{malicious or adversarial use}, not their reliability under standard, well-intentioned applications. Similarly, Fernández-Loría et al. (2022) evaluate SHAP in the context of\textbf{ counterfactual decision making}, where the objective is to find the smallest input change needed to cross a decision boundary. Their critique is that SHAP is not designed for counterfactual reasoning—not that it generally fails to capture the model’s input–output relationships. This is a fair argument because SHAP and LIME were not designed to explain counterfactuals in the first place. 
+
+% Our study asks whether the direction and strength of $\mathbf{X}\mapsto \hat{Y}$ uncovered by SHAP and LIME generalize to $\mathbf{X} \mapsto Y$,  when the explainer is under benign use and the explanation is interpreted as intended. %. , well-specified, and the explainer is used exactly as intended.
+
+\noindent\textbf{3. Our contribution: Testing whether model-level explanations generalize to the data level.}\\
+What has been missing—and what our paper contributes—is an examination of whether the direction and strength of $\mathbf{X}\mapsto \hat{Y}$ uncovered by SHAP and LIME generalize to $\mathbf{X} \mapsto Y$,  when the explainer is under benign use and the explanation is interpreted as intended.
+
+
+To address this, we construct datasets with known data-generating processes and evaluate whether SHAP and LIME recover these true relationships. This ground-truth-based design allows us to assess \textbf{data-leve}l validity, not merely model-level fidelity. Our results show that alignment between $X-\hat{Y}$
+ explanations and the true $X-Y$ relationships is \textbf{systematically unreliable}, even under favorable, non-adversarial conditions.
+
+
+This finding implies that model-level faithfulness is not sufficient for drawing conclusions about the data-generating process—a distinction that has not been formally articulated or empirically tested in prior work. Importantly, the existence of model-level failures does not render the study of data-level alignment trivial. %Prior work shows that post-hoc explainers can fail to faithfully represent the model in certain settings, but this does not resolve the distinct question of whether explanations that \emph{are} faithful to the model can be interpreted as evidence about the underlying data-generating process. Our results show that even when known model-level issues are set aside—by focusing on benign, well-specified models—systematic misalignment between model explanations and data-level relationships persists.
+% This distinction is critical for evaluating the practical use of post-hoc explainers in empirical research, where explanations are often interpreted as evidence about $\mathbf{X} \mapsto Y$ rather than merely as descriptions of a specific trained model.
+
+We show that there exists a structural misalignment between model explanations and data explanations that cannot be resolved by improving explainer faithfulness alone.
+
+In addition to model accuracy, that represents how well a model can approximate the ground truth $\mathbf{X} \mapsto Y$, a central driver of this misalignment is the \emph{Rashomon effect}: when many equally accurate models exist, any single model’s explanation reflects only one of many plausible representations of the data, particularly when agreement within the Rashomon set is low. In such cases, post-hoc explanations need not align with the true $\mathbf{X} \mapsto Y$ relationship, even when predictive performance is high.
+
+% With respect to the explanation pipeline, our contribution is therefore to make explicit that alignment at the model level does not imply alignment at the data level—a leap that is commonly but incorrectly made in empirical research. To our knowledge, this categorical distinction and its implications for post-hoc explanations have not been previously demonstrated.
+
+To address the reviewer's concern, we have:
+\begin{itemize}
+\item Expanded the Related Work section to more clearly position our contribution relative to Slack et al. (2020), Fernández-Loría et al. (2022), and related IS literature;
+\item Clarified how our work complements prior critiques by showing that the Rashomon effect—a large set of equally accurate models—creates systematic data-level misalignment even when post-hoc explainers are faithful at the model level.
+\item Introduced a diagnostic signal based on agreement within a Rashomon set to assess the reliability of post-hoc explanation alignment (\S 5)
+\end{itemize}
+\begin{comment}
+The key distinction lies in the \textbf{level of validity} being examined. Prior work, including Slack et al. and Fernández-Loría et al., primarily investigates whether post-hoc explainers faithfully represent what a machine-learning model has learned—that is, their \textbf{model-level fidelity}. By contrast, our paper asks whether these model-based explanations can be used to infer genuine relationships that exist in the \textit{underlying data}. We refer to this as \textit{data alignment}.
+
+Slack et al. (2020) demonstrate that SHAP and LIME can produce unreliable explanations under \textit{adversarial attacks}, where models are intentionally manipulated to preserve predictions while altering explanations. Their focus is thus on the robustness of explainers under manipulation. Our analysis, in contrast, examines the validity of explanations under benign, intended use—when researchers apply SHAP and LIME correctly and in good faith. We show that even under these normal conditions, the explanations systematically diverge from the relationships present in the data itself.
+
+Fernández-Loría et al. (2022), published in MIS Quarterly, critique SHAP for its limitations in explaining system-level decisions and propose counterfactual explanations as a more appropriate alternative. Their focus is therefore on the suitability of different explanation paradigms for prescriptive decision making, not on whether SHAP recovers the true data-level relationships. Moreover, they do not reject SHAP outright; rather, they specify contexts where SHAP may be less informative while recognizing its continued usefulness elsewhere.
+
+Our paper extends this line of inquiry one step further. We abstract away from the question of when SHAP or LIME accurately explain a model and instead ask a more fundamental question: even when these methods are applied correctly to well-specified, non-adversarial models, do their explanations align with the relationships that actually exist in the data? We find that they do not.
+
+To make this distinction operational, we construct simulated datasets with known data-generating processes and develop measurable criteria for “data alignment.” This design enables us to test whether SHAP and LIME reproduce the relationships embedded in the data itself, not merely the internal behavior of the model. This ground-truth-based evaluation framework, to our knowledge, has not been examined in prior literature and provides new empirical evidence about the fundamental limits of post-hoc explanations.
+
+In short, Fernández-Loría et al. show that SHAP may not always explain what the model does, while our paper shows that—even when the model is correct and SHAP is applied appropriately—its explanations still fail to recover what the data represent. The two perspectives are therefore complementary: prior work concerns \textit{model-level fidelity}, whereas our study addresses \textit{data-level validity}, with distinct implications for how business researchers should interpret post-hoc explanations.
+\end{comment}
+
+% \textcolor{red}{Ronilo, FERNÁNDEZ-LORÍA  has several papers related to our paper, we need to cite them in our paper. }
+\end{reply}
+
+
+\begin{point}
+Method: Is the method used well justified for the question? Is the method applied convincingly (if not, why not)? Does it produce convincing/robust results that answer the question?:The authors highlight the prevalence of the problem by conducting a literature review, which I find appropriate and generally convincing. However, the authors define a top journal based on a five-year impact factor above 5, which I find inadequate. They should consider presenting results using established rankings, such as the Dallas ranking or FT50. At a minimum, they should specify how many problematic papers were found in INFORMS journals versus other “top” journals, as defined by their impact factor criterion.
+\end{point}
+
+\begin{reply} We thank the reviewer for this important suggestion. We agree our previous paper survey did not emphasize top journals.
+In response, we conducted a second wave of systematic and exhaustive review of journals in the union of the FT50, UTD24, and INFORMS journal lists. We identified all papers from these journals that use SHAP or LIME - 56 in total. Combining two waves, there are a total of 181 papers. To reduce bias of human coding, we also use a state-of-the-art LLM, \texttt{gpt-5.2}, to review each paper and provide labels. Final labels were determined by reconciling disagreements between human annotations and LLM-based classifications. Detailed documentation of the review protocol, coding procedure, and adjudication process is provided in Online Appendix \S 1.
+
+Overall, 42.5\% of the sampled papers engaged in what we classify as problematic interpretations of post-hoc explanations. The prevalence of such interpretations is substantially lower in leading journals: 14.3\% among \textit{UTD 24} journals, 14.0\% among \textit{FT50} journals, and 17.4\% among \textit{INFORMS} journals. Across the union of these three journal lists, the overall rate is 16.1\%.
+
+
+
+
+
+% \textcolor{red}{It's not detailed enough. We need to provide more information (Lu)}
+\end{reply}
+
+\begin{point}
+The authors build upon simulations in order to be able to tightly control the true relationships between variables, which I find reasonable. However, I question what can genuinely be learned from these simulations given their narrow scope. On one hand, the purely linear setting without added noise simplifies evaluation for the reader, and I somewhat agree that non-linear settings may only further pronounce the issues identified. On the other hand, such a setting is a lot less realistic. In fact, in most real-world cases with linear relationships in tabular data, I would consider a deep neural network a very poor model choice.
+\end{point}
+
+\begin{reply}
+Thank you for raising this important point.  We have substantially broadened the scope of our simulations in the revised manuscript to include 1) more complex data-generation process; 2) a wide range of models, as we detailed in the \textbf{Summary of Major Changes} on Page~\pageref{sec:majorchanges}.
+
+First, we extend the data-generating processes well beyond the initial linear setting. The revised simulations incorporate nonlinear relationships, interaction effects, varying degrees of feature correlation, different data dimensionalities, and realistic levels of noise. This allows us to evaluate explanation alignment under substantially more complex and empirically plausible conditions. Importantly, the core patterns identified in simpler settings persist—and often become more pronounced—once these sources of complexity are introduced.
+
+Second, we revise our modeling approach to reflect best practices in structured-data applications. Rather than relying on a single model class, we select the predictive model from a range of commonly used families, including gradient-boosted trees (XGBoost, CatBoost, LightGBM) and neural networks, choosing the best-performing model for each dataset. This ensures that our results are not driven by an ill-suited model choice and remain relevant for realistic empirical settings.
+\end{reply}
+
+
+\begin{point}
+Potential impact: Do the results have relevant managerial or policy implications that are potentially important (not necessarily directly, but possibly through a translation), or does the method itself represent a significant innovation? What are the implications? Are they novel and/or significant?: The results have relevant managerial implications as feature-based explanations are widely used in practice. However, I have serious concerns regarding novelty and innovation that I will detail in the following.
+
+First, the results underline that managers (as well as business researchers) need to carefully consider the use of such explanations and not “jump to conclusions” based on the relationships they suggest. While these implications are clearly significant, I have serious concerns regarding their novelty. As outlined previously, prior research both from computer science and information systems has clearly demonstrated the limitations of feature-based explanation methods such as SHAP and LIME. As explanations are easily manipulated into suggesting any relationship (Slack et al. 2020) and in general often fail to capture the true effects of variables on decisions (Fernández-Loría et al. 2022), the need for caution when using them has already been well established.
+\end{point}
+
+\begin{reply}
+Thank you for acknowledging the managerial relevance of our findings and for comments regarding novelty. We agree that prior work has documented limitations of post-hoc explainers, but our contribution differs in scope, focus, and implications.
+
+\noindent\textbf{First}, regarding the novelty, we provided a detailed response in Comment~\ref{q:research_question} that discusses how our study is different from prior work that focuses on model-level fidelity.
+% Slack et al. (2020) and Fernández-Loría et al. (2022) document important limitations of post-hoc explainers, but their analyses address different points in the explanation pipeline. For brevity, we refer the reviewer to our detailed discussion in Comment~\ref{q:research_question}. Their findings do not evaluate—and therefore do not preempt—the central question we investigate: whether SHAP and LIME recover the true direction and strength of $\mathbf{X}\mapsto Y$ in the data even when the model is benign and the explainer is used correctly.
+
+% \noindent\textbf{Second, post-hoc explainers fail to capture the true relationships in the data is not well established in current practice}\medskip\\
+% If this understanding were widely shared, researchers and practitioners would avoid interpreting SHAP or LIME as evidence about data-level relationships. However, our literature review shows the opposite: nearly half of the papers in top management and IS journals use SHAP or LIME precisely to draw  conclusions about how variables relate to outcomes in the data. This indicates that the distinction between model-level and data-level interpretation is far from obvious in the field.
+
+
+\noindent\textbf{Second, our contribution goes beyond showing that misalignment merely exists. We demonstrate the extent of the problem, identify its drivers, and propose diagnostic signals.}\medskip\\
+Our results show that SHAP and LIME fail on simple descriptive properties - the correct direction of effects or the relative importance of variables. We further analyze why these failures occur, documenting how both data properties and model properties contribute to misalignment. %To our knowledge, \textbf{no prior work has systematically examined these mechanisms.} 
+
+For example, we find that high model accuracy is necessary but insufficient for explanation alignment. This is because a central driver of misalignment is the \emph{Rashomon effect}: when many distinct models achieve comparable predictive performance, explanations become sensitive to which model is selected. Our simulations show that in such settings, even accurate models can yield explanations that diverge substantially from the true $\mathbf{X} \mapsto Y$ relationship. Model accuracy is therefore necessary for alignment but insufficient to ensure it, particularly when the Rashomon set is large.
+
+These mechanisms are not intuitive, yet they arise frequently in empirical work that uses post-hoc explanations \textbf{without acknowledging the associated risks}. Our analysis therefore fills an important gap by clarifying when and why misalignment happens, rather than simply documenting that it can occur.
+
+In addition, we propose to use agreement within a Rashomon set as a diagnostic signal for explanation reliability. When explanations are consistent across equally accurate models, they are more likely to reflect data-level regularities rather than model-specific artifacts, providing a practical guideline for researchers using post-hoc explainers.
+
+\noindent\textbf{Third, our managerial and research implications differ from those of prior work.}\medskip\\
+Our contribution therefore complements and extends the existing literature by addressing a more fundamental question: even when SHAP and LIME are correctly applied, do their explanations align with the true data-generating processes?  Our findings show that even when an explainer is used appropriately, model-based explanations should not be interpreted as evidence of the true relationships in the data. Therefore, we argue that post-hoc explainer outputs should not be interpreted as \textbf{evidence} of data relationships, but rather as \textbf{hypotheses} that warrant further empirical validation. This represents a fundamental \textbf{shift} in how post-hoc explanations should be used in both academic research and managerial applications.
+
+In this way, our contribution moves beyond reiterating known limitations. We provide new evidence and conceptual clarity about the gap between model explanations and data-generating processes—an issue that remains highly relevant given how these tools are currently used in managerial and empirical research.
+
+
+
+
+
+% \textcolor{red}{should we organize our feature importance into descriptive and prescriptive?}
+\end{reply}
+
+\begin{point}
+Second, the results provide practitioners with a range of “mitigation strategies” that aim to promote the alignment of explanations with the true relationships between variables. While I appreciate the effort that the authors undertook to demonstrate the effectiveness of these strategies, many of the strategies seem quite obvious and further lack a thorough investigation into why they are effective. For example, increasing LIME’s kernel bandwidth or the number of perturbed samples, as well as averaging across multiple LIME instances, appear to be straightforward trade-offs between additional computation and reduced noise in the results. At the same time, the effectiveness of strategies such as relying on simpler machine learning models are explained rather briefly (here in two sentences on Page 31). In my view, such strategies require deeper investigation in order to present a significant methodological contribution. Following the case of simpler underlying models, for example, the authors could look into what defines a simpler model (e.g., not just smaller architectures but maybe simpler functional mechanisms) and more thoroughly explore the reasons behind the effectiveness, rather than simply attributing it to “more erratic […] decision boundaries” (Page 31). 
+\end{point}
+
+\begin{reply}
+Thank you for this thoughtful comment.  We fully agree with you  that identifying effective and principled mitigation methods—and explaining why they work—would be an important contribution, but it lies beyond the scope of this paper and would likely warrant a dedicated study. 
+
+In the revised manuscript, and following this particular comment as well we Reviewer~1’s suggestion, we now present these mitigation strategies as robustness checks rather than as methodological contributions. Our intent is not to claim that these strategies \emph{solve} the data-alignment problem. Instead, they serve to show that our core conclusion is stable across a variety of reasonable adjustments in the sense that the fundamental misalignment between post-hoc explanations and the true data-generating relationships persists.
+
+
+
+Our hope is that by documenting the depth of the misalignment problem and showing that it persists even under these reasonable adjustments, our paper will motivate further research aimed at developing and theoretically grounding mitigation strategies. In this way, we aim to highlight the importance of the issue and encourage future work dedicated to solving it.
+\end{reply}
+
+\begin{point}
+Writing: Is the paper written at a level of clarity, articulation, logic, and exposition that is appropriate for a major journal?: I find the paper well written, although it would still benefit from professional proof reading.I did come across several typos, ambiguous statements, and previously undefined notation (I listed some of them as minor points below). 
+\end{point}
+
+\begin{reply}
+Thank you for the suggestion! We have closely proofread our paper and addressed these issues.
+\end{reply}
+
+
+
+
+\begin{point}
+Do you have any other important comments about the paper?: Overall, I think the authors have invested significant effort and put forth interesting results and strategies towards more “data-aligned” explanations. Aside from my comments above, I have some other more specific concerns regarding the manuscript that I detail below.
+
+
+The claim that SHAP is generally poor at conveying marginal effects (sometimes even worse than random guessing, see Page 18) appears to rely on the “non-normalized” default version of SHAP. I find these statements misleading, as SHAP is not designed to display these effects, a fact the authors acknowledge later on Page 19. To understand this, readers need only refer to how SHAP values are defined, e.g., by reading the original paper by Lundberg and Lee. I do not consider this to be “theoretical evidence” (Page 3) from the authors, but rather a well-known characteristic of SHAP values that users should be mindful of when applying the method.
+\end{point}
+
+% \begin{reply}
+% Thank you for this thoughtful and important comment regarding marginal effects. We agree with the reviewer that SHAP is not designed to represent marginal effects. In the initial submission, we used marginal effects only because many applied papers interpreted SHAP in an effect-like or directional way, and linear settings offered a clear benchmark for assessing those interpretations. However, we recognize that this benchmark does not align with SHAP’s theoretical definition, and based on the reviewers’ feedback, we anchor our entire revision based on a new evaluation framework.  We have removed marginal effects from the paper, redid all analyses in the paper, and have substantially changed the paper.
+
+
+% In the revised manuscript, we instead evaluate SHAP according to the two types of interpretations that, based on our literature review, practitioners most commonly make and that are consistent with SHAP’s intended semantics: \\
+% (1) that larger SHAP values  of a feature (holding all other features fixed) are associated with larger (or more positive) outcomes $\hat{Y}$; and\\
+% (2) that features with higher mean absolute SHAP values are “more important”.
+
+% We then directly evaluate whether the two claims hold true on data, that is\\
+% (1) whether larger SHAP values correspond to larger or more positive \textbf{actual outcomes} \textbf{$Y$} - an direction interpretation; and\\
+% (2) whether feature importance obtained by SHAP explaining the model aligns with the true feature importance if we use SHAP to explain the ground truth ($\mathcal{G})$.
+
+% This is one of the major changes of the paper. This revised framework aligns directly with SHAP’s formal definition and with how SHAP is used in empirical research, while avoiding reliance on marginal effects.
+
+
+
+% \end{reply}
+\begin{reply}
+Thank you for this thoughtful and important comment regarding marginal effects. This issue prompted the most substantial change we made in the revision. In response, we have redesigned the experimental and evaluation framework. In particular, we no longer treat marginal effects as the ground truth for evaluating post-hoc explanations. Instead, we introduce a new set of evaluation metrics that are explicitly aligned with how post-hoc explanation methods are typically interpreted and used in empirical research. Below, we explain our original motivation and then describe the changes we made.
+
+\noindent\textbf{Why marginal effects in the 1st submission}\\
+A key challenge we faced - both in our review of prior studies and in our initial framing—is that many papers use the term “feature importance” without specifying the estimand they intend to recover. Most papers simply report SHAP or LIME results as indicators of “importance,” without sufficiently clarifying what their definition of “importance” is in a technical sense. This lack of clarity makes it difficult to evaluate whether such explanations are appropriate. Therefore, we had to infer the intended meaning from context, effectively reading between the lines to understand how prior authors interpreted their explanations, what kinds of managerial insights they emphasized, and what kinds of recommendations they made. Because many papers concluded by suggesting to increase or decrease specific features to influence outcomes, we chose to use \textit{marginal effects} as the ground truth for comparison and only use data simulated by linear models. %This decision was pragmatic: in linear models, marginal effects correspond directly to model coefficients, providing a well-defined and empirically verifiable benchmark. 
+This allowed us to evaluate whether post-hoc explanation methods could correctly recover known effects under controlled conditions. %, without conflating different notions of “importance.”
+
+\noindent\textbf{Changes We Made.}\
+We refined this logic and developed a new evaluation framework that better reflects the distinct types of claims researchers typically draw from post-hoc explanation methods. As a result, we no longer use marginal effects as the ground truth. Instead, we evaluate explanations along two dimensions—\emph{direction} and \emph{strength}—which correspond more closely to how SHAP and LIME are interpreted in empirical work.
+
+\emph{Direction alignment} evaluates, for each feature, whether the direction of outcome change implied by the explainer matches the true direction of outcome change in the data-generating process. Intuitively, if an explainer suggests that increasing feature $j$ raises (or lowers) the model prediction $\hat{Y}$, direction alignment checks whether the same perturbation produces a corresponding directional change in the true outcome $Y$.
+
+\emph{Strength alignment} evaluates whether an explainer correctly captures the relative importance of features in the underlying data-generating process, i.e., whether the explanations of $\mathbf{X} \mapsto \hat{Y}$ align with $\mathbf{X} \mapsto Y$.  To operationalize it, we compare the explanations (e.g., from SHAP) on the model $\mathcal{M}$ with the explanations on the data generation model $\mathcal{G}$, which we have direct access to it in the simulated data.
+
+
+These definitions are directly inspired by how SHAP and LIME are used in practice (based on our literature review).  Based on our meticulous review of the 181 papers, 75.4\% of them make directional interpretations and 97.8\% of them make strength-based interpretation. For example, researchers often interpret larger Shapley values as indicating larger model predictions (a directional interpretation) and mean absolute Shapley values as reflecting a feature’s importance to the model (a strength interpretation). Our proposed metrics explicitly test whether such interpretations are valid with respect to the true $\mathbf{X} \mapsto Y$ relationship in the data. 
+% \paragraph{Data.} We have also substantially expanded the data-generating process, moving beyond linear models to incorporate nonlinearity, interactions, feature correlation, varying dimensionality, and noise.
+
+% \paragraph{Models.} Finally, we have expanded the set of predictive models from neural networks alone to a broader class of up to ten model families, including state-of-the-art variants of XGBoost and related methods.
+
+In sum, we fundamentally redesigned the entire empirical analysis. All experiments from the original submission have been replaced. The paper employs a new experimental framework that includes new evaluation metrics, new data-generating processes, an expanded set of predictive models, and new robustness checks. 
+\end{reply}
+
+\begin{point}
+In Section 2.2, the authors argue how their work differs from related work on feature-based explanations. Their main argument seems to be how other works study if explanations faithfully represent the relationships in the model as opposed to the underlying data, the latter being the focus of the authors’ work. As outlined previously, I still believe that the well-established finding (that researchers and practitioners need to be cautious because feature-based explanations often fail to represent relationships in the model) also implicitly suggests caution when inferring relationships in the underlying data. After all, this step occurs even earlier in the “explanation pipeline”. Furthermore, I think the authors’ claim that the “primary goal of the machine learning field is to develop new models” is a bit misleading. In computer science (to which the authors seem to refer here) there are many subfields and even dedicated conferences (see, e.g., ACM FAccT, AAAI/ACM AIES) that study not only methods but also the consequences of transparency and explainability in machine learning.
+\end{point}
+
+\begin{reply}Thank you for the comment. We appreciate the opportunity to clarify both how our contribution differs from prior work and how we position the machine learning literature.
+
+We addresse the similar comment in our response to \ref{q:research_question}. Without reiterating, we would like to add that prior work does not directly address the setting we study.
+In addition, much of the CS literature critiques post-hoc explainers for reasons that differ from our focus. These papers typically highlight issues such as \emph{instability across perturbations}, \emph{susceptibility to adversarial manipulation}, \emph{lack of completeness}, \emph{approximation error when reproducing the model output}, etc. While these model-level and methodological concerns are important, they address different dimensions of explainer reliability. In contrast, our evaluation examines something far more basic and qualitative: whether SHAP and LIME recover even the simplest population-level data properties—such as the correct direction of a relationship or the relative ordering of feature relevance, the minimum validity conditions. These are tasks for which one might reasonably expect post-hoc explanations to offer reliable guidance, even if they have known technical limitations. Our results show that they cannot be reliably generalized to infer these basic properties in the data, even under benign conditions and correct usage. This type of data-level failure is not addressed in prior CS critiques and has direct implications for how SHAP and LIME should be used in applied research.
+
+We agree that our original phrasing “primary goal of the machine learning field is to develop new models" may have been too narrow. We have removed it from the manuscript. The ML community is broad, and conferences such as ACM FAccT and AAAI/ACM AIES devote significant attention to explainability, transparency, and downstream impacts. We have revised the manuscript to more accurately reflect this diversity. Thank you for the suggestion!
+\end{reply}
+
+\begin{point}
+While I generally appreciate the three criteria for data alignment, I have some concerns. First, the concepts of concordance and relevance appear to overlap. The authors should provide a clearer discussion of how these two metrics relate to each other. Additionally, in Figure 5, which presents results regarding relevance for different numbers of features, it is inherently true that relevance is higher with fewer features (e.g., at k=3) as there are fewer “competitors” for the top three. This holds true even if feature importances are drawn at random. I think the authors should represent this criterion in relative terms, as I find the current presentation somewhat misleading.
+\end{point}
+
+\begin{reply}
+Thank you for the thoughtful comment! We agree relevance overlaps with concordance. In the revised document, we have removed the relevance evaluation.  The concordance, which is the Spearman correlation between two rankings, is rephrased as strength evaluation, where we compare the ranking of mean absolute SHAP value obtained by explaining $\mathcal{M}$ with the ranking of mean absolute SHAP value obtained by explaining $\mathcal{G}$.
+\end{reply}
+
+\begin{point}
+I really like that the authors investigate models with varying predictive power and degrees of complexity, which yields interesting findings. I encourage the authors to dig deeper here, particularly in relation to the mentioned Rashomon set theory.
+\end{point}
+
+\begin{reply}
+Thank you for this very important suggestion regarding Rashomon set theory. We have indeed pursued this route and significantly expanded our paper along this dimension. 
+
+We find that model accuracy is necessary but insufficient for explanation alignment, because of the Rashomon Effect - there often exists a large set of models with  comparable accuracy but rely on different
+internal representations - models may rely on different
+subsets of features, encode interactions differently, or resolve trade-offs among correlated variables
+in alternative ways, all while achieving nearly identical performance on standard metrics. Thus, post-hoc explanations for a particular model are inherently less reliable indicators of the
+data-generating structure.  
+
+We demonstrate the presence of the Rashomon effect in \S 5.2, as a contributing factor to explanation misalignment. We also introduce a new section (\S 7) in which we propose using agreement among models within a Rashomon set as a diagnostic signal for the reliability of post-hoc explanations. When agreement is low, the space of hypotheses consistent with the data is large, and any single model’s post-hoc explanation reflects only one of many plausible explanations. In such cases, misalignment between explanations and the true data-generating process is not a failure of the explainer per se, but rather a consequence of insufficient identifiability in the data. Consequently, explanations produced in low-agreement regimes should be interpreted with caution, regardless of a model’s predictive accuracy.
+
+Conversely, high agreement within a Rashomon set indicates that predictive accuracy tightly constrains model behavior. When equally accurate models converge in their predictions—and especially in their feature attributions—the hypothesis space consistent with the data is more restricted. In these regimes, post-hoc explanations are substantially more stable and more likely to align with the true underlying effects. We believe this diagnostic signal will be highly valuable in practice, as it provides users with a principled way to assess the trustworthiness of model explanations.
+
+We appreciate the your valuable feedback and guidance which led to the very important new analyses in the paper. Thank you!!
+\end{reply}
+
+\begin{point}
+Some minor points:
+
+• Page 3, Typo: “within three contexts that they are often used”.
+
+
+• Page 6: The statement on “the two most widely used model-agnostic post hoc explainers” should be backed up with a citation.
+
+• Page 7: Redundant sentence “This makes LIME’s explanations more concise than they would be otherwise.”
+
+• Page 21, undefined notation: $\nu$ appears but is not previously defined (only later on Page 27 as LIME kernel bandwidth)
+
+• Page 27: “differ between concordance and directionality/relevance”. I would rephrase this.
+
+• Page 34: The authors claim that their mitigation strategy applied to LIME improves directionality with regard to the feature “obrat”, whereas Figure 15(d) suggests the opposite.
+
+\end{point}
+
+\begin{reply}
+Thank you very much for carefully reading our paper. We apologize for the typos. We have done careful proofreading and significantly improved the paper. Thank you!
+\end{reply}
+
+\begin{point*}
+I encourage the authors to further explore this promising topic and wish them all the best for their future research.
+
+References
+
+Slack, D., Hilgard, S., Jia, E., Singh, S., \& Lakkaraju, H. (2020, February). Fooling lime and shap: Adversarial attacks on post hoc explanation methods. In Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society (pp. 180-186).
+
+Fernández-Loría, C., Provost, F., \& Han, X. (2022). Explaining data-driven decisions made by AI systems: the counterfactual approach. MIS Quarterly 46(3), 1635-1660.
+
+\end{point*}
+
+% \begin{reply}
+% \textcolor{red}{Thank you for the suggestion.}
+% \end{reply}
+
+
+
+
+
+
+\textsf{Thank you again, for your insightful queries and constructive comments,
+which have significantly improved the paper! We hope you find the revised paper satisfactory.
+}
+
+% Use the short-hand macros for one-liners.
+%\shortpoint{ Pg. 15: the percentages (0.22\% and 28.2\% are reverse in order) }
+%\shortreply{ Fixed.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Begin a new reviewer section; Reviewer 2
+\newpage{}
+
+\reviewersection{}
+\textsf{For ease of reference, we copy your original comments here, in \emph{italics} font.}
+
+\begin{point*}
+Positive feedback:
+
+- Excellent identification and analysis of a critical methodological issue in business research
+
+- Strong theoretical foundation complemented by well-designed empirical validation
+
+- Effective demonstration of the problem's prevalence through comprehensive literature review
+
+- Elegant experimental design using controlled simulations with known ground truth
+
+- Practical mitigation strategies with appropriate acknowledgment of limitations
+
+Key technical issues to address:
+
+1. SHAP Normalization (p.20):
+
+  - Address edge case where $x_j$ = mean (division by zero)
+  
+  - Clarify impact on empirical results
+
+2. Feature Interactions (p.21):
+  
+  - Explain decreased directionality for cosigner-related features
+  
+  - Analyze interaction effects on normalization outcomes
+
+3. Metrics and Notation:
+  
+  - Explain normalized SHAP relevance approaching 0 at k=1
+  
+  - Add notation table, particularly defining $\nu$
+  
+  - Clarify theoretical bounds for relevance metric
+
+4. Implementation:
+  
+  - Provide clearer guidelines for when different mitigation strategies apply
+  
+  - Include concrete examples from business applications
+
+These revisions would enhance the paper's technical rigor while maintaining its accessibility and practical value.
+
+
+Please provide a short summary of what you see as the key argument in the paper.: The paper highlights the problematic trend in business research of using post hoc explainers like SHAP and LIME to infer data relationships and marginal effects, rather than just explaining model predictions as intended. Through theoretical analysis and empirical experiments, the authors demonstrate that these explainers often produce explanations that are misaligned with true data generating process, even in simple models. They caution against this misuse and propose some mitigation strategies, and recommend that post hoc explainers should only be used to generate hypotheses for further testing, not to make definitive claims about data. 
+% \end{point*}
+
+% \begin{reply}
+% \textcolor{red}{Thank you for the suggestion.}
+% \end{reply}
+
+% \begin{point}
+Research question and contribution: Is the question clear? Is it important (why/why not)? What contribution does answering the question represent? Is it significant or incremental?: 
+
+The research question is clear and important - investigating whether popular post hoc explainers like SHAP and LIME can reliably extract information about true data relationships and marginal effects. This is a critical question given the growing trend the authors identify of researchers using these tools to draw inferences about data rather than just models.
+
+The contribution is significant, as it provides a systematic analysis of a widespread but questionable research practice, both theoretically and empirically.
+% \end{point}
+
+% \begin{reply}
+% \textcolor{red}{Thank you for the suggestion.}
+% \end{reply}
+
+% \begin{point}
+Method: Is the method used well justified for the question? Is the method applied convincingly (if not, why not)? Does it produce convincing/robust results that answer the question?:
+
+The method is well justified and executed. The authors use a combination of theoretical analysis, simulated experiments, and a case study on real data to investigate the research question from multiple angles. The simulated experiments allow for controlled testing where ground truth is known, while the real data case study demonstrates practical applicability. 
+\end{point*}
+
+
+\begin{reply}
+% We greatly appreciate the review team’s high-quality, constructive, and helpful feedback. We have taken the comments very seriously, which has prompted us to think more deeply and broadly about the problem and its scope. We devoted significant effort to revising the manuscript, closely following the reviewers’ suggestions, which substantially improved the paper. A detailed \textbf{Summary of Major Changes} is provided on Page~\pageref{sec:majorchanges} of the rebuttal document. Below we will discuss how we addressed each comment in detail. 
+Thank you very much for the encouraging feedback and for highlighting these important technical issues! We really appreciate it!
+
+We have taken the review team’s comments very seriously and undertaken a substantial revision of the manuscript.  The list of changes are detailed in the \textbf{Summary of Major Changes} on Page~\pageref{sec:majorchanges} of the rebuttal document. 
+
+
+As part of this process, several sections have been substantially reworked, and in some cases, the material referenced in specific comments is no longer part of the current version of the paper. 
+
+Nevertheless, for completeness and transparency, we explain how those issues were handled in the previous submission and clarify how the current revision addresses the underlying concerns. Each of your points is reproduced below, and we respond to them individually and thoroughly in a detailed, point-by-point manner.
+\end{reply}
+
+\begin{point*}
+However, several minor issues require clarification or additional explanation: 
+\end{point*}
+
+\begin{point}
+1) Normalization Issue (p.20):
+
+The authors propose normalizing SHAP values by dividing by ($x_j$ - mean), but don't address how to handle the case where $x_j$ equals the mean, resulting in division by zero. This edge case needs to be explicitly addressed in the methodology.
+
+2) Feature Interaction Analysis (p.21):
+
+The paper notes that "directionality for the features related to cosigner access ('Married' and 'Cosigner') decreased" but doesn't adequately explain why this occurred. Given these features' interaction in the data generation process, more analysis of how feature dependencies affect normalization outcomes would be valuable.
+
+\end{point}
+
+\begin{reply}
+These two comments both pertain to the normalization of Shapley values in the original submission, and we therefore combine them.
+
+In the revised manuscript, we have substantially changed how SHAP and LIME are evaluated. As a result, the normalization procedure  in the original version has been removed from the paper.
+
+For completeness, we clarify the edge case raised in Comment (1). When a feature takes its mean value (i.e., $x_j = \bar{x}_j$), the SHAP value for that feature is, by definition, zero. Consequently, normalization has no effect in this case. In the original formulation, we therefore defined the normalized SHAP value in a piecewise manner, explicitly setting it to zero when $x_j = \bar{x}_j$ to avoid division by zero. This issue is now moot given the revised evaluation procedure.
+
+Regarding Comment (2), although normalization is no longer used, we agree that feature dependence plays an important role in driving misalignment and disagreement within the Rashomon set. Accordingly, in the revised manuscript we explicitly analyze the impact of feature correlations and interactions in Sections~5 and~7, including how dependencies among features affect explanation consistency across models.
+\end{reply}
+
+
+\begin{point}
+3) Relevance Metric Issues:
+
+The relevance of normalized SHAP approaching 0 at k=1 is concerning and unexplained. The authors should clarify if there's a theoretical lower bound below 0 and explain this behavior, as it seems counterintuitive for the most important feature.
+
+\end{point}
+\begin{reply}
+As with the previous comments, this issue arises from the original evaluation framework in which SHAP explanations were compared against marginal effects as the ground truth. In the revised manuscript, we no longer use marginal effects as a benchmark, and the associated relevance metrics have therefore been removed from the paper.
+
+For completeness, we clarify the behavior noted in the original submission. By definition, the relevance metric is bounded between 0 and 1 and cannot take negative values. When $k=1$, relevance measures the probability that the single most important feature identified by SHAP matches the most important feature under the marginal-effect ground truth. A low value at $k=1$ therefore does not imply that SHAP fails to identify important features overall; rather, it reflects cases where the true most important feature is ranked slightly below first (e.g., second or third), which can occur even when overall feature importance is well captured.  
+
+Following the suggestions from the review team, we have now removed relevance evaluation from the paper and we no longer compare the explanations with marginal effects.
+\end{reply}
+
+
+
+\begin{point}
+4) Notation Clarity:
+
+The paper introduces $\nu$ in Remark 1 (p.21) without proper definition, only later revealing it as the kernel bandwidth. A comprehensive notation table would improve readability and prevent confusion. This is particularly important given the technical nature of the methodology.
+
+These technical issues, while not undermining the overall methodology, need to be addressed for completeness and reproducibility. The method remains well-justified and convincing overall, but these clarifications would strengthen the technical foundation of the work.
+\end{point}
+
+\begin{reply}
+Thank you for this suggestion. We agree that in the original submission the introduction of notation—particularly the symbol $\nu$ in Remark 1—was not sufficiently clear and could lead to confusion.
+
+In the revised manuscript, we have revised the presentation to improve clarity and readability. Specifically, we have streamlined the mathematical presentation, reduced unnecessary notation, and relied more on textual explanations where appropriate. All remaining symbols are now explicitly defined at their first appearance. These changes are intended to make the paper more accessible while preserving technical precision.
+\end{reply}
+
+
+
+\begin{point}
+Potential impact: Do the results have relevant managerial or policy implications that are potentially important (not necessarily directly, but possibly through a translation), or does the method itself represent a significant innovation? What are the implications? Are they novel and/or significant?: 
+
+By demonstrating the risks of misusing popular explainable AI tools, the paper could lead to more rigorous and appropriate use of these methods in future research. The mitigation strategies proposed, while not solving the issue entirely, provide helpful guidance for researchers.
+
+Writing: Is the paper written at a level of clarity, articulation, logic, and exposition that is appropriate for a major journal?: 
+
+The paper is generally well-written, with clear articulation of the problem, methods, and results. The logic and exposition are appropriate.
+\end{point}
+
+\begin{reply}
+Thank you for the positive feedback!
+\end{reply}
+
+\begin{point}
+Do you have any other important comments about the paper?: The authors could potentially strengthen the paper by:
+
+- Expanding on best practices for appropriately using post hoc explainers to generate hypotheses
+
+- Discussing potential alternatives to post hoc explainers for understanding data relationships in ML contexts
+
+\end{point}
+
+\begin{reply}
+Thank you for this thoughtful suggestion. We have substantially expanded the discussion of best practices for using post-hoc explainers and added a new section (\S7) that introduces a diagnostic signal—Rashomon agreement—to assess the reliability of post-hoc explanations.
+
+Rashomon agreement refers to the prediction agreement, or explanation agreement, among models with similarly high accuracies. When agreement is low, it implies that the space of hypotheses consistent with the data is large, permitting many different decision-making processes and thus any single model’s post-hoc explanation reflects only one of many plausible explanations. Therefore, the post-hoc explainer is unlikely to accurately capture the true $\mathbf{X} \mapsto Y$. In these cases, misalignment between explanations and the true data-generating process is not a failure of the explainer per se, but a consequence of insufficient identifiability in the data. As a result, explanations produced in low-agreement regimes should be interpreted with caution, regardless of a model’s predictive accuracy.
+
+Conversely, high Rashomon agreement indicates that accuracy tightly constrains model behavior. When equally accurate models converge in their predictions and—especially—their feature attributions, the hypothesis space consistent with the data is more restricted. In these regimes, post-hoc explanations are substantially more stable and more likely to align with true underlying effects. 
+
+
+We also clarify an important methodological distinction: post-hoc explainers are best viewed as tools for hypothesis generation rather than as standalone evidence about underlying data relationships. Accordingly, when the goal is to understand or estimate $\mathbf{X} \mapsto Y$ relationships, we emphasize the importance of complementing insights from post-hoc explanations with analytical approaches that rely on explicit modeling assumptions and identification strategies, which provide a clearer basis for inference and interpretation. We introduced a few papers that followed this extract strategy, interpreting SHAP explanations as hypotheses and then follow with validations, by theories, more analyses, or real-world experiments.
+\end{reply}
+
+
+
+\vspace*{0.5\baselineskip}
+
+%Include concluding remarks here
+\textsf{Thank you again, for your constructive comments, which have significantly improved the paper. We hope you find the revised paper satisfactory!}
+
+% \printbibliography
+% \bibliographystyle{informs2014}
+% \bibliography{refs}
+\newpage
+\appendix
+\noindent\huge\textbf{Appendix}
+\normalsize
+\section{Examples of Problematic Papers}\label{app:examples}
+\begin{mainbox}{Example 1 – ``Nonlinear, threshold and synergistic effects of first/last-mile facilities on metro ridership", Transportation Research Part D, 2023}
+
+The paper applies LightGBM to predict station-level metro ridership and then uses SHAP values to interpret the effects of built environment and last-mile facility variables. SHAP explanations of the prediction model are treated as evidence about the real-world effects of these variables on metro ridership, including claims about nonlinear associations, threshold effects, and synergistic relationships. In doing so, model-level attributions are generalized into statements about how infrastructure variables influence actual ridership, without distinguishing between explanation of the fitted model and inference about the underlying data-generating process.
+
+\vspace{0.2cm}
+
+\textbf{Evidence}:
+\begin{itemize}
+
+\item The paper states that SHAP is used to “explore how each feature of each sample affect the model output” (Section 5.2), but immediately interprets SHAP patterns as indicating that variables such as bike-sharing, parking supply, and bus lines “are positively associated with metro ridership,” shifting from model output to real-world outcome.
+
+\item Feature importance values are interpreted substantively: for example, the manuscript concludes that “Bike-sharing is the most important variable in predicting metro ridership” and that this “indicates that the service level of intermodal connection can significantly influence metro ridership,” treating model importance as evidence of real-world influence.
+
+\item Partial dependence plots derived from the trained model are used to claim the existence of “threshold effects” (e.g., for park-and-ride facilities and bus stops), which are described as effective planning ranges for infrastructure provision, without acknowledging that these thresholds are properties of the fitted LightGBM function.
+
+\item Two-dimensional PDPs are further interpreted as demonstrating “synergistic” and “moderating” effects between variables (e.g., bus lines and bike-sharing), operationalizing model-based interaction patterns as substantive multimodal trade-offs in the real world.
+
+\end{itemize}
+\end{mainbox}
+\vspace{0.5cm}
+\begin{mainbox}{Example 2 - ``Product Redesign and Innovation Based on Online
+Reviews: A Multistage Combined Search Method", INFORMS Journal on Computing, 2024} 
+The paper builds a competitiveness network based on feature importance. To do so, the authors train an SVR model to predict price and apply SHAP to compute feature “importance” scores, which are then directly used as weights in the competitiveness network and downstream optimization. SHAP explanations of the prediction model are operationalized as properties of real-world features, exemplifying the model-to-data generalization problem discussed in our paper.
+\vspace{0.2cm}
+
+\textbf{Evidence}:
+\begin{itemize}
+
+\item The paper states that it will ``calculate the importance of features using the SHAP method,'' and subsequently refers to these quantities as the ``importance of each relevant feature,'' without clarifying that SHAP provides model-level attributions conditional on the fitted SVR model.
+
+\item After feature selection, the manuscript defines $Imp(F_q)$ using SHAP (Equations (2)–(3)) and treats this value as the feature’s intrinsic importance, without discussing model adequacy, predictive validity, or sensitivity to specification.
+
+\item These SHAP-derived importance scores are then directly used as weights in the competitiveness network: ``We use the importance obtained ... to represent the weight,'' embedding model-level attributions into a market-level graph structure.
+
+\item The resulting importance, together with performance and competitiveness, is subsequently used to develop a ``specific product improvement strategy,'' effectively operationalizing explanations of the prediction function as properties of real-world product features.
+
+\end{itemize}
+\end{mainbox}
+
+\vspace{0.5cm}
+
+\begin{mainbox}{Example 3 – ``Extracting Product Design Guidance from Online Reviews: An Explainable Neural Network-Based Approach", Expert Systems with Applications, 2024}
+
+The paper aims to extract product design guidance by training a neural network to predict customer choices and then applying SHAP to interpret feature effects. The SHAP values are aggregated and treated as estimates of how product features influence customers’ purchase decisions, which are subsequently used to recommend specific specification ranges and feature strategies.
+
+\vspace{0.2cm}
+
+\textbf{Evidence}:
+\begin{itemize}
+
+\item The paper states that it ``conducts SHAP ... to estimate the effects of product features on customers’ purchase decisions,'' directly framing SHAP values as effects on real customer decisions rather than on model predictions.
+
+\item SHAP values are averaged (Eq. (7)) and interpreted as indicating which specifications are ``recommended options in product design because they have positive effects on customers’ purchase decisions,'' treating model attributions as behavioral evidence.
+
+\item The manuscript concludes that certain features (e.g., new features) ``have larger impacts than existing features'' and validates this claim with a statistical test on SHAP magnitudes, thereby treating model-derived attributions as measures of true market-level importance.
+
+\item The resulting SHAP analysis is used to derive concrete managerial recommendations (e.g., preferred specification ranges, effective vs. ineffective new features), without discussing model fit limitations or whether these attributions are stable across alternative model specifications.
+
+\end{itemize}
+
+\end{mainbox}
+
+\vspace{0.5cm}
+
+\begin{mainbox}{Example 4 – ``Machine Learning for Predicting Corporate Violations: How Do CEO Characteristics Matter?", Journal of Corporate Finance, 2023}
+
+The paper trains several machine learning models (Logit, Random Forest, XGBoost, Neural Network) to predict corporate violations and then applies SHAP to interpret the importance of CEO characteristics and firm-level variables. While SHAP is technically used to explain the prediction model, the manuscript interprets these SHAP patterns as evidence that specific CEO traits influence corporate violations in the real world. In doing so, model-level attributions are generalized into substantive statements about how CEO characteristics affect corporate misconduct, without distinguishing between explanation of the fitted prediction function and inference about the underlying data-generating process.
+
+\vspace{0.2cm}
+
+\textbf{Evidence}:
+\begin{itemize}
+
+\item The abstract states that ``CEO overconfidence, CEO’s legal background, and CEO tenure significantly affect corporate violations,'' framing SHAP-based feature importance as evidence about real-world effects rather than about contributions to predicted violation probabilities.
+
+\item In the variable-importance section, SHAP values are used to determine the ``relative importance of CEO characteristics in predicting corporate violations,'' but the discussion immediately shifts to interpreting these characteristics as determinants of actual violations, without clarifying that SHAP explains the trained model conditional on its specification.
+
+\item SHAP plots are interpreted substantively to argue that certain CEO traits increase or decrease violation likelihood, and these interpretations are presented as governance insights, rather than as properties of the fitted prediction function.
+
+\item The manuscript derives managerial and regulatory implications (e.g., board monitoring and CEO selection considerations) directly from SHAP-based rankings, operationalizing model-level attribution scores as evidence about real-world corporate behavior, without discussing model adequacy, alternative specifications, or the distinction between predictive association and structural effect.
+
+\end{itemize}
+\end{mainbox}
+
+\end{document}

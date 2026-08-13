@@ -1,0 +1,50 @@
+(ronilo task) - think about this, complete the list, discuss with jeffrey, then we'll run the experiment
+
+* means discussed in appendix
+** means not discussed at all in the previous version of paper
+
+target
+diff between ground truth SHAP and estimated SHAP
+
+
+
+X:
+
+--- property of G ---
+-. number of rows
+-. measure of non-linearity* e.g. total variation 
+-. epsilon (noise)
+-. correlation of features
+-. interaction of features
+-. number of categorical features
+-. number of numerical features
+-. balance of the target**
+-. (unobserved) confounders present*
+
+--- property of M ---
+-. measure of non-linearity* e.g. total variation or global (Lipschitz) constant*
+-. XGBoost # of trees**
+-. XGBoost max tree depth**
+-. XGBoost # iterations**
+-. XGBoost learning rate**
+--- property of E ---
+-. LIME nu (kernel bandwidth)
+-. LIME N (# of samples)
+-. LIME seed for M != LIME seed for G*
+-. SHAP sampling**
+.....
+--- property of G vs M --
+-. accuracy of the model
+.....
+
+feature level Y
+X: whether that particular feature is correlated with other features
+X: whether that particular feature is in interaction with other features
+
+---------------------------------------------
+
+Questions: 
+- Should we repeat this for the case where many Ms are used to obtain an average explanation?
+In this case, the following parameters can be used
+-. Number of models
+-. statistics on accuracy of the models

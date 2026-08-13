@@ -1,0 +1,607 @@
+
+Since $\xi \sim \mathcal{N}(0,\mathds{1}_d)$, $\tilde{\mu} = \frac{\xi}{\nu^2+1}$ and $\tilde{\sigma} = \frac{\nu^2}{\nu^2+1}$. Then, and because the $q_{i\pm}$ are quantiles that are equal for each $i$, we can just call them $q_{\pm}$%, denote their values $x_{q\pm}$, and write
+        \begin{equation*}
+            \alpha_i = \frac{1}{2}\left[\text{erf} \left( \frac{q_{+}-\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) - \text{erf} \left( \frac{q_{-}-\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) \right]
+        \end{equation*}
+        and
+        \begin{equation*}
+            \theta_i = \frac{\frac{\nu^2}{\nu^2+1}}{\sqrt{2\pi}}\left[\text{exp}\left(\frac{-(q_+ -\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right) - \text{exp}\left(\frac{-(q_- -\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right)\right]
+        \end{equation*}
+        so that
+        \begin{equation}
+            \beta^{\text{LIME}}_i = \frac{-\beta_i \cdot \frac{\frac{\nu^2}{\nu^2+1}}{\sqrt{2\pi}}\left[\text{exp}\left(\frac{-(x_{q_+}-\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right) - \text{exp}\left(\frac{-(x_{q_-}-\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right)\right]}{1 - \frac{1}{2}\left[\text{erf} \left( \frac{q_+-\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) - \text{erf} \left( \frac{q_--\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) \right]}
+        \end{equation}
+
+        Note that 
+        \begin{align*}
+            \mid \beta^{\text{LIME}}_i\mid = \mid \beta_i \mid \cdot  \mid \frac{\frac{\frac{\nu^2}{\nu^2+1}}{\sqrt{2\pi}}\left[\text{exp}\left(\frac{-(x_{q_+}-\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right) - \text{exp}\left(\frac{-(x_{q_-}-\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right)\right]}{1 - \frac{1}{2}\left[\text{erf} \left( \frac{q_+-\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) - \text{erf} \left( \frac{q_- -\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) \right]} \mid \\
+            \mid \frac{\frac{\frac{\nu^2}{\nu^2+1}}{\sqrt{2\pi}}\left[\text{exp}\left(\frac{-(q_+-\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right) - \text{exp}\left(\frac{-(q_- -\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right)\right]}{1 - \frac{1}{2}\left[\text{erf} \left( \frac{q_+-\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) - \text{erf} \left( \frac{q_--\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) \right]} %\mid \leq \frac{\frac{\nu^2}{\nu^2+1}}{\sqrt{2\pi} \frac{1}{1 - }
+        \end{align*}
+        Let $u = \frac{\nu^2}{\nu^2+1}$ to simplify notation, then
+        \begin{equation*}
+            \frac{u\cdot exp(-2\nu^2)}{\sqrt{2\pi}}\mid \frac{\left[\text{exp}\left(-(q_+-\frac{\xi_i u}{\nu^2})^2\right) - \text{exp}\left(-(q_- -\frac{\xi_i u}{\nu^2})^2\right)\right]}{1 - \frac{1}{2}\left[\text{erf} \left( \frac{q_+-\frac{\xi_i u}{\nu^2}}{u\sqrt{2}} \right) - \text{erf} \left( \frac{q_--\frac{\xi_i u}{\nu^2}}{u\sqrt{2}} \right) \right]} \mid
+        \end{equation*}
+        By the mean value theorem, the numerator is upper bounded by 
+        \begin{equation*}
+            \mid ((q_+-\frac{\xi_i u}{\nu^2})^2 - (q_--\frac{\xi_i u}{\nu^2})^2) \frac{1}{1 + x} \mid
+        \end{equation*}
+        where $(q_--\frac{\xi_i u}{\nu^2})^2 \leq x \leq (q_+-\frac{\xi_i u}{\nu^2})^2)$
+
+----
+    \begin{lemma}
+        If the conditions of Section \ref{sec:lime_linear_case} hold and $\xi \sim \mathcal{N}(0,\mathds{1}_d)$, $\exists\ L$ such that $\mid\beta^{\text{LIME}}_i - \beta_i\mid \leq L$
+    \end{lemma}
+
+    \paragraph{proof)}
+        \begin{align*}
+            \mid \beta^{\text{LIME}}_i - \beta_i \mid = \mid \frac{-\beta_i \theta_i}{\alpha_i(1-\alpha_i)} -\beta_i \mid \\
+            = \mid \beta_i \mid \cdot \mid \frac{-\theta_i}{\alpha_i(1-\alpha_i)} - 1 \mid \leq \norm{\beta}_\infty \cdot \mid \frac{-\theta_i}{\alpha_i(1-\alpha_i)} - 1 \mid
+        \end{align*}
+
+        Define $C_i := \frac{\theta_i}{\alpha_i(\alpha_i-1)}$.
+        \begin{align*}
+            \mid C_i \beta_i - \beta_i \mid = \mid \beta_i \mid \cdot \mid C_i - 1 \mid 
+        \end{align*}
+
+        Then it remains to find a $C$ such that $\mid C_i \mid \leq C\ \forall i$ and then set $L = \mid C-1\mid/\norm{\beta}_\infty$
+
+        Since $\xi \sim \mathcal{N}(0,\mathds{1}_d)$, $\tilde{\mu} = \frac{\xi}{\nu^2+1}$ and $\tilde{\sigma} = \frac{\nu^2}{\nu^2+1}$. Then, and because the $q_{i\pm}$ are quantiles that are equal for each $i$, we can just call them $q_{\pm}$%, denote their values $x_{q\pm}$, and write
+        \begin{equation*}
+            \alpha_i = \frac{1}{2}\left[\text{erf} \left( \frac{q_{+}-\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) - \text{erf} \left( \frac{q_{-}-\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) \right]
+        \end{equation*}
+        and
+        \begin{equation*}
+            \theta_i = \frac{\frac{\nu^2}{\nu^2+1}}{\sqrt{2\pi}}\left[\text{exp}\left(\frac{-(q_+ -\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right) - \text{exp}\left(\frac{-(q_- -\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right)\right]
+        \end{equation*}
+
+        Let $u = \frac{\nu^2}{\nu^2+1}$ to simplify notation, then
+        \begin{equation*}
+            C_i = \frac{u\cdot exp(-2\nu^2)}{\sqrt{2\pi}}\mid \frac{\left[\text{exp}\left(-(q_+-\frac{\xi_i u}{\nu^2})^2\right) - \text{exp}\left(-(q_- -\frac{\xi_i u}{\nu^2})^2\right)\right]}{\alpha_i(\alpha_i-1)} \mid
+        \end{equation*}
+        By the mean value theorem, the numerator is upper bounded by 
+        \begin{equation*}
+            \mid ((q_+-\frac{\xi_i u}{\nu^2})^2 - (q_--\frac{\xi_i u}{\nu^2})^2) \frac{1}{1 + x} \mid
+        \end{equation*}
+        where $(q_--\frac{\xi_i u}{\nu^2})^2 \leq x \leq (q_+-\frac{\xi_i u}{\nu^2})^2)$
+
+        $x$ is positive in that interval, so a looser upper bound is
+        \begin{equation*}
+            \mid ((q_+-\frac{\xi_i u}{\nu^2})^2 - (q_--\frac{\xi_i u}{\nu^2})^2)  \mid
+        \end{equation*}
+        % The function $f(q;\xi_i) = (q-\frac{\xi_i u}{\nu^2})^2$ is a polynomial in $q \in [0,1]$ and therefore Lipschitz, so that there exists $L_i$ depending on $\xi_i$ such that $\mid f(q_+;\xi_i)-f(q_-;\xi_i)\mid \leq L_i \mid q_+ - q_-\mid$. Thus, the numerator can be bounded by the following 
+        % \begin{equation*}
+        %     L_i \mid q_+ - q_-\mid
+        % \end{equation*}
+        Then
+        \begin{align*}
+             \mid ((q_+-\frac{\xi_i u}{\nu^2})^2 - (q_--\frac{\xi_i u}{\nu^2})^2)  \mid = \mid (q_+^2 - q_-^2) + (2q_+u/\nu^2 - 2q_-u/\nu^2)\xi_i\mid \\
+             \leq \mid (q_+^2 - q_-^2)\mid + \mid \xi_i \mid \cdot \mid  2q_+u/\nu^2 - 2q_-u/\nu^2\mid
+        \end{align*}
+
+        Since $sup_x erf(x) = 1$ and $inf_x erf(x) = -1$, $\alpha_i \in (0,1)$ for all $i$ and so the maximum value of $\frac{1}{\alpha_i(\alpha_i -1)}$ is $-4$ for all $i$. Finally, given $\xi_{\text{upper}}$ the following is true  with probability $1-\frac{d}{\xi_{\text{upper}}^2}$ by the multidimensional form of Chebyshev's inequality.
+
+        \begin{equation*}
+            \mid C_i \mid \leq 4(q_+^2 - q_-^2) + \frac{2u\xi_{\text{upper}}}{\nu^2} \cdot  (q_+ - q_-) =: C
+        \end{equation*}
+
+        In practice, the bound is certain if $\xi_{\text{upper}}$ is set to be the maximum norm of instances in the available data. 
+        
+        % the lemmas bound |C_i| <= C forall i means that all beta_i are in (-C*beta_i, C*beta_i)
+    \begin{theorem}
+        If the conditions of Section \ref{sec:lime_linear_case} hold and $\xi \sim \mathcal{N}(0,\mathds{1}_d)$, then there exists $C,\epsilon$ such that $\beta^{\text{LIME}}_i  \in ((C - \epsilon) \beta_i, (C+\epsilon)\beta_i)$ for each $i$. 
+    \end{theorem}
+
+    \paragraph{proof)}
+        By Theorem 3.1 of \citep{garreau20theoretical}, $\forall\ i \exists C_i$ such that $\beta^{\text{LIME}}_i = C_i \beta_i$, and by the previous lemma $\exists\ L$ such that $\mid\beta^{\text{LIME}}_i - \beta_i\mid \leq L$. Then for any $i,j$ we have by Cauchy-Schwarz that
+        \begin{align*}
+            \mid\beta^{\text{LIME}}_i - \beta^{\text{LIME}}_j\mid = \mid\beta^{\text{LIME}}_i - \beta_i + \beta_i - \beta^{\text{LIME}}_j\mid \\
+            = \mid\beta^{\text{LIME}}_i - \beta_i + \beta_i - \beta^{\text{LIME}}_j\mid \leq L + \mid\beta_i - \beta^{\text{LIME}}_j\mid \\
+            = L + \mid\beta_i - \beta_j + \beta_j - \beta^{\text{LIME}}_j\mid \\
+            \leq 2L + \mid\beta_i - \beta_j\mid
+        \end{align*}
+
+        % Then equivalently,
+        % \begin{align*}
+        %     \norm{C_i \beta_i - C_j \beta_j} \leq 2L + \norm{\beta_i - \beta_j}
+        % \end{align*}
+
+        We are interested in when $C_i \neq C_j$ in order to gauge the variance of the proportionality constants $C_i$.%, so first assume $C_j > C_i$. Then $\norm{C_i \beta_i - C_j \beta_j} \leq \norm{C_j(\beta_i - \beta_j)}$. Otherwise, $\norm{C_i \beta_i - C_j \beta_j} \leq \norm{C_i(\beta_i - \beta_j)}$
+        %We have $\mid C_i \beta_i - C_j \beta_j\mid \leq \mid max(C_i,C_j)(\beta_i - \beta_j)\mid$. From the previous bound, this gives
+        \begin{equation*}
+           \mid C_i \beta_i - C_j \beta_j\mid \leq  2L + \mid \beta_i - \beta_j\mid%\mid max(C_i,C_j) \mid \cdot (2L +  \mid\beta_i - \beta_j\mid)
+        \end{equation*}
+        WLOG assume $\beta_i > \beta_j$, then
+        \begin{equation*}
+            \mid C_i - C_j \mid \leq \frac{2L + \mid \beta_i - \beta_j \mid}{\beta_j}
+        \end{equation*}
+
+        Supposing further that the minimal $\beta_j$ over all $j$ is a non-zero value $\beta_{\text{min}}$ and  denoting the maximum difference of components of $\beta$ by $\Delta_\beta$
+        \begin{equation*}
+            \forall i,j \mid C_i - C_j \mid \leq \frac{2L + \Delta_{\beta}}{\beta_{\text{min}}}
+        \end{equation*}
+
+        Hence, there exists a $C$ such that $\forall i$ $\beta^{\text{LIME}}_i \in ((C - \mid \frac{2L + \Delta_{\beta}}{\beta_{\text{min}}} \mid)\beta_i, (C+\mid \frac{2L + \Delta_{\beta}}{\beta_{\text{min}}}\mid)\beta_i)$
+
+        %It remains to demonstrate the existence of $L$ and derive its value.
+
+%---------------------------
+% Discretized Version
+%---------------------------+
+            \begin{theorem}
+                \label{thm:lime_C}
+                % If the conditions of Section \ref{sec:lime_linear_case} hold, $\xi \sim \mathcal{N}(0,\mathds{1}_d)$, and given an upper bound $\xi_{\text{upper}}$ on $\xi_i$ for all $i$,  then there exists $C$ such that $\beta^{\text{LIME}}_i  \in (-C \beta_i, C\beta_i)$ for each $i$ with probability $\frac{d}{\xi_{\text{upper}}^2}$
+                If the conditions of Section \ref{sec:lime_linear_case} hold, $\xi \sim \mathcal{N}(0,\mathds{1}_d)$, and when there are lower and upper quantile limits $q_-$ and $q_+$ such that $q_- \leq \xi_i \leq q_+$ for all $i$,  then there exists $C$ such that $\beta^{\text{LIME}}_i  \in (-C \beta_i, C\beta_i)$ for each $i$.
+            \end{theorem}
+  \paragraph{proof of Lemma 1.}
+        Define $C_i := \frac{\theta_i}{\alpha_i(\alpha_i-1)}$.
+
+  \paragraph{proof of Theorem 1.}
+        The proof proceeds following \citep{agarwal21clime} by minimizing the LIME objective
+            \begin{equation*}
+                O = \pi(x,a)((w^Ta + b) - f(a))^2
+            \end{equation*}
+        and finding an expression for the minimizer $w$'s average over all possible sample points $a$. 
+        That is, we seek the $w$ such that $\pdv{w}\mathds{E}_a[O]=0$
+  
+        \textcolor{red}{To begin, suppose the partial derivatives of $O$ are equal to zero}.
+        \begin{equation*}
+            \pdv{O}{w}=\pi(x,a)\cdot \pdv{w}((w^Ta+b)-f(a))^2
+        \end{equation*}
+        \textcolor{red}{Because $O$ is integrable for all $w$, continuously differentiable with respect to $w$, $\pi(x,a) \in (0,1]\ \forall\ a,\nu$ so that $\norm{\pi(x,a)\pdv{O}{w}}\leq\norm{\pdv{O}{w}}$, and $\mathds{E}[\pdv{O}{w}]<\infty$, by the Dominated Convergence Theorem}
+        \begin{equation*}
+            \pdv{w}\mathds{E}[O] = \mathds{E}[\pdv{O}{w}]
+        \end{equation*}
+        Then we obtain the minimizer $w$ from $\pdv{w}\mathds{E}[O]=0$ by taking the expectation of $\pdv{O}{w}$ and solving for $\theta$ since 
+        \begin{equation*}
+            \pdv{O}{w} = 0 \implies \pdv{w}\mathds{E}[O] = \mathds{E}[\pdv{O}{w}] = \mathds{E}[0] = 0 
+        \end{equation*}
+        % \textcolor{red}{Because $\pi(x,a)$ is never $0$, if we set $\pdv{O}{w}=0$ then}
+        % \begin{equation*}
+        %     0 =\pdv{w}\mathds{E}[O] = \mathds{E}[\pdv{O}{w}] = \pdv{((w^Ta+b)-f(x))^2}{w} = 0 = \mathds{E}[\pdv{((w^Ta+b)-f(x))^2}{w}]
+        % \end{equation*}
+        % Thus, to find the $w,b$ which minimizes $O$ on average, we just compute the expected value of  
+        Since $\pi(x,a)\in(0,1]\ \forall\ x,a$, $\pdv{O}{w} = 0 \iff \pdv{w}((w^Ta+b)-f(a))^2=0$ and so
+        \begin{equation*}
+            \pdv{O}{w} = 0 = \pi(x,a)\cdot \pdv{w}((w^Ta+b)-f(x))^2 = \pdv{w}((w^Ta+b)-f(a))^2
+        \end{equation*}
+        \textcolor{red}{Thus, the weights $\pi(x,a)$ can be dropped from the analysis.} Following \citep{agarwal21clime}, we have 
+        \begin{align*}
+            \pdv{O}{w} = 0 = \pdv{w}((w^Ta+b)-f(a))^2 = 2(aa^T)w + 2ba - 2f(a)a \\
+            \pdv{O}{b} = 0 = 2(w^Ta) + 2b - 2f(a) \implies b = f(a) - w^Ta
+        \end{align*}
+        We have 
+        \begin{equation*}
+            \nabla_{w,b} O = 0 \implies \nabla_{w,b} \mathds{E}[O] = \mathds{E}[\nabla_{w,b}O] = \mathds{E}[0]=0
+        \end{equation*}
+        Hence, we may find the expected behavior of the minimizer $w$ over data $a\sim \mathcal{N}(x,\Sigma)$ from
+        \begin{align*}
+            \mathds{E}[aa^Tw] + bx - \mathds{E}[f(a)a] = 0 \\
+            = \mathds{E}[aa^T]w + (\mathds{E}[f(a)] - \mathbb{E}[w^Ta])x - \mathds{E}[f(a)a] \\
+        \end{align*}
+        Note that the second term can be re-written in terms of covariance, that is
+        \begin{align*}
+            cov(a,f(a))=\mathds{E}[(a-x)(f(a)-\mathds{E}[f(a)]]=\mathds{E}[af(a) - a\mathds{E}[f(a)] - xf(a) + x\mathds{E}[f(a)]] \\
+            = \mathds{E}[af(a)] - \mathds{E}[a\mathds{E}[f(a)]] - x\mathds{E}[f(a)] + x\mathds{E}[\mathds{E}[f(a)]] \\
+            = \mathds{E}[af(a)] - \mathds{E}[a\mathds{E}[f(a)]] - x\mathds{E}[f(a)] + x\mathds{E}[f(a)] \\
+            = \mathds{E}[af(a)] - \mathds{E}[a\mathds{E}[f(a)]] \\
+            = \mathds{E}[af(a)] - x\mathds{E}[f(a)] \\ %???
+         \end{align*}
+         So that we have 
+         \begin{align*}
+            \mathds{E}[aa^T]w + (\mathds{E}[f(a)] - \mathbb{E}[w^Ta])x - \mathds{E}[f(a)a] \\
+            = \mathds{E}[aa^T]w + (x\mathds{E}[f(a)] - \mathds{E}[f(a)a]) - \mathbb{E}[w^Ta]x  \\
+            = \mathds{E}[aa^T]w - cov(a,f(a)) - \mathbb{E}[w^Ta]x  \\
+            = (\Sigma + xx^T)w - cov(a,f(a)) - xx^Tw \\
+            = ((\Sigma + xx^T) - xx^T)w - cov(a,f(a)) = 0 \\
+            \implies w = \Sigma^{-1}cov(a,f(a))
+         \end{align*}
+         Now, if $f(x)=\beta^Tx + \gamma$ then 
+         \begin{align*}
+            cov(a,f(a)) = \mathds{E}[(a-\mathds{E}[a])(f(a)-\mathds{E}[f(a)])] \\
+            = \mathds{E}[(a-x)(\beta^Ta + \gamma - (\beta^Tx + \gamma)] \\
+            = \mathds{E}[a\beta^Ta + a\gamma - a\beta^Tx + a\gamma - x\beta^T a - x\gamma + x\beta^Tx - x\gamma] \\
+            = \mathds{E}[aa^T]\beta - xx^T \beta = (\mathds{E}[aa^T]-xx^T)\beta\\
+        \end{align*}
+        If we note that 
+        \begin{equation*}
+            \Sigma = \mathds{E}[(a-\mathds{E}[a])(a-\mathds{E}[a])^T] = \mathds{E}[aa^T] - xx^T
+        \end{equation*}
+        Finally, since $\Sigma$ was assumed to be invertible 
+        \begin{equation}
+            w = \Sigma^{-1}cov(a,f(a)) = (\mathds{E}[aa^T] - xx^T)^{-1}(\mathds{E}[aa^T]-xx^T)\beta = \beta
+        \end{equation}
+        
+
+        Since $\xi \sim \mathcal{N}(0,\mathds{1}_d)$, $\tilde{\mu} = \frac{\xi}{\nu^2+1}$ and $\tilde{\sigma} = \frac{\nu^2}{\nu^2+1}$. Then, and because the $q_{i\pm}$ are quantiles that are equal for each $i$, we can just call them $q_{\pm}$%, denote their values $x_{q\pm}$, and write
+        \begin{equation*}
+            \alpha_i = \frac{1}{2}\left[\text{erf} \left( \frac{q_{+}-\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) - \text{erf} \left( \frac{q_{-}-\frac{\xi_i}{\nu^2+1}}{\frac{\nu^2}{\nu^2+1}\sqrt{2}} \right) \right]
+        \end{equation*}
+        and
+        \begin{equation*}
+            \theta_i = \frac{\frac{\nu^2}{\nu^2+1}}{\sqrt{2\pi}}\left[\text{exp}\left(\frac{-(q_+ -\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right) - \text{exp}\left(\frac{-(q_- -\frac{\xi_i}{\nu^2+1})^2}{2(\frac{\nu^2}{\nu^2+1})^2}\right)\right]
+        \end{equation*}
+
+        Let $u = \frac{\nu^2}{\nu^2+1}$ to simplify notation, then
+        \begin{equation*}
+            C_i = \frac{u\cdot exp(-2\nu^2)}{\sqrt{2\pi}}\mid \frac{\left[\text{exp}\left(-(q_+-\frac{\xi_i u}{\nu^2})^2\right) - \text{exp}\left(-(q_- -\frac{\xi_i u}{\nu^2})^2\right)\right]}{\alpha_i(\alpha_i-1)} \mid
+        \end{equation*}
+        % By the mean value theorem, for $x,y\geq 0$, $\exists z \in [x,y]$ such that 
+        % \begin{equation*}
+        %     \mid e^{-x^2} - e^{-y^2} \mid \leq 2ze^{-z^2}\mid x - y \mid \leq \mid x- y\mid
+        % \end{equation*} 
+        % Thus, 
+
+        
+        \begin{equation*}
+            \mid ((q_+-\frac{\xi_i u}{\nu^2})^2 - (q_--\frac{\xi_i u}{\nu^2})^2) \frac{1}{1 + x} \mid
+        \end{equation*}
+        where $(q_--\frac{\xi_i u}{\nu^2})^2 \leq x \leq (q_+-\frac{\xi_i u}{\nu^2})^2)$
+
+        $x$ is positive in that interval, so a looser upper bound dependent on $\xi_i$ is
+        \begin{equation*}
+\left\lvert \left(\left(q_+-\frac{\xi_i u}{\nu^2}\right)^2 - \left(q_--\frac{\xi_i u}{\nu^2}\right)^2\right)  \right\rvert 
+        \end{equation*}
+        % The function $f(q;\xi_i) = (q-\frac{\xi_i u}{\nu^2})^2$ is a polynomial in $q \in [0,1]$ and therefore Lipschitz, so that there exists $L_i$ depending on $\xi_i$ such that $\mid f(q_+;\xi_i)-f(q_-;\xi_i)\mid \leq L_i \mid q_+ - q_-\mid$. Thus, the numerator can be bounded by the following 
+        % \begin{equation*}
+        %     L_i \mid q_+ - q_-\mid
+        % \end{equation*}
+        We may eliminate the dependency on $\xi_i$ as follows
+        \begin{align*}
+             \left\lvert \left(\left(q_+-\frac{\xi_i u}{\nu^2}\right)^2 - \left(q_--\frac{\xi_i u}{\nu^2}\right)^2\right)  \right\rvert = \mid (q_+^2 - q_-^2) + (2q_+u/\nu^2 - 2q_-u/\nu^2)\xi_i\mid \\
+             \leq \mid (q_+^2 - q_-^2)\mid + \mid \xi_i \mid \cdot \mid  2q_+u/\nu^2 - 2q_-u/\nu^2\mid
+        \end{align*}
+        Since $\text{sup}_x \text{erf}(x) = 1$ and $\text{inf}_x \text{erf}(x) = -1$, $\alpha_i \in (0,1)$ for all $i$, so $\mid \frac{1}{\alpha_i(\alpha_i -1)}\mid \in (4,\infty)$. $C_i$ approaches $0$ when $\alpha_i$ approaches $0$ or $1$ since the numerator is bounded. Therefore, since the magnitude of the denominator is bounded below by $4$ and $q_- \leq \xi_i \leq q_+$ for all $i$,
+        \begin{equation*}
+            \mid C_i \mid \leq 4\mid q_+^2 - q_-^2\mid + \frac{8u \cdot \text{max}(\mid q_-\mid, \mid q_+\mid)}{\nu^2} \cdot  \mid q_+ - q_-\mid =: C
+        \end{equation*}
+        % Finally, given $\xi_{\text{upper}}$ the following is true  with probability $1-\frac{d}{\xi_{\text{upper}}^2}$ by the multidimensional form of Chebyshev's inequality.
+
+        % \begin{equation*}
+        %     \mid C_i \mid \leq 4(q_+^2 - q_-^2) + \frac{2u\xi_{\text{upper}}}{\nu^2} \cdot  (q_+ - q_-) =: C
+        % \end{equation*}
+
+        % In practice, the bound is certain if $\xi_{\text{upper}}$ is set to be the maximum norm of instances in the available data. 
+        
+        % the lemmas bound |C_i| <= C forall i means that all beta_i are in (-C*beta_i, C*beta_i)
+
+\paragraph{proof of Theorem 1.}
+        By Lemma 1, the $C_i$ have a shared maximum size $C$, so 
+        $\beta^{\text{LIME}}_i  \in (-C\beta_i, C\beta_i)$ for each $i$.
+
+\begin{corollary}
+    If the condition $q_- \leq \xi_i \leq q_+$ for all $i$ is dropped in Theorem 1 and instead we assert that $\norm{\xi}_\infty \leq \xi_{\text{upper}}$, then $\mid C_i \mid \leq 4(q_+^2 - q_-^2) + \frac{2u\xi_{\text{upper}}}{\nu^2}$ with probability $1-\frac{d}{\xi_{\text{upper}}^2}$
+\end{corollary}
+
+\paragraph{proof of Corollary 1.}
+    Given $\xi_{\text{upper}}$ the the bound follows with probability $1-\frac{d}{\xi_{\text{upper}}^2}$ by the multidimensional form of Chebyshev's inequality.
+
+%%%
+% paragraph for discretized version
+%%%%
+            \label{sec:lime_linear_case}
+             When explaining the prediction of a linear model $f(x)= \beta^Tx + b$ on an instance $\xi \sim \mathcal{N}(\mu, \sigma^2 \mathbb{I}_d)$, the average value of importance of the $i^{th}$ feature for tabularLIME with bandwidth $\nu$ and no sparsity penalty is given by \citep{garreau20theoretical} as
+             \begin{equation}
+                \label{eqn:lime_gt}
+                \beta^{\text{LIME}}_i=\frac{-\beta_i \theta_i}{\alpha_i(1-\alpha_i)}
+             \end{equation}
+            where $\alpha_i = \left[\frac{1}{2}\text{erf}\left(\frac{x-\tilde{\mu}_i}{\tilde{\sigma}\sqrt{2}}\right)\right]_{q_{i-}}^{q_{i+}}$ and $\theta_i=\left[\frac{\tilde{\sigma}}{\sqrt{2\pi}}\text{exp}\left(\frac{-(x-\tilde{\mu}_i)^2}{2\tilde{\sigma}^2}\right)\right]_{q_{i-}}^{q_{i+}}$. The proportionality coefficients $\alpha_i$ and $\theta_i$ are governed by scaling parameters $\tilde{\mu} = \frac{\nu^2\mu+\sigma\xi}{\nu^2+\sigma^2} \in \mathbb{R}^d$ and $\tilde{\sigma} = \frac{\nu^2\sigma^2}{\nu^2+\sigma^2} > 0$ as well as the quantiles $q_{i\pm s}$ to the left/right of the $\xi_i$s. Put simply, the $i^{\text{th}}$ LIME coefficient is, on average, proportional to $\beta_i$. It is undesirable that each $\beta^{\text{LIME}}_i$ does not share the same proportionality constant, which depends on both the input $\xi$ and the feature index $i$\footnote{However, it is worth noting that C-LIME~\citep{agarwal21clime} drops the latter condition.}.
+             
+            Feature importance measures that directly estimate $\beta$, like standard regression and LIME's in this case, are said to represent the theoretical importance of each feature \citep{AchenChristopherH1982Iaur}. The theoretical importance of feature $i$ represents how much a change to feature $i$ in an observation affects the outcome when the process governing the observation acts in accordance with the theory underlying the estimator.
+
+\subsection{Evaluating $\beta^{\text{LIME}}$ and $\beta^{\text{SHAP}}$ with Respect to $\beta$}
+            Equations \ref{eqn:lime_gt} and \ref{eqn:shap_gt} imply that $\beta^{\text{LIME}}$ and $\beta^{\text{SHAP}}$ cannot be directly compared with $\beta$, and thus we need alternative evaluation metrics for explanation faithfulness. $\beta^{\text{LIME}}$ should not be compared directly with $\beta$ by computing, for example, $\norm{\beta^{\text{LIME}} - \beta}_2$, because each feature has its own proportionality constant. $\beta^{\text{SHAP}}$ should not be compared with $\beta$ because $\beta$ represents marginal effects and not feature contributions. Since they cannot be compared directly with $\beta$, we propose to evaluate how faithful $\beta^{\text{LIME}}$ and $\beta^{\text{SHAP}}$ are to $\beta$ checking whether the coefficients have the same sign and measuring how similar rankings of the features according to the coefficients are. 
+
+            Under certain nice conditions, ranking features according to $\beta^{\text{SHAP}}$ should match rankings according to $\beta x$, but ranking them according to $\beta^{\text{LIME}}$ may not match rankings according to $\beta$ because the $\beta^{\text{LIME}}_i$ do not all share the same proportionality constant. Additionally, the signs of each $\beta^{\text{SHAP}}_i$ should match those of the $\beta_i$ while those of the $\beta^{\text{LIME}}_i$ do not necessarily match those of the $\beta_i$ because $C_i$ can be negative (or zero). These claims are articulated more clearly using Theorems 1 and 2 below along with some simulation results. Theorem 1 presents a loose upper bound for the $C_i$ while Theorem 2 establishes when $\beta^{\text{SHAP}}$ is directly proportional to $\beta x$. Proofs of the theorems as well as simulation studies of the $C_i$ for LIME appear in the Appendix. 
+
+            Our simulations of $C_i$ for LIME provide two main insights that generally hold regardless of what $\nu$, $q_{i+}$, and $q_{i-}$ are set to. First, $C_i$ can be negative or zero. That is, LIME can express that an important feature has the wrong impact on the target or is entirely unimportant. Second, with some exceptions, the $C_i$ are generally quite close together. This means that rankings according to $\beta^{\text{LIME}}_i$  will generally not fully match rankings according to $\beta$. These insights, coupled with Theorem 1, establish that LIME may not be dependable for the purposes of ranking features and ascertaining feature importance signs.
+
+    \paragraph{Proof Setting}
+        We consider explaining a function $f:\mathbb{R}^d \rightarrow \mathbb{R}$ at the point $x$ using a LIME explainer with the following properties 
+        \begin{enumerate}
+            \item LIME solves $\text{min}_{a\sim\mathcal{N}(x,\Sigma)}\ \mathds{E}[\pi(x,a)((w^Ta + b) - f(a))^2 + \Omega(w)]$
+            \item No feature discretization (not default)
+            \item Weights $\pi(x,a) = \text{exp}\left(\frac{-\norm{x - a}_2^2}{\nu^2}\right)$ (default setting)
+            \item The sparsity penalty $\Omega \equiv 0$ (not default; this is a simplifying assumption following \citep{agarwal2021unification} and \citep{garreau20theoretical}). 
+        \end{enumerate}
+        
+  \paragraph{proof of Theorem 1.}
+        The proof proceeds following \citep{agarwal21clime} by minimizing the LIME objective
+            \begin{equation*}
+                O = \pi(x,a)((w^Ta + b) - f(a))^2
+            \end{equation*}
+        and finding an expression for the minimizer $w$'s average over all possible sample points $a$. 
+        That is, we seek the $w$ such that $\pdv{w}\mathds{E}_a[O]=0$
+  
+        \textcolor{red}{To begin, suppose the partial derivatives of $O$ are equal to zero}.
+        \begin{equation*}
+            \pdv{O}{w}=\pi(x,a)\cdot \pdv{w}((w^Ta+b)-f(a))^2
+        \end{equation*}
+        \textcolor{red}{Because $O$ is integrable for all $w$, continuously differentiable with respect to $w$, $\pi(x,a) \in (0,1]\ \forall\ a,\nu$ so that $\norm{\pi(x,a)\pdv{O}{w}}\leq\norm{\pdv{O}{w}}$, and $\mathds{E}[\pdv{O}{w}]<\infty$, by the Dominated Convergence Theorem}
+        \begin{equation*}
+            \pdv{w}\mathds{E}[O] = \mathds{E}[\pdv{O}{w}]
+        \end{equation*}
+        Then we obtain the minimizer $w$ from $\pdv{w}\mathds{E}[O]=0$ by taking the expectation of $\pdv{O}{w}$ and solving for $\theta$ since 
+        \begin{equation*}
+            \pdv{O}{w} = 0 \implies \pdv{w}\mathds{E}[O] = \mathds{E}[\pdv{O}{w}] = \mathds{E}[0] = 0 
+        \end{equation*}
+        % \textcolor{red}{Because $\pi(x,a)$ is never $0$, if we set $\pdv{O}{w}=0$ then}
+        % \begin{equation*}
+        %     0 =\pdv{w}\mathds{E}[O] = \mathds{E}[\pdv{O}{w}] = \pdv{((w^Ta+b)-f(x))^2}{w} = 0 = \mathds{E}[\pdv{((w^Ta+b)-f(x))^2}{w}]
+        % \end{equation*}
+        % Thus, to find the $w,b$ which minimizes $O$ on average, we just compute the expected value of  
+        Since $\pi(x,a)\in(0,1]\ \forall\ x,a$, $\pdv{O}{w} = 0 \iff \pdv{w}((w^Ta+b)-f(a))^2=0$ and so
+        \begin{equation*}
+            \pdv{O}{w} = 0 = \pi(x,a)\cdot \pdv{w}((w^Ta+b)-f(x))^2 = \pdv{w}((w^Ta+b)-f(a))^2
+        \end{equation*}
+        \textcolor{red}{Thus, the weights $\pi(x,a)$ can be dropped from the analysis.} Following \citep{agarwal21clime}, we have 
+        \begin{gather}
+            \pdv{O}{w} = 0 = \pdv{w}((w^Ta+b)-f(a))^2 = 2(aa^T)w + 2ba - 2f(a)a
+            89nm
+            ][\\
+            \pdv{O}{b} = 0 = 2(w^Ta) + 2b - 2f(a) \implies b = f(a) - w^Ta
+        \end{gather}
+        We have 
+        \begin{equation*}
+            \nabla_{w,b} O = 0 \implies \nabla_{w,b} \mathds{E}[O] = \mathds{E}[\nabla_{w,b}O] = \mathds{E}[0]=0
+        \end{equation*}
+        Hence, we may find the expected behavior of the minimizer $w$ over data $a\sim \mathcal{N}(x,\Sigma)$ from
+        \begin{gather}
+            \mathds{E}[aa^Tw] + bx - \mathds{E}[f(a)a] = 0 \\
+            = \mathds{E}[aa^T]w + (\mathds{E}[f(a)] - \mathbb{E}[w^Ta])x - \mathds{E}[f(a)a] \\
+        \end{gather}
+        Note that the second term can be re-written in terms of covariance, that is
+        \begin{gather}
+            cov(a,f(a))=\mathds{E}[(a-x)(f(a)-\mathds{E}[f(a)]]=\mathds{E}[af(a) - a\mathds{E}[f(a)] - xf(a) + x\mathds{E}[f(a)]] \\
+            = \mathds{E}[af(a)] - \mathds{E}[a\mathds{E}[f(a)]] - x\mathds{E}[f(a)] + x\mathds{E}[\mathds{E}[f(a)]] \\
+            = \mathds{E}[af(a)] - \mathds{E}[a\mathds{E}[f(a)]] - x\mathds{E}[f(a)] + x\mathds{E}[f(a)] \\
+            = \mathds{E}[af(a)] - \mathds{E}[a\mathds{E}[f(a)]] \\
+            = \mathds{E}[af(a)] - x\mathds{E}[f(a)] \\ %???
+         \end{gather}
+         So that we have 
+         \begin{gather}
+            \mathds{E}[aa^T]w + (\mathds{E}[f(a)] - \mathbb{E}[w^Ta])x - \mathds{E}[f(a)a] \\
+            = \mathds{E}[aa^T]w + (x\mathds{E}[f(a)] - \mathds{E}[f(a)a]) - \mathbb{E}[w^Ta]x  \\
+            = \mathds{E}[aa^T]w - cov(a,f(a)) - \mathbb{E}[w^Ta]x  \\
+            = (\Sigma + xx^T)w - cov(a,f(a)) - xx^Tw \\
+            = ((\Sigma + xx^T) - xx^T)w - cov(a,f(a)) = 0 \\
+            \implies w = \Sigma^{-1}cov(a,f(a))
+         \end{gather}
+         Now, if $f(x)=\beta^Tx + \gamma$ then 
+         \begin{gather}
+            cov(a,f(a)) = \mathds{E}[(a-\mathds{E}[a])(f(a)-\mathds{E}[f(a)])] \\
+            = \mathds{E}[(a-x)(\beta^Ta + \gamma - (\beta^Tx + \gamma)] \\
+            = \mathds{E}[a\beta^Ta + a\gamma - a\beta^Tx + a\gamma - x\beta^T a - x\gamma + x\beta^Tx - x\gamma] \\
+            = \mathds{E}[aa^T]\beta - xx^T \beta = (\mathds{E}[aa^T]-xx^T)\beta\\
+        \end{gather}
+        If we note that 
+        \begin{equation*}
+            \Sigma = \mathds{E}[(a-\mathds{E}[a])(a-\mathds{E}[a])^T] = \mathds{E}[aa^T] - xx^T
+        \end{equation*}
+        Finally, since $\Sigma$ was assumed to be invertible 
+        \begin{equation}
+            w = \Sigma^{-1}cov(a,f(a)) = (\mathds{E}[aa^T] - xx^T)^{-1}(\mathds{E}[aa^T]-xx^T)\beta = \beta
+        \end{equation}
+
+%``````````````````
+
+\subsection{Section 3 Proofs and Experiments}
+    \subsubsection{Proofs}
+
+    \paragraph{Proposition 1} 
+        For a given LIME problem, $u$ is $\beta x$ distorted by a factor of $\ldots$
+
+    \paragraph{Proof of Proposition 1}
+        From Lemma 1, with probability $p_1$, $\norm{\Sigma^{-1}} \leq L_1$.
+        From Lemma 2, with probability $p_2$, $\norm{X^T W} \leq L_2$.
+
+        Thus, $\norm{(X^T W X)^{-1} X^T W} \leq L_1 L_2$ meaning that the solution $u$, which contains $\beta$ implicitly, distorts $\beta x$ by a factor of at most $L_1 L_2$. 
+
+    \paragraph{Setting of Theorem 1}
+        We consider explaining a linear function $f:\mathbb{R}^d \rightarrow \mathbb{R}$ such that $f(\mathbf{x}) = \beta^T \mathbf{x}$ at the point $\mathbf{\xi}\in \mathbb{R}^d$ (which itself was sampled from $\mathcal{N}(0, \mathds{1}_d)$) using a LIME explainer with the following properties. Suppose that LIME samples random vectors $\{\mathbf{x}^{(n)}\}_{n=1}^N$ with $\mathbf{x}^{(n)} \sim \mathcal{N}(\mathbf{\xi},\sigma \mathds{1}_d)$ for each $n$ and, given a bandwidth parameter $\nu > 0$, weights their distances to $\mathbf{\xi}$ using an exponential kernel $\pi(\xi,\mathbf{x}) = exp(-\norm{\mathbf{\xi} - \mathbf{x}}_2^2/2\nu^2)$. Suppose further that LIME aims to solve
+        \begin{equation}
+            \text{min}_{\mathbf{x}\sim\mathcal{N}(\mathbf{\xi},\sigma  \mathds{1}_d)}\ \mathds{E}[\pi(\mathbf{\xi},\mathbf{x})(\mathbf{u}^T \mathbf{x} - \mathbf{\beta}^T \mathbf{x})^2]
+        \end{equation}
+        Thus, this version of LIME does not place an $L_1$ penalty on $\mathbf{u}$ as does the original LIME. We may frame this minimization problem as a weighted least squares (WLS) regression problem. For this framing, we collect the samples into a data matrix $\mathbf{X} \in \mathbb{R}^{N\times D}$ whose $n^{th}$ row is $\mathbf{x}^{(n)}$ and define a diagonal weight matrix $\mathbf{W}\in \mathbb{R}^{N \times N}$ such that $w_{nn} = \pi(\mathbf{\xi},\mathbf{x}^{(n)})$ for $n=1,\ldots, N$. Also let $\mathbf{y}\in \mathbb{R}^N$ be defined pointwise by $y_n = \beta^T \mathbf{x}^{(n)}$.
+
+        In the proof $n$, and occasionally $n'$, will be used to index the $N$ data samples. $i,j,k$ and occasionally $l$ will be used to index the $D$ features. Individual data samples in the data matrix $\mathbf{X}$ will be represented with superscript notation, e.g. $\mathbf{x}^{(n)}$. Individual features of a sample will be indexed with subscript notation, e.g. $x^{(n)}_j$. We need not refer to whole rows or columns of $\mathbf{W}$, so it will be indexed entry-wise with $w_{nn}$ for $n=1,\ldots, N$.
+    
+    %https://stats.stackexchange.com/questions/468347/does-the-covariance-of-i-i-d-random-vectors-multivariate-random-variables-have
+    \paragraph{proof of Theorem 1.}
+            Given a data matrix $\mathbf{X}$, weight matrix $\mathbf{W}$, and target vector $\mathbf{y}$, the solution to the corresponding weighted least squares problem is
+            \begin{equation*}
+                (\mathbf{X}^T \mathbf{W} \mathbf{X})^{-1} \mathbf{X}^T \mathbf{W}\mathbf{y}
+            \end{equation*}
+            Defining $\hat{\mathbf{\Sigma}}_N = \frac{1}{N}(\mathbf{X}^T \mathbf{W} \mathbf{X}) \in \mathbb{R}^{D\times D}$ and $\hat{\mathbf{\Gamma}}_N = \mathbf{X}^T \mathbf{W}\mathbf{y}\in \mathbb{R}^{D \times 1}$, we have by the weak law of large numbers that 
+            \begin{equation*}
+                \hat{\mathbf{\Sigma}}_N \inprob \mathbf{\Sigma} := \mathds{E}[\hat{\mathbf{\Sigma}}_N],\ \hat{\mathbf{\Gamma}}_N \inprob \mathbf{\Gamma} := \mathds{E}[\hat{\mathbf{\Gamma}}_N] 
+            \end{equation*}
+            as $N\rightarrow \infty$ and the expectations are taken over the random matrices $\mathbf{X}$. 
+            The WLS solution is then denoted $u := \mathbf{\Sigma}^{-1}\mathbf{\Gamma}$. We will proceed by finding closed form expressions for $\mathbf{\Sigma}_{ij}^{-1}$ and $\mathbf{\Gamma}_j$ seperately, then finally obtaining closed form expressions for each element of $\mathbf{u}$. We define the following notation to simplify the challenge in computing $\mathbf{u}$ coming from the presence of the weight terms $w_{nn}$. Since $w_{nn}=\prod_{l=1}^d \exp(-(\mathbf{\xi}_l - x^{(n)}_l)^2/2\nu^2)$, we will use $l=1,\ldots,D$ to index the factors of $w_{nn}$ as follows.
+            \begin{gather*}
+                \psi_{nl} := \exp(-(\mathbf{\xi}_l - x^{(n)}_l)^2/2\nu^2) \in (0,1]
+            \end{gather*}
+            where $x^{(n)}_l$ is the $l^{th}$ feature value of the $n^{th}$ sample. 
+            Thus, $\pi(\mathbf{\xi},\mathbf{x}^{(n)}) = \prod_{l=1}^d \psi_{nl}$. We also define $s:= \frac{1}{\sigma\sqrt{\sigma^{-2} + \nu^{-2}}}$ and $t := \frac{\sigma^2 \nu^2}{\sigma^2 + \nu^2}$. These will be used to simplify the expressions for the expectations we need to compute. 
+            
+            % should actually switch k with i here since i indexes over 1,...,n
+            We begin with the computation of $\mathbf{\Sigma}$. We seek an expression for the entries $\mathbf{\Sigma}_{ij}$ for $i,j=1,\ldots,D$. Since $\mathbf{W}$ is diagonal, $(\mathbf{W}\mathbf{x})_{nj} = w_{nn}x^{(n)}_j$. Therefore,
+            \begin{equation*}
+                (\hat{\mathbf{\Sigma}}_N)_{i,j}  = \frac{1}{N} \sum_{n=1}^N \mathbf{X}^T_{in}(\mathbf{W}\mathbf{X})_{nj} = \frac{1}{N}\sum_{n=1}^N x^{(n)}_i w_{nn} x^{(n)}_j 
+            \end{equation*}
+            Taking expectation with respect to $\mathbf{X}$, we have
+            \begin{equation*}
+                \mathds{E}[(\hat{\mathbf{\Sigma}}_N)_{i,j}] = \frac{1}{N}\sum_{n=1}^N \mathds{E}[x^{(n)}_i\prod_{l=1}^d \psi_{nl} x^{(n)}_j]
+            \end{equation*}
+            Recall that each pair of components from two i.i.d. random vectors are independent random variables. This allows each expectation to be split, taking care to gather terms with a common factor of $\mathbf{X}$. 
+            If $i\neq j$, the summands reduce to $\mathds{E}[\psi_{ni}x^{(n)}_i] (\prod_{l\neq i,j}^D \mathds{E}[\psi_{nl}]) \mathds{E}[\psi_{nj}x^{(n)}_j]$. If $i=j$ then they become $\mathds{E}[\mathbf{x}^{{(j)}^2}_j \psi_{jj}] \prod_{l\neq j}^D \mathds{E}[\psi_{nl}]$. We compute these expectations using the following computations that will be re-used repeatedly throughout the proof.
+
+        \begin{itemize}
+            \item For any $n=1,\ldots,N$ and $j=1,\ldots, D$, $\mathds{E}[x^{(n)}_j] = \xi_j$ by Fubini's theorem and because $\mathbf{x}^{(n)} \sim \mathcal{N}(\xi,\sigma)$ for all $n$.
+            \item Let $\mu_1 \times \ldots \times \mu_{ND}$ be the product measure on $\mathbb{R}^{N\times D}$ such that $d\mu_{nj}(x^{(n)}_j) = d\phi(x^{(n)}_j)dx^{(n)}_j$ where $\phi(x^{(n)}_j)$ is the Gaussian pdf $\frac{1}{\sigma \sqrt{2\pi}}\exp\left(-\frac{1}{2}\left(\frac{\xi_i-x^{(n)}_j}{\sigma}\right)^2\right)$. Then 
+            \begin{align*}
+            \mathds{E}[\psi_{nj}] = \int_{\mathbb{R}^{N\times D}} \exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) d\mu_1(x^{(1)}_1) \times \ldots d\mu_{ND}(x^{(N)}_D) \\
+            = \int_\mathbb{R} \cdots \int_\mathbb{R} \exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) d\mu_1(x^{(1)}_1) \times \ldots d\mu_{ND}(x^{(N)}_D) \\ 
+            = \int_\mathbb{R}\exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) d\mu_{nj}(x^{(n)}_j) \\
+            = \int_\mathbb{R}\exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) \frac{1}{\sigma \sqrt{2\pi}}\exp\left(-(\xi_j-x^{(n)}_j)^2/2\sigma^2\right) dx^{(n)}_j \\
+            = \frac{1}{\sigma \sqrt{2\pi}} \int_\mathbb{R} \exp\left((\xi_j - x^{(n)}_j)^2(\sigma^2 + \nu^2)/2\sigma^2 \nu^2\right) dx^{(n)}_j\\
+            =\frac{1}{\sigma \sqrt{\sigma^{-2} + \nu^{-2}}}=s
+            \end{align*}
+            %\item Let $\phi(\mathbf{X})$ be the pdf for the Gaussian random matrix $\mathbf{\mathbf{X}}$. \[\mathds{E}[\psi_{nj}] = \int_{\mathbb{R}^{N\times D}} exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) \phi(\mathbf{X}) d\mathbf{X} = \frac{1}{\sigma \sqrt{\sigma^{-2} + \nu^{-2}}}=s\] 
+            \item \[\mathds{E}[\psi_{nj}x^{(n)}_j] = \int_{\mathbb{R}^{N\times D}} \exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) x^{(n)}_j \phi(\mathbf{X}) d\mathbf{X} = \frac{\xi_j}{\sigma \sqrt{\sigma^{-2} +\nu^{-2}}}=s \xi_j\]
+            \item \[\mathds{E}[\psi_{nj} x^{{(n)}^2}_j]= \int_{\mathbb{R}^{N\times D}} \exp(-(\xi_j - x^{(n)}_j)^2/2\nu^2) x^{{(n)}^2}_j \phi(\mathbf{X}) d\mathbf{X} = \frac{\nu^2 \xi_j^2 + \sigma^2(\nu^2+\xi_j^2)}{\sigma\sqrt{\sigma^{-2} + \nu^{-2}}(\sigma^2+\nu^2)}=s(\xi_j^2+t)\]
+        \end{itemize}
+
+        Hence, when $i\neq j$, the summands become
+        \begin{align*}
+            \mathds{E}[\psi_{ni}x^{(n)}_i] (\prod_{l\neq i,j}^D \mathds{E}[\psi_{nl}]) \mathds{E}[\psi_{nj}x^{(n)}_j] = s\xi_i \prod_{l\neq i,j}^D s s\xi_j = s^D \xi_i \xi_j
+        \end{align*}
+        and when $i=j$ they are
+        \begin{align*}
+            \mathds{E}[\mathbf{x}^{{(j)}^2}_j \psi_{jj}] \prod_{l\neq j}^D \mathds{E}[\psi_{nl}] = s(\xi_j^2 + t)s^{D-1} = s^D (\xi_j^2 + t)
+        \end{align*}
+        The dependence on $n$ is gone from the summands, and so the $\frac{1}{N}$ term is canceled in $\mathds{E}[(\hat{\mathbf{\Sigma}}_N)_{i,j}]$. Summing up, we have
+            $$
+            \mathbf{\Sigma}_{ij} =
+            s^D\begin{cases}
+            \xi_i \xi_j ,\ i \neq j\\
+           \xi_j^2 + t,\ i = j\\
+            \end{cases}
+            $$
+            so we may re-write $\mathbf{\Sigma}$ as $s^D(\xi \xi^T + diag(t))$, where $diag(t)$ is a $D\times D$ diagonal matrix with $t$ on the diagonal and $0$ elsewhere. 
+            %Supposing the covariance matrix is invertible and the diagonal matrix is denoted $D$, we have
+            %\begin{equation*}
+            %    s^{-d}(\mathds{1} + (\xi \xi^T)^{-1}  diag(t^{-1}))^{-1}(\xi \xi^T)^{-1}
+           %\end{equation*}
+           Since $\xi$ is a fixed vector the outer product $\xi \xi^T$ has rank 1. Then, since diagonal matrices are invertible, we may use the Sherman-Morrison formula~\citep{sherman50adjustment} to compute $\mathbf{\Sigma}^{-1}$. The Sherman-Morrison formula is used to compute inversion after a rank 1 update; that is, the new inverse of a previously invertible matrix after adding a rank 1 matrix to it. By the Sherman-Morrison formula,
+           \begin{gather*}
+           \mathbf{\Sigma}^{-1}=s^{-D}\left(diag(1/t)-\frac{1}{1+g}diag(1/t)(\xi \xi^T)diag(1/t)\right) \\
+           = s^{-D}\left(diag(1/t)-\frac{1}{t^2(1+g)}\mathds{1}(\xi \xi^T)\mathds{1}\right) \\
+           = s^{-D}\left(diag(1/t)-\frac{1}{t^2(1+g)}(\xi \xi^T)\right) \\
+           \end{gather*}
+           where $g = \sum_{i=1}^D \xi_i^2 + \frac{D}{t}$.
+           So, 
+           % CHANGE THIS SO NO NEGATIVE SIGN
+           $$
+            \mathbf{\Sigma}_{ij}^{-1} =
+            \begin{cases}
+            \frac{-s^{-D}}{t^2(1+g)}\xi_i \xi_j ,\ i \neq j\\
+           \frac{-s^{-D}}{t^2(1+g)}\xi_i \xi_j - 1/t,\ i = j\\
+            \end{cases}
+            $$           
+            Moving now to the computation of $\mathbf{\Gamma}$, we note that
+            \begin{equation*}
+                \mathbf{\Gamma}_j = \frac{1}{N} \mathds{E}[ \sum_{n=1}^n (\mathbf{X}^T \mathbf{W})_{jn}y_n] \\
+            \end{equation*}
+            The summands can be expanded into
+            \begin{gather*}
+                (\mathbf{X}^T \mathbf{W})_{jn}y_n = (\sum_{n'=1}^N \mathbf{X}^T_{jn'} w_{n'n})y_n \\
+                = \sum_{n'=1}^N \mathbf{x}^{(n')}_j w_{n'n} y_n \\
+                % leave y_n to avoid n'' notation?
+                = \sum_{n'=1}^N \mathbf{x}^{(n')}_j w_{n'n} \sum_{k=1}^D \beta_k x^{(n)}_k
+            \end{gather*}
+            To compute $\mathbf{\Gamma}_j$ we procede similarly to the computation of $\mathbf{\Sigma}_{ij}$ by splitting the expectations based on common elements of $\mathbf{X}$.
+            \begin{gather*}
+            \mathbf{\Gamma}_j = \frac{1}{N} \mathds{E}\left[\sum_{n=1}^N \sum_{n'=1}^N \mathbf{x}^{(n')}_j w_{n'n} \sum_{k=1}^D \beta_k x^{(n)}_k\right] \\
+                = \frac{1}{N}\sum_{n=1}^N \sum_{n'=1}^N \sum_{k=1}^D \beta_k\mathds{E}[\mathbf{x}^{(n')}_jw_{n'n}x^{(n)}_k] \\
+            \end{gather*}
+            We may eliminate the sum over $n'$ since $w_{n'n}=0$ unless $n'=n$, whence
+            \begin{gather*}
+                = \frac{1}{N}\sum_{n=1}^N\left(\left(\sum_{k\neq j}^D\beta_k\mathds{E}[x^{(n)}_j w_{nn} x^{(n)}_k]\right) + \beta_j\mathds{E}[x^{{(n)}^2}_j w_{nn}]\right) \\
+                %= \frac{1}{N} \left[\left(\sum_{k\neq j} \left(\left(\sum_{l\neq j}\beta_l\mathds{E}[x^{(n)}_j w_{nn} x^{(n)}_l]\right) + \beta_j\mathds{E}[\mathbf{x}^{{(k)}^2}_j w_{nn}]\right)\right) + \left(\left(\sum_{l\neq j}\beta_l\mathds{E}[\mathbf{x}^{(j)}_j \mathbf{W}_{jj} \mathbf{x}^{(j)}_l]\right) + \beta_j\mathds{E}[\mathbf{x}^{{(j)}^2}_j \mathbf{W}_{jj}]\right)\right]
+            \end{gather*}
+            % stopped here
+            We address the summands left to right. Since $j\neq k$, 
+            \begin{equation*}
+                \mathds{E}[x^{(n)}_j w_{nn} x^{(n)}_k] = \mathds{E}[x^{(n)}_j\psi_{nj}]\prod_{l\neq j,k} \mathds{E}[\psi_{nl}] \mathds{E}[x^{(n)}_k\psi_{nk}] = s\xi_j s^{D-2} s\xi_k = s^D \xi_j \xi_k
+            \end{equation*}
+            and
+            \[
+            \mathds{E}[x^{{(n)}^2}_j w_{nn}] = \mathds{E}[x^{{(n)}^2}_j \psi_{nj}]\prod_{l\neq  j} \mathds{E}[\psi_{nl}] = s^D (\xi_j^2 + t)
+            \]
+            % Since $l \neq j$, 
+            % \[
+            % \mathds{E}[\mathbf{x}^{(j)}_j \mathbf{W}_{jj} \mathbf{x}^{(j)}_l] = \mathds{E}[\mathbf{x}^{(j)}_j\psi_{jj}] s^{d-2} \mathds{E}[\mathbf{x}^{(j)}_l\psi_{jl}] = s^d \xi_j \xi_l
+            % \]
+            % and finally,
+            % \[
+            % \mathds{E}[\mathbf{x}^{{(j)}^2}_j \mathbf{W}_{jj}] = \mathds{E}[\mathbf{x}^{{(j)}^2}_j\psi_{jj}] s^{d-1}= s^d (\xi_j^2 + t)
+            % \]
+    Expanding, we have
+    %i->j, j->k, k->l, l->m
+    \begin{gather*}
+    % \mathbf{\Gamma}_j = \frac{1}{N}\left[\left(\sum_{k\neq j} \left(\sum_{l\neq j}\beta_l s^D \xi_j \xi_l\right) + \beta_j s^D(\xi_j^2 + t) \right) + \sum_{l\neq j}  \beta_l s^D \xi_j \xi_l + \beta_j s^D(\xi_j^2 + t) \right] \\
+    % = s^D\xi_j \sum_{l\neq j}\beta_l \xi_l + \beta_j s^D(\xi_j^2 + t)
+    \mathbf{\Gamma}_j = \frac{1}{N}\sum_{n=1}^N\left(\left(\sum_{k\neq j}^D\beta_ks^D \xi_j \xi_k \right) + \beta_j s^D (\xi_j^2 + t)\right) \\
+    = \left(\sum_{k\neq j}^D\beta_ks^D \xi_j \xi_k \right) + \beta_j s^D (\xi_j^2 + t)
+    \end{gather*} 
+    Finally, the LIME coefficient for $i=1,\ldots,D$ is
+    \begin{gather*}
+        %\mathbf{u}_j = \sum_{n=1}^d \mathbf{\Sigma}_{jk}^{-1} \mathbf{\Gamma}_k \\
+        %= \sum_{k \neq j}\left[\left(\frac{s^d}{t^2(1+g)}\xi_j \xi_k\right) (\beta_k s^d(\xi_k^2 + t))\right] + \left(\frac{s^d}{t^2(1+g)}\xi_j^2 - 1/t\right) (s^d\xi_j \sum_{l\neq j}\beta_l \xi_l + \beta_j s^d(\xi_j^2 + t)) \\
+        %= s^d(\xi_j^2 + t)\left(\frac{s^d}{t^2(1+g)}\xi_j^2 - 1/t\right) \beta_j  + \left[\left(\frac{s^d}{t^2(1+g)}\xi_j^2 - 1/t\right) s^d\xi_j \sum_{l\neq j}\beta_l \xi_l +  \sum_{k \neq j}\left[\left(\frac{s^d}{t^2(1+g)}\xi_j \xi_k\right) (\beta_k s^d(\xi_k^2 + t))\right]\right]
+        u_i = \sum_{j=1}^D \mathbf{\Sigma}_{ij}^{-1} \mathbf{\Gamma}_j \\
+        = \sum_{j\neq i}^D \mathbf{\Sigma}_{ij}^{-1} \mathbf{\Gamma}_j +  \mathbf{\Sigma}_{ii}^{-1} \mathbf{\Gamma}_i \\
+        = \sum_{j\neq i}^D \left[\left(\frac{-s^{-D}}{t^2(1+g)}\xi_i \xi_j\right)\left(\left(\sum_{k\neq j}^D\beta_ks^D \xi_j \xi_k \right) + \beta_j s^D (\xi_j^2 + t)\right)\right] \\ + \left[\left(\frac{-s^{-D}}{t^2(1+g)}\xi_i^2 - 1/t\right)\left(\left(\sum_{k\neq i}^D\beta_k s^D \xi_j \xi_k \right) + \beta_i s^D (\xi_i^2 + t)\right)\right]
+    \end{gather*}
+    %Define $k_{1j} = s^d(\xi_j^2 + t)\left(\frac{s^d}{t^2(1+g)}\xi_j^2 - 1/t\right)$ and 
+    % there's a beta_i term coming outof the sum k \neq j!!!
+    Define 
+    \begin{gather*}
+        k_{1i} = \left(\frac{-s^{-D}}{t^2(1+g)}\xi_i^2 - 1/t\right) s^D (\xi_i^2 + t) \beta_i \\
+        k_{2i} = \sum_{j\neq i}^D \left[\left(\frac{-s^{-D}}{t^2(1+g)}\xi_i \xi_j\right)\left(\left(\sum_{k\neq j}^D\beta_ks^D \xi_j \xi_k \right) + \beta_j s^D (\xi_j^2 + t)\right)\right] + \left(\frac{-s^{-D}}{t^2(1+g)}\xi_i^2 - 1/t\right) \left(\sum_{k\neq i}^D\beta_k s^D \xi_j \xi_k \right)
+    \end{gather*}
+
+    Put simply, there are functions $k_{1i}(\xi,s,t,\beta_{\setminus i})$ and $k_{2i}(\xi,s,t,\beta_{\setminus i})$ such that 
+    \begin{equation*}
+        u_i = k_{1i}(x,s,t,\beta_{\setminus i}) \beta_i + k_{2i}(x,s,t,\beta_{\setminus i})
+    \end{equation*}
+    where $\beta_{\setminus i}$ is the vector of all coefficients in $\beta$ except for $\beta_i$. \qedsymbol
+
+    In an especially nice case, if $d=10$ and $\nu$ is the default $\sqrt{.75D}$ and $x$ takes on its mean value of $0$, and $\mathbf{\sigma} = 1/\nu$, then $k_{1i} = 1$ and $k_{2i} = 0$. However, for $x \neq 0$, $\mid k_{1i}\mid  > 1$ and $k_{2i}\neq 0$. 
+
+    
+    \paragraph{Corollary 1 - Upper bound on $\norm{\Sigma}_{\text{op}}$}
+    \begin{proof}
+        By xyz, $\norm{\Sigma}^{-1}_{\text{op}} \leq \norm{\Sigma}_{\text{F}}\leq \sqrt{D}\norm{\Sigma}^{-1}_{\text{op}}$, so we may just compute the Frobenius norm of $\Sigma^{-1}$. That is,
+        \begin{equation*}
+            \norm{\Sigma^{-1}}^2_{\text{F}} = \norm{\frac{-s^D}{t^2(1+g)} \xi \xi^T - diag(1/t)}_{\text{F}}=%\sqrt{\sum_{i=1}^D \sum_{j=1}^D \frac{-s^D}{t^2(1+g)} \xi_i \xi_j - \delta_{i=j}1/t} \\
+            \norm{\frac{-s^D}{t^2(1+g)} \xi \xi^T}^2_{\text{F}} + \norm{diag(1/t)}^2_{\text{F}} + 2Re(\langle \frac{-s^D}{t^2(1+g)} \xi \xi^T, diag(t)\rangle_{\text{F}}) \\
+        \end{equation*}
+        Addressing the terms from left to right, we have
+        \begin{gather*}
+            \norm{\frac{-s^D}{t^2(1+g)} \xi \xi^T}^2_{\text{F}} = \mid \frac{-s^D}{t^2(1+g)}\mid^2 \norm{\xi \xi^T}^2_{\text{F}} \\
+            = \mid\frac{-s^D}{t^2(1+g)}\mid^2 \norm{\xi}_2^2
+        \end{gather*}
+        Since $\xi$ is a (realization of) a standard gaussian random vector, for $b_1 > 0$ 
+        %https://www.stat.cmu.edu/~arinaldo/Teaching/36709/S19/Scribed_Lectures/Feb21_Shenghao.pdf
+        \begin{equation*}
+            \mathds{P}[\norm{\xi} \geq b_1] \leq 5^D \exp(-b_1^2/8) := p_1
+        \end{equation*}
+
+        % https://www.stat.cmu.edu/~arinaldo/Teaching/36709/S19/Scribed_Lectures/Feb5_Aleksandr.pdf
+        Moreover, 
+        \begin{gather*}
+            \langle \frac{-s^D}{t^2(1+g)} \xi \xi^T, diag(t)\rangle_{\text{F}} \\
+            = 1/t Tr(\xi \xi^T) \\
+        \end{gather*}
+        Noting that the square of a standard gaussian random variable is a chi-square random variable with mean 0, which is sub-exponential, we may use the composition property of sub-exponential random variables to obtain a tail bound on the trace of $\xi \xi^T$
+        \begin{equation*}
+            \mathds{P}[\frac{1}{D}\mid \sum_{i=1}^D \xi_i^2 - 0\mid \geq b_2] \leq \exp(-\frac{D}{2} \min(b_2^2/\nu_*^2, b_2/\alpha_*)) := p_2
+        \end{equation*}
+        where $\nu_*^2 = \sum_{i=1}^D \nu_i^2$ and $\alpha_* = \max_i \alpha_i$.
+    \end{proof}
+    Finally, with probability $(1-p_1)(1-p_2)$, 
+    \begin{equation*}
+        \norm{\Sigma^{-1}}_{\text{op}} \leq \sqrt{\mid\frac{-s^D}{t^2(1+g)}\mid^2 b_1^2 + (1/t^2)D + 2b_2}
+    \end{equation*}
+
+
+
+    \paragraph{Proposition 1} 
+        For a given LIME problem, $u$ is $\beta x$ distorted by a factor of $\ldots$
+
+    \paragraph{Proof of Proposition 1}
+        From Lemma 1, with probability $p_1$, $\norm{\Sigma^{-1}} \leq L_1$.
+        From Lemma 2, with probability $p_2$, $\norm{X^T W} \leq L_2$.
+
+        Thus, $\norm{(X^T W X)^{-1} X^T W} \leq L_1 L_2$ meaning that the solution $u$, which contains $\beta$ implicitly, distorts $\beta x$ by a factor of at most $L_1 L_2$. 
